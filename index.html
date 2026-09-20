@@ -3,93 +3,1171 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOLTON</title>
+  <meta name="theme-color" content="#526765">
+  <meta name="description" content="Un espacio para estudiar, organizarte y avanzar con constancia.">
+  <title>BOLTON · Crece a tu ritmo</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    :root {
-      --bg: #12241f;
-      --panel: rgba(255,255,255,0.08);
-      --border: rgba(255,255,255,0.2);
-      --text: #f4f7f5;
-      --muted: #c9d5d1;
-      --accent: #7ae0b5;
+    :root { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      color: #fff; 
+      background: #475850; 
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; }
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #0f1f1b, #1d3531 55%, #0b1715);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
+    body { overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    
+    .bolton-page { 
+      position: relative; 
+      min-height: 100vh; 
+      overflow: hidden; 
+      isolation: isolate; 
+      background: #526765 url('background.jpg') center / cover fixed; 
     }
-    main {
-      width: min(680px, 90vw);
-      padding: 32px 28px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      text-align: center;
+    .shade { 
+      position: absolute; inset: 0; z-index: -1; 
+      background: linear-gradient(180deg, rgba(15,34,38,.15), rgba(21,45,28,.1) 50%, rgba(7,20,13,.25)); 
     }
-    h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2.2rem, 6vw, 4rem);
-      letter-spacing: 0.12em;
+    
+    .top-left-card {
+      position: absolute; top: 5%; left: 4.5%; 
+      width: min(340px, 85vw); padding: 18px; 
+      border-radius: 20px; z-index: 20; 
+      display: flex; flex-direction: column; gap: 8px;
     }
-    p {
-      margin: 0 0 22px;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 1rem;
+    .glass-card { 
+      border: 1px solid rgba(255,255,255,.3); 
+      background: linear-gradient(135deg, rgba(255,255,255,.15), rgba(255,255,255,.05)); 
+      box-shadow: inset 0 1px rgba(255,255,255,.2), 0 15px 35px rgba(0,0,0,.15); 
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
     }
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
+    .top-left-card .card-header { display: flex; align-items: center; gap: 10px; }
+    .top-left-card .avatar { 
+      width: 28px; height: 28px; border-radius: 50%; 
+      background: #fff; color: #000; display: grid; place-items: center; 
+      font-weight: 800; font-size: 13px; 
     }
-    a, button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      padding: 0 18px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 700;
+    .top-left-card .status { font-size: 12px; opacity: .85; display: flex; align-items: center; gap: 6px; }
+    .top-left-card .status i { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; }
+    .top-left-card h2 { margin: 6px 0 0; font-size: 14px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; }
+    .top-left-card p { margin: 0; font-size: 11px; opacity: .8; line-height: 1.35; }
+
+    .topbar-wrapper {
+      position: absolute; top: 5%; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      z-index: 10; text-align: center; pointer-events: none;
+    }
+    .topbar { font-size: 16px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; pointer-events: auto; }
+    .topbar-subtitle {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 500; opacity: 0.85; letter-spacing: 0.03em;
+      pointer-events: auto; text-decoration: none; transition: opacity 0.2s ease;
+    }
+    .topbar-subtitle:hover { opacity: 1; }
+    .topbar-subtitle svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+    .top-right-container {
+      position: absolute; top: 4.5%; right: 4.5%;
+      display: flex; align-items: center; gap: 10px;
+      z-index: 25;
+    }
+    
+    .lang-dropdown-wrapper { position: relative; }
+    .lang-switcher-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      color: #fff; font-size: 12px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+    .lang-switcher-btn:hover {
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-2px);
+    }
+    .lang-switcher-btn svg {
+      width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none;
+      transition: transform 0.2s ease;
+    }
+    .lang-dropdown-wrapper.open .lang-switcher-btn svg { transform: rotate(180deg); }
+    
+    .lang-menu {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      width: 150px; padding: 6px; border-radius: 14px;
+      background: rgba(40, 60, 52, 0.85);
+      border: 1px solid rgba(255,255,255,0.25);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: none; flex-direction: column; gap: 2px;
+      z-index: 30;
+    }
+    .lang-dropdown-wrapper.open .lang-menu { display: flex; }
+    .lang-option {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 8px;
+      background: transparent; border: none; color: #fff;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      text-align: left; width: 100%; transition: background 0.15s ease;
+    }
+    .lang-option:hover, .lang-option.active { background: rgba(255,255,255,0.2); }
+
+    .top-right-slideshow {
+      width: 110px; height: 140px;
+      border-radius: 18px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+      position: relative;
+    }
+    .top-right-slideshow img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      border-radius: 16px; opacity: 0; transform: scale(1.05);
+      animation: smoothFade 16s infinite;
+    }
+    .top-right-slideshow img:nth-child(1) { animation-delay: 0s; }
+    .top-right-slideshow img:nth-child(2) { animation-delay: 4s; }
+    .top-right-slideshow img:nth-child(3) { animation-delay: 8s; }
+    .top-right-slideshow img:nth-child(4) { animation-delay: 12s; }
+
+    @keyframes smoothFade {
+      0% { opacity: 0; transform: scale(1.05); }
+      8% { opacity: 1; transform: scale(1); }
+      25% { opacity: 1; transform: scale(1); }
+      33% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 0; transform: scale(0.95); }
+    }
+
+    .hero { min-height: 100vh; display: grid; place-items: center; padding: 0 10vw; text-align: center; }
+    .hero-copy { max-width: 900px; z-index: 10; }
+    h1 { margin: 0; font-size: clamp(48px, 8vw, 110px); font-weight: 900; line-height: .9; letter-spacing: -.04em; text-transform: uppercase; text-wrap: balance; text-shadow: 0 8px 24px rgba(0,0,0,.2); animation: quoteIn .9s ease both; }
+    @keyframes quoteIn { from { opacity: 0; transform: translateY(15px); filter: blur(10px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+    
+    .bottom-left-note {
+      position: absolute; left: 4.5%; bottom: 6%; 
+      display: flex; align-items: flex-end; gap: 15px; 
+      font-size: 18px; font-weight: 600; line-height: 1.2; 
+      text-shadow: 0 2px 12px rgba(0,0,0,.4); z-index: 20;
+    }
+    .bottom-left-note-copy p { margin: 0; display: flex; align-items: center; gap: 8px; }
+    .bottom-left-note-copy .dash { font-weight: 300; opacity: .7; }
+    .bottom-left-note-copy span { display: block; font-weight: 400; opacity: .85; font-size: 15px; margin-top: 4px; margin-left: 26px; }
+    .bottom-left-note a { display: block; width: 60px; height: 60px; transition: transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .bottom-left-note a img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,.3)); }
+    .bottom-left-note a:hover { transform: scale(1.15) rotate(-5deg); }
+
+    .bottom-center-ui {
+      position: absolute; left: 50%; bottom: 5%; 
+      transform: translateX(-50%); 
+      display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 30;
+    }
+    
+    .account-actions { display: flex; gap: 18px; }
+    .account-button { display: inline-flex; align-items: center; justify-content: center; padding: 15px 32px; border: 1px solid rgba(255,255,255,.4); border-top: 1px solid rgba(255,255,255,.75); border-radius: 999px; color: #fff; background: rgba(255,255,255,.15); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 8px 25px rgba(0,0,0,.2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font: 700 15px/1 Arial, Helvetica, sans-serif; letter-spacing: .02em; cursor: pointer; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .account-button:hover { border-color: rgba(255,255,255,.9); background: rgba(255,255,255,.25); transform: translateY(-5px); box-shadow: inset 0 1px rgba(255,255,255,.3), 0 15px 30px rgba(0,0,0,.3); }
+    
+    .social-dock { display: flex; gap: 12px; padding: 10px 14px; border: 1px solid rgba(255,255,255,.3); border-radius: 24px; background: rgba(40,70,57,.4); box-shadow: 0 12px 35px rgba(0,0,0,.25); backdrop-filter: blur(20px); }
+    .social-link { position: relative; display: block; width: 48px; height: 48px; border-radius: 12px; overflow: hidden; transition: transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275); } 
+    .social-link:hover { transform: translateY(-10px) scale(1.15); } 
+    .social-link img { width: 100%; height: 100%; object-fit: cover; } 
+    .social-link .hover-icon { position: absolute; inset: 0; opacity: 0; transition: opacity .3s ease; } 
+    .social-link:hover .hover-icon { opacity: 1; }
+
+    .gmail-deck { position: absolute; right: calc(4.5% - 4px); bottom: 5%; width: min(380px, 40vw); height: auto; min-height: 100px; perspective: 1000px; z-index: 20; }
+    .gmail-card { position: absolute; inset: 0; display: grid; grid-template-columns: 44px minmax(0, 1fr) 24px; gap: 12px; align-items: flex-start; min-height: 95px; padding: 14px; border-radius: 20px; transition: all .5s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(255,255,255,.2); border-top: 1px solid rgba(255,255,255,.5); background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.03)); box-shadow: 0 15px 35px rgba(0,0,0,.2); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); transform-origin: center bottom; }
+    .gmail-card:hover { border-top-color: rgba(255,255,255,.8); box-shadow: 0 20px 45px rgba(0,0,0,.3); }
+    .gmail-icon { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; }
+    .gmail-content { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .gmail-card strong { font-size: 12px; font-weight: 700; white-space: normal; overflow: visible; text-transform: uppercase; letter-spacing: .02em; } 
+    .message-text { margin: 0; font-size: 11px; opacity: .85; white-space: normal; overflow: visible; word-break: break-word; line-height: 1.4; display: block; } 
+    .gmail-dismiss { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: none; border-radius: 50%; color: rgba(255,255,255,.7); background: rgba(0,0,0,.15); font-size: 16px; cursor: pointer; transition: all .2s ease; align-self: flex-start; }
+    .gmail-dismiss:hover { background: rgba(255,255,255,.3); color: #fff; transform: scale(1.15); }
+    
+    @media (max-width: 768px) { 
+      .top-left-card { top: 3%; left: 5%; width: min(280px, 85vw); padding: 14px; }
+      .top-right-container { top: 3%; right: 5%; }
+      .top-right-slideshow { width: 85px; height: 110px; }
+      .topbar-wrapper { display: none; } 
+      .bottom-left-note { display: none; } 
+      .gmail-deck { right: calc(5% - 4px); bottom: 26%; width: 90vw; } 
+      .gmail-card { min-height: 90px; grid-template-columns: 40px minmax(0, 1fr) 24px; gap: 10px; padding: 12px; } 
+      .gmail-icon { width: 40px; height: 40px; } 
+      .bottom-center-ui { bottom: 4%; width: 100%; gap: 15px; }
+      .account-actions { gap: 12px; } 
+      .account-button { padding: 14px 24px; font-size: 14px; } 
+      .social-dock { gap: 8px; padding: 8px 10px; border-radius: 20px; } 
+      .social-link { width: 42px; height: 42px; } 
+      h1 { font-size: clamp(42px, 11vw, 68px); } 
+    }
+
+    .bolton-modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(10, 20, 18, 0.65);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: grid; place-items: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .bolton-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .bolton-modal {
+      position: relative; width: min(520px, 95vw); max-height: 90vh;
+      overflow-y: auto; padding: 28px; border-radius: 24px;
+      display: none; flex-direction: column; gap: 16px;
+      animation: modalPopup 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .bolton-modal.active { display: flex; }
+    @keyframes modalPopup {
+      from { transform: translateY(20px) scale(0.95); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .modal-close-btn {
+      position: absolute; top: 18px; right: 20px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; font-size: 20px; display: grid; place-items: center;
+      cursor: pointer; transition: background 0.2s ease;
+    }
+    .modal-close-btn:hover { background: rgba(255,255,255,0.3); }
+    .modal-header { display: flex; align-items: center; gap: 12px; }
+    .modal-header .avatar { width: 36px; height: 36px; font-size: 16px; }
+    .modal-header h3 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; }
+    
+    .modal-form { display: flex; flex-direction: column; gap: 12px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; opacity: 0.9; }
+    .form-group input {
+      padding: 11px 14px; border-radius: 12px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; font-size: 13px; font-family: inherit; outline: none;
+      transition: all 0.2s ease;
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.4); }
+    .form-group input:focus {
+      background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.6);
+      box-shadow: 0 0 10px rgba(255,255,255,0.15);
+    }
+    .file-input { padding: 8px !important; font-size: 11px !important; cursor: pointer; }
+
+    .forgot-password-link {
+      display: inline-block;
+      font-size: 11px;
+      opacity: 0.85;
+      color: #fff;
+      text-align: right;
+      margin-top: 4px;
       cursor: pointer;
+      transition: opacity 0.2s ease;
     }
-    a.primary {
-      background: linear-gradient(135deg, #81e0b7, #4ecb98);
-      color: #0d1b17;
-      border-color: transparent;
+    .forgot-password-link:hover { opacity: 1; text-decoration: underline; }
+    
+    .form-error-msg {
+      font-size: 11px; color: #f87171; background: rgba(248, 113, 113, 0.15);
+      padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    .modal-submit-btn {
+      margin-top: 6px; padding: 13px; border-radius: 12px;
+      background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5);
+      color: #fff; font-weight: 700; font-size: 14px; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.03em; transition: all 0.2s ease;
+    }
+    .modal-submit-btn:hover {
+      background: rgba(255,255,255,0.35); transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .modal-divider { display: flex; align-items: center; text-align: center; margin: 4px 0; opacity: 0.5; font-size: 11px; text-transform: uppercase; }
+    .modal-divider::before, .modal-divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(255,255,255,0.3); }
+    .modal-divider span { padding: 0 10px; }
+
+    .google-auth-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 12px; border-radius: 12px; background: #fff; color: #333;
+      border: none; font-weight: 700; font-size: 13px; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15); transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .google-auth-btn:hover { background: #f1f1f1; transform: translateY(-2px); }
+
+    .notification-container {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .notification-toast {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; 
+      padding: 14px 16px 14px 20px;
+      border-radius: 12px; background: rgba(30, 45, 38, 0.95);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      color: #fff; font-size: 13px; font-weight: 600; pointer-events: auto;
+      transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .notification-toast.show { transform: translateX(0); opacity: 1; }
+    .notification-toast.error { border-left: 4px solid #ef4444; }
+    .notification-toast.success { border-left: 4px solid #22c55e; }
+    
+    .notification-toast-left { display: flex; align-items: center; gap: 12px; }
+    .notification-icon { font-size: 16px; }
+    
+    .toast-close-btn {
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      font-size: 22px; cursor: pointer; padding: 0 4px; line-height: 1;
+      transition: color 0.2s ease;
+    }
+    .toast-close-btn:hover { color: #fff; }
+    
+    @media (max-width: 600px) {
+      .notification-container { top: 10px; right: 10px; left: 10px; }
+      .notification-toast { width: 100%; box-sizing: border-box; }
+      .form-row { grid-template-columns: 1fr; }
+      .bolton-modal { padding: 20px; }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>BOLTON</h1>
-    <p>
-      La página principal ya no se redirige automáticamente. Si tienes sesión activa,
-      te quedas en esta vista y puedes entrar al panel desde el botón de abajo.
-    </p>
-    <div class="actions">
-      <a class="primary" href="stdio.html">Ir a stdio.html</a>
-      <a href="index.html">Mantenerme en index.html</a>
+  <main class="bolton-page">
+    <div class="shade"></div>
+    <div class="topbar-wrapper">
+      <header class="topbar">BOLTON</header>
+      <a href="info.html" class="topbar-subtitle">
+        <span data-i18n="knowMore">conoce mas del proyecto</span>
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" /></svg>
+      </a>
     </div>
+
+    <!-- Contenedor superior derecho (Idioma + Galería) -->
+    <div class="top-right-container" aria-label="Controles superiores">
+      <div class="lang-dropdown-wrapper" id="langDropdown">
+        <button class="lang-switcher-btn" type="button" id="langBtn" aria-label="Cambiar idioma">
+          <span id="currentLangLabel">ES 🇪🇸</span>
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div class="lang-menu">
+          <button class="lang-option active" data-lang="es">🇪🇸 Español</button>
+          <button class="lang-option" data-lang="en">🇬🇧 English</button>
+          <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+          <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
+          <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+        </div>
+      </div>
+
+      <div class="top-right-slideshow" aria-label="Galería superior">
+        <img src="sticker.png" alt="Slide 1" onerror="this.src='https://placehold.co/110x140/ffffff/526765?text=Bolton+1'">
+        <img src="logo.png" alt="Slide 2" onerror="this.src='https://placehold.co/110x140/ffffff/526765?text=Bolton+2'">
+        <img src="pinterest.png" alt="Slide 3" onerror="this.src='https://placehold.co/110x140/ffffff/526765?text=Bolton+3'">
+        <img src="whatsapp.png" alt="Slide 4" onerror="this.src='https://placehold.co/110x140/ffffff/526765?text=Bolton+4'">
+      </div>
+    </div>
+    
+    <!-- Tarjeta superior izquierda -->
+    <aside class="top-left-card glass-card">
+      <div class="card-header">
+        <div class="avatar">B</div>
+        <span class="status"><i class="status-indicator"></i> <span data-i18n="availableWork">Disponible para ayudarte</span></span>
+      </div>
+      <h2 data-i18n="cardTitle">Organización · Estudio</h2>
+      <p data-i18n="cardDesc">Bolton es tu herramienta de confiza para estudiar y mantener en orden tus trabajos y pasar con la nota maxima toda las materias.</p>
+    </aside>
+    
+    <section class="hero" aria-label="Mensaje motivacional">
+      <div class="hero-copy">
+        <h1 id="quote">Progreso,<br>no perfección</h1>
+      </div>
+    </section>
+    
+    <div class="bottom-left-note">
+      <div class="bottom-left-note-copy">
+        <p><span class="dash">—</span> <span data-i18n="weHelp">Te ayudamos a crecer.</span></p>
+        <span data-i18n="studioName">conoce más de luizabeth's.studios</span>
+      </div>
+      <a href="https://clientes-chi.vercel.app/" target="_blank" rel="noreferrer" aria-label="Visitar sitio">
+        <img src="sticker.png" alt="Sticker" onerror="this.src='https://placehold.co/60x60/ffffff/526765?text=L'">
+      </a>
+    </div>
+    
+    <section class="gmail-deck" aria-label="Mensajes">
+      <article class="gmail-card">
+        <img class="gmail-icon" src="logo.png" alt="Gmail" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=G'">
+        <div class="gmail-content"><strong>Gmail de Connor</strong><span class="message-text" data-i18n="mail1">Hay ofertas en todos los servicios de luizabeth's.studios.</span></div>
+        <button class="gmail-dismiss" type="button" aria-label="Cerrar">×</button>
+      </article>
+      <article class="gmail-card">
+        <img class="gmail-icon" src="logo.png" alt="Gmail" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=G'">
+        <div class="gmail-content"><strong>Gmail de Ramsay</strong><span class="message-text" data-i18n="mail2">Te recomiendo ver Game of Thrones esta noche.</span></div>
+        <button class="gmail-dismiss" type="button" aria-label="Cerrar">×</button>
+      </article>
+      <article class="gmail-card">
+        <img class="gmail-icon" src="logo.png" alt="Gmail" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=G'">
+        <div class="gmail-content"><strong>Gmail de Lulu</strong><span class="message-text" data-i18n="mail3">Nojoda chico, me bajaron a nivel 5 en Cashea.</span></div>
+        <button class="gmail-dismiss" type="button" aria-label="Cerrar">×</button>
+      </article>
+      <article class="gmail-card">
+        <img class="gmail-icon" src="logo.png" alt="Gmail" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=G'">
+        <div class="gmail-content"><strong>Gmail de Santiago</strong><span class="message-text" data-i18n="mail4">Mañana hay examen, lleva la chuleta.</span></div>
+        <button class="gmail-dismiss" type="button" aria-label="Cerrar">×</button>
+      </article>
+    </section>
+    
+    <div class="bottom-center-ui">
+      <nav class="account-actions" aria-label="Acceso de cuenta">
+        <button class="account-button" type="button" id="openLoginBtn" data-i18n="login">Inicia sesión</button>
+        <button class="account-button" type="button" id="openSignupBtn" data-i18n="signup">Crear cuenta</button>
+      </nav>
+      
+      <section class="social-dock" aria-label="Redes sociales">
+        <a class="social-link" href="https://www.pinterest.com/" target="_blank"><img src="pinterest.png" alt="Pinterest" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=P'"><img class="hover-icon" src="pinterest-hover.png" alt="" onerror="this.style.display='none'"></a>
+        <a class="social-link" href="https://wa.me/" target="_blank"><img src="whatsapp.png" alt="WhatsApp" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=W'"><img class="hover-icon" src="whatsapp-hover.png" alt="" onerror="this.style.display='none'"></a>
+        <a class="social-link" href="https://www.tiktok.com/" target="_blank"><img src="tiktok.png" alt="TikTok" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=T'"><img class="hover-icon" src="tiktok-hover.jpg" alt="" onerror="this.style.display='none'"></a>
+        <a class="social-link" href="https://www.instagram.com/" target="_blank"><img src="instagram.png" alt="Instagram" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=I'"><img class="hover-icon" src="instagram-hover.png" alt="" onerror="this.style.display='none'"></a>
+        <a class="social-link" href="mailto:hello@example.com" target="_blank"><img src="logo.png" alt="Gmail" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=M'"><img class="hover-icon" src="gmail-hover.png" alt="" onerror="this.style.display='none'"></a>
+        <a class="social-link" href="https://x.com/" target="_blank"><img src="x.png" alt="X" onerror="this.src='https://placehold.co/48x48/ffffff/526765?text=X'"><img class="hover-icon" src="x-hover.jpg" alt="" onerror="this.style.display='none'"></a>
+      </section>
+    </div>
+
+    <div class="bolton-modal-overlay" id="boltonModalOverlay">
+      <!-- Modal Iniciar Sesión -->
+      <div class="bolton-modal glass-card" id="loginModal">
+        <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
+        <div class="modal-header">
+          <div class="avatar">B</div>
+          <h3 data-i18n="loginTitle">Inicia Sesión en Bolton</h3>
+        </div>
+        <form class="modal-form" id="realLoginForm">
+          <div class="form-group">
+            <label data-i18n="emailLabel">Correo Electrónico</label>
+            <input type="email" id="authLoginEmail" required placeholder="tucorreo@ejemplo.com">
+          </div>
+          <div class="form-group">
+            <label data-i18n="passLabel">Contraseña</label>
+            <input type="password" id="authLoginPassword" required placeholder="••••••••">
+            <a href="#" id="openResetBtn" class="forgot-password-link" data-i18n="forgotPassword">¿Olvidaste tu contraseña?</a>
+          </div>
+          <button type="submit" class="modal-submit-btn" data-i18n="loginSubmit">Entrar</button>
+        </form>
+        <div class="modal-divider"><span>o</span></div>
+        <button type="button" class="google-auth-btn" id="loginGoogleBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.4l3.7 2.9C6.5 7.3 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.6 14.7c-.2-.7-.4-1.5-.4-2.7s.2-2 .4-2.7L1.9 6.4C.7 8.8 0 10.3 0 12s.7 3.2 1.9 5.6l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 15c1.8 3.8 5.6 8 10.1 8z"/></svg>
+          <span data-i18n="continueGoogle">Continuar con Google</span>
+        </button>
+      </div>
+
+      <!-- Modal Recuperar Contraseña -->
+      <div class="bolton-modal glass-card" id="resetPasswordModal">
+        <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
+        <div class="modal-header">
+          <div class="avatar">B</div>
+          <h3 data-i18n="resetTitle">Recuperar Contraseña</h3>
+        </div>
+        <p style="font-size: 12px; opacity: 0.85; margin: 0 0 10px 0;" data-i18n="resetSubtitle">Ingresa tu correo para recibir un enlace de restauración:</p>
+        <form class="modal-form" id="resetPasswordForm">
+          <div class="form-group">
+            <label data-i18n="emailLabel">Correo Electrónico</label>
+            <input type="email" id="resetEmail" required placeholder="tucorreo@ejemplo.com">
+          </div>
+          <button type="submit" class="modal-submit-btn" data-i18n="resetSubmit">Enviar Enlace</button>
+        </form>
+      </div>
+
+      <!-- Modal Crear Cuenta -->
+      <div class="bolton-modal glass-card" id="signupModal">
+        <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
+        <div class="modal-header">
+          <div class="avatar">B</div>
+          <h3 data-i18n="signupTitle">Crea tu cuenta en Bolton</h3>
+        </div>
+        <form class="modal-form" id="signupForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label data-i18n="nameLabel">Nombre</label>
+              <input type="text" id="signupName" required placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+              <label data-i18n="lastnameLabel">Apellido</label>
+              <input type="text" id="signupLastname" required placeholder="Tu apellido">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label data-i18n="ageLabel">Edad</label>
+              <input type="number" id="signupAge" min="5" max="100" required placeholder="Ej: 16">
+            </div>
+            <div class="form-group">
+              <label data-i18n="birthYearLabel">Año de Nacimiento</label>
+              <input type="number" id="signupBirthYear" min="1920" max="2026" required placeholder="Ej: 2009">
+            </div>
+          </div>
+          <div class="form-error-msg" id="ageYearError" style="display:none;" data-i18n="ageYearErrorMsg">La edad y el año de nacimiento no coinciden. ¡Verifícalos!</div>
+
+          <div class="form-group">
+            <label data-i18n="gradeLabel">Grado o Año Cursando</label>
+            <input type="text" id="signupGrade" required placeholder="Ej: 4to Año / 1er Semestre">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label data-i18n="emailLabel">Correo Electrónico</label>
+              <input type="email" id="signupEmail" required placeholder="tucorreo@ejemplo.com">
+            </div>
+            <div class="form-group">
+              <label data-i18n="passLabel">Contraseña</label>
+              <input type="password" id="signupPassword" required placeholder="••••••••">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label data-i18n="subjectsLabel">Materias Cursando (Máx. 20)</label>
+              <input type="number" id="signupSubjects" min="1" max="20" required placeholder="Ej: 8">
+            </div>
+            <div class="form-group">
+              <label data-i18n="phoneLabel">Teléfono</label>
+              <input type="tel" id="signupPhone" required placeholder="+58 412...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label data-i18n="dreamJobLabel">¿Qué quieres estudiar de grande?</label>
+            <input type="text" id="signupDreamJob" required placeholder="Ej: Ingeniería en Sistemas, Medicina...">
+          </div>
+
+          <div class="form-group">
+            <label data-i18n="avatarLabel">Foto de Perfil (Subir imagen)</label>
+            <input type="file" accept="image/*" class="file-input">
+          </div>
+
+          <button type="submit" class="modal-submit-btn" data-i18n="signupSubmit">Registrarse</button>
+        </form>
+      </div>
+
+      <!-- Modal Verificar Código OTP -->
+      <div class="bolton-modal glass-card" id="otpModal">
+        <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
+        <div class="modal-header">
+          <div class="avatar">B</div>
+          <h3 data-i18n="otpTitle">Verificar Código OTP</h3>
+        </div>
+        <p style="font-size: 12px; opacity: 0.85; margin: 0 0 10px 0;" data-i18n="otpSubtitle">Ingresa el código de 6 dígitos enviado a tu correo electrónico:</p>
+        <form class="modal-form" id="otpForm">
+          <div class="form-group">
+            <label data-i18n="otpLabel">Código de Verificación (OTP)</label>
+            <input type="text" id="otpCodeInput" required placeholder="123456" maxlength="6" pattern="[0-9]{6}">
+          </div>
+          <button type="submit" class="modal-submit-btn" data-i18n="otpSubmit">Verificar Código</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Contenedor de Notificaciones -->
+    <div id="notification-container" class="notification-container"></div>
   </main>
 
   <script>
-    // Corregido: no redirigir automáticamente al cargar la página.
-    // La sesión activa ya no fuerza al usuario a salir de index.html.
-    window.addEventListener('DOMContentLoaded', () => {
-      // Aquí no se hace ninguna redirección automática.
-      // Si quieres redirigir manualmente, hazlo desde un botón o una acción explícita.
-    });
+    (() => {
+      // 1. Configuración de Supabase
+      const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
+      const supabaseAnonKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+      let pendingOtpEmail = '';
+
+      // 2. Control de estado de sesión
+      supabase.auth.onAuthStateChange(async (event, session) => {
+        if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+          const user = session.user;
+          
+          const createdAt = new Date(user.created_at).getTime();
+          const lastSignIn = new Date(user.last_sign_in_at).getTime();
+          const isNewUser = Math.abs(lastSignIn - createdAt) < 5000;
+          const isGoogle = user.app_metadata.provider === 'google';
+
+          if (isGoogle && isNewUser) {
+            await supabase.auth.signOut();
+            showNotification("Este correo de Google no está registrado. Crea una cuenta primero.", "error");
+          } else {
+            window.location.href = "stdio.html";
+          }
+        }
+      });
+
+      // 3. Sistema de Notificaciones Flotantes (Toast)
+      function showNotification(message, type = 'info') {
+        const container = document.getElementById('notification-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `notification-toast ${type}`;
+        
+        let icon = 'ℹ️';
+        if (type === 'error') icon = '❌';
+        if (type === 'success') icon = '✅';
+
+        toast.innerHTML = `
+          <div class="notification-toast-left">
+            <span class="notification-icon">${icon}</span>
+            <span class="notification-message">${message}</span>
+          </div>
+          <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
+        `;
+        
+        container.appendChild(toast);
+        
+        requestAnimationFrame(() => toast.classList.add('show'));
+
+        const timeoutId = setTimeout(() => closeToast(toast), 6000);
+        toast.querySelector('.toast-close-btn').addEventListener('click', () => {
+          clearTimeout(timeoutId);
+          closeToast(toast);
+        });
+      }
+
+      function closeToast(toast) {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }
+
+      // 4. Diccionario Multilenguaje
+      const translations = {
+        es: {
+          knowMore: "conoce mas del proyecto",
+          availableWork: "Disponible para ayudarte",
+          cardTitle: "Organización · Estudio",
+          cardDesc: "Bolton es tu herramienta de confiza para estudiar y mantener en orden tus trabajos y pasar con la nota maxima toda las materias.",
+          weHelp: "Te ayudamos a crecer.",
+          studioName: "conoce más de luizabeth's.studios",
+          mail1: "Hay ofertas en todos los servicios de luizabeth's.studios.",
+          mail2: "Te recomiendo ver Game of Thrones esta noche.",
+          mail3: "Nojoda chico, me bajaron a nivel 5 en Cashea.",
+          mail4: "Mañana hay examen, lleva la chuleta.",
+          login: "Inicia sesión",
+          signup: "Crear cuenta",
+          loginTitle: "Inicia Sesión en Bolton",
+          signupTitle: "Crea tu cuenta en Bolton",
+          emailLabel: "Correo Electrónico",
+          passLabel: "Contraseña",
+          forgotPassword: "¿Olvidaste tu contraseña?",
+          loginSubmit: "Entrar",
+          continueGoogle: "Continuar con Google",
+          nameLabel: "Nombre",
+          lastnameLabel: "Apellido",
+          ageLabel: "Edad",
+          birthYearLabel: "Año de Nacimiento",
+          gradeLabel: "Grado o Año Cursando",
+          subjectsLabel: "Materias Cursando (Máx. 20)",
+          phoneLabel: "Teléfono",
+          dreamJobLabel: "¿Qué quieres estudiar de grande?",
+          avatarLabel: "Foto de Perfil (Subir imagen)",
+          signupSubmit: "Registrarse",
+          ageYearErrorMsg: "La edad y el año de nacimiento no coinciden. ¡Verifícalos!",
+          otpTitle: "Verificar Código OTP",
+          otpSubtitle: "Ingresa el código de 6 dígitos enviado a tu correo electrónico:",
+          otpLabel: "Código de Verificación (OTP)",
+          otpSubmit: "Verificar Código",
+          resetTitle: "Recuperar Contraseña",
+          resetSubtitle: "Ingresa tu correo para recibir un enlace de restauración:",
+          resetSubmit: "Enviar Enlace",
+          quotes: [
+            'Progreso,\nno perfección',
+            'Empieza, aunque sea\npoco a poco',
+            'Haz hoy lo que tu\nfuturo agradecerá',
+            'La constancia vence\nal talento',
+            'Los grandes logros\nson pequeños hábitos'
+          ]
+        },
+        en: {
+          knowMore: "learn more about the project",
+          availableWork: "Available to help you",
+          cardTitle: "Organization · Study",
+          cardDesc: "Bolton is your trusted tool to study, keep your assignments organized, and pass all your subjects with top grades.",
+          weHelp: "We help you grow.",
+          studioName: "learn more about luizabeth's.studios",
+          mail1: "There are special offers across all luizabeth's.studios services.",
+          mail2: "I recommend watching Game of Thrones tonight.",
+          mail3: "Man, they dropped me to level 5 on Cashea.",
+          mail4: "Tomorrow there's an exam, bring your cheat sheet.",
+          login: "Log in",
+          signup: "Sign up",
+          loginTitle: "Log in to Bolton",
+          signupTitle: "Create your Bolton account",
+          emailLabel: "Email Address",
+          passLabel: "Password",
+          forgotPassword: "Forgot your password?",
+          loginSubmit: "Log in",
+          continueGoogle: "Continue with Google",
+          nameLabel: "First Name",
+          lastnameLabel: "Last Name",
+          ageLabel: "Age",
+          birthYearLabel: "Birth Year",
+          gradeLabel: "Grade or Year",
+          subjectsLabel: "Subjects (Max. 20)",
+          phoneLabel: "Phone Number",
+          dreamJobLabel: "What do you want to study?",
+          avatarLabel: "Profile Picture",
+          signupSubmit: "Sign up",
+          ageYearErrorMsg: "Age and birth year do not match. Please check them!",
+          otpTitle: "Verify OTP Code",
+          otpSubtitle: "Enter the 6-digit code sent to your email address:",
+          otpLabel: "Verification Code (OTP)",
+          otpSubmit: "Verify Code",
+          resetTitle: "Reset Password",
+          resetSubtitle: "Enter your email address to receive a restoration link:",
+          resetSubmit: "Send Link",
+          quotes: [
+            'Progress,\nnot perfection',
+            'Start, even if\njust step by step',
+            'Do today what your\nfuture will thank you for',
+            'Consistency beats\ntalent',
+            'Great achievements\nare small habits'
+          ]
+        },
+        ru: {
+          knowMore: "узнать больше о проекте",
+          availableWork: "Готов помочь вам",
+          cardTitle: "Организация · Учеба",
+          cardDesc: "Bolton — ваш надежный инструмент для учебы, порядка в заданиях и получения высших оценок по всем предметам.",
+          weHelp: "Мы помогаем вам расти.",
+          studioName: "узнать больше о luizabeth's.studios",
+          mail1: "Действуют скидки на все услуги luizabeth's.studios.",
+          mail2: "Рекомендую посмотреть Игру Престолов сегодня вечером.",
+          mail3: "Блин, меня понизили до 5 уровня в Cashea.",
+          mail4: "Завтра экзамен, бери шпаргалку.",
+          login: "Войти",
+          signup: "Регистрация",
+          loginTitle: "Вход в Bolton",
+          signupTitle: "Создать аккаунт Bolton",
+          emailLabel: "Электронная почта",
+          passLabel: "Пароль",
+          forgotPassword: "Забыли пароль?",
+          loginSubmit: "Войти",
+          continueGoogle: "Продолжить с Google",
+          nameLabel: "Имя",
+          lastnameLabel: "Фамилия",
+          ageLabel: "Возраст",
+          birthYearLabel: "Год рождения",
+          gradeLabel: "Класс или Курс",
+          subjectsLabel: "Предметы (Макс. 20)",
+          phoneLabel: "Телефон",
+          dreamJobLabel: "Кем хочешь стать?",
+          avatarLabel: "Фото профиля",
+          signupSubmit: "Зарегистрироваться",
+          ageYearErrorMsg: "Возраст и год рождения не совпадают!",
+          otpTitle: "Проверить OTP-код",
+          otpSubtitle: "Введите 6-значный код, отправленный на вашу почту:",
+          otpLabel: "Код подтверждения (OTP)",
+          otpSubmit: "Проверить код",
+          resetTitle: "Восстановление пароля",
+          resetSubtitle: "Введите ваш email для получения ссылки:",
+          resetSubmit: "Отправить ссылку",
+          quotes: [
+            'Прогресс,\nне совершенство',
+            'Начни, даже если\nпонемногу',
+            'Сделай сегодня то,\nза что будущее поблагодарит',
+            'Постоянство побеждает\nталант',
+            'Великие достижения —\nэто маленькие привычки'
+          ]
+        },
+        it: {
+          knowMore: "scopri di più sul progetto",
+          availableWork: "Disponibile ad aiutarti",
+          cardTitle: "Organizzazione · Studio",
+          cardDesc: "Bolton è il tuo strumento di fiducia per studiare, tenere in ordine i tuoi compiti e passare con il massimo tutti gli esami.",
+          weHelp: "Ti aiutiamo a crescere.",
+          studioName: "scopri di più su luizabeth's.studios",
+          mail1: "Ci sono offerte su tutti i servizi di luizabeth's.studios.",
+          mail2: "Ti consiglio di guardare Game of Thrones stasera.",
+          mail3: "Accidenti, mi hanno abbassato al livello 5 su Cashea.",
+          mail4: "Domani c'è l'esame, porta il bigliettino.",
+          login: "Accedi",
+          signup: "Registrati",
+          loginTitle: "Accedi a Bolton",
+          signupTitle: "Crea il tuo account Bolton",
+          emailLabel: "Indirizzo Email",
+          passLabel: "Password",
+          forgotPassword: "Hai dimenticato la password?",
+          loginSubmit: "Accedi",
+          continueGoogle: "Continua con Google",
+          nameLabel: "Nome",
+          lastnameLabel: "Cognome",
+          ageLabel: "Età",
+          birthYearLabel: "Anno di Nascita",
+          gradeLabel: "Anno o Classe",
+          subjectsLabel: "Materie (Max. 20)",
+          phoneLabel: "Telefono",
+          dreamJobLabel: "Cosa vuoi studiare da grande?",
+          avatarLabel: "Foto Profilo",
+          signupSubmit: "Registrati",
+          ageYearErrorMsg: "L'età e l'anno di nascita non coincidono!",
+          otpTitle: "Verifica Codice OTP",
+          otpSubtitle: "Inserisci il codice a 6 cifre inviato alla tua email:",
+          otpLabel: "Codice di Verifica (OTP)",
+          otpSubmit: "Verifica Codice",
+          resetTitle: "Recupera Password",
+          resetSubtitle: "Inserisci la tua email per ricevere un link di ripristino:",
+          resetSubmit: "Invia Link",
+          quotes: [
+            'Progresso,\nnon perfezione',
+            'Inizia, anche se\npoco alla volta',
+            'Fai oggi ciò che il tuo\nfuturo ringrazierà',
+            'La costanza batte\nil talento',
+            'I grandi traguardi\nsono piccoli abitudini'
+          ]
+        },
+        de: {
+          knowMore: "mehr über das projekt erfahren",
+          availableWork: "Bereit zu helfen",
+          cardTitle: "Organisation · Lernen",
+          cardDesc: "Bolton ist dein vertrauenswürdiges Tool zum Lernen, um deine Aufgaben zu ordnen und alle Fächer mit Bestnoten zu bestehen.",
+          weHelp: "Wir helfen dir zu wachsen.",
+          studioName: "mehr über luizabeth's.studios",
+          mail1: "Es gibt Angebote für alle Dienstleistungen von luizabeth's.studios.",
+          mail2: "Ich empfehle dir, heute Abend Game of Thrones zu schauen.",
+          mail3: "Mensch, sie haben mich bei Cashea auf Level 5 herabgestuft.",
+          mail4: "Morgen ist Prüfung, nimm den Spickzettel mit.",
+          login: "Anmelden",
+          signup: "Registrieren",
+          loginTitle: "Bei Bolton anmelden",
+          signupTitle: "Bolton Konto erstellen",
+          emailLabel: "E-Mail-Adresse",
+          passLabel: "Passwort",
+          forgotPassword: "Passwort vergessen?",
+          loginSubmit: "Anmelden",
+          continueGoogle: "Mit Google fortfahren",
+          nameLabel: "Vorname",
+          lastnameLabel: "Nachname",
+          ageLabel: "Alter",
+          birthYearLabel: "Geburtsjahr",
+          gradeLabel: "Klasse oder Stufe",
+          subjectsLabel: "Fächer (Max. 20)",
+          phoneLabel: "Telefonnummer",
+          dreamJobLabel: "Was möchtest du werden?",
+          avatarLabel: "Profilbild",
+          signupSubmit: "Registrieren",
+          ageYearErrorMsg: "Alter und Geburtsjahr stimmen nicht überein!",
+          otpTitle: "OTP-Code bestätigen",
+          otpSubtitle: "Gib den 6-stelligen Code ein, der an deine E-Mail gesendet wurde:",
+          otpLabel: "Bestätigungscode (OTP)",
+          otpSubmit: "Code bestätigen",
+          resetTitle: "Passwort zurücksetzen",
+          resetSubtitle: "Gib deine E-Mail ein, um einen Link zu erhalten:",
+          resetSubmit: "Link senden",
+          quotes: [
+            'Fortschritt,\nkeine Perfektion',
+            'Fange an, auch wenn\nes nur Schritt für Schritt ist',
+            'Tue heute, wofür deine\nZukunft dir danken wird',
+            'Beständigkeit besiegt\nTalent',
+            'Große Erfolge sind\nkleine Gewohnheiten'
+          ]
+        }
+      };
+
+      let currentLangCode = 'es';
+      const quoteEl = document.getElementById('quote');
+      let index = 0;
+      let quoteInterval;
+
+      // Rotación de Frases
+      function startQuoteRotation() {
+        if (quoteInterval) clearInterval(quoteInterval);
+        quoteInterval = window.setInterval(() => {
+          const quotes = translations[currentLangCode].quotes;
+          index = (index + 1) % quotes.length;
+          if (quoteEl) {
+            quoteEl.innerHTML = quotes[index].replace(/\n/g, '<br>');
+            quoteEl.style.animation = 'none';
+            void quoteEl.offsetWidth;
+            quoteEl.style.animation = 'quoteIn .9s ease both';
+          }
+        }, 4500);
+      }
+
+      // Cambio de Idioma
+      function setLanguage(lang) {
+        currentLangCode = lang;
+        const data = translations[lang];
+        if (!data) return;
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (data[key]) {
+            el.textContent = data[key];
+          }
+        });
+
+        const langLabels = {
+          es: "ES 🇪🇸", en: "EN 🇬🇧", ru: "RU 🇷🇺", it: "IT 🇮🇹", de: "DE 🇩🇪"
+        };
+        const labelEl = document.getElementById('currentLangLabel');
+        if (labelEl) labelEl.textContent = langLabels[lang];
+
+        document.querySelectorAll('.lang-option').forEach(opt => {
+          if (opt.getAttribute('data-lang') === lang) {
+            opt.classList.add('active');
+          } else {
+            opt.classList.remove('active');
+          }
+        });
+
+        if (quoteEl) {
+          quoteEl.innerHTML = data.quotes[0].replace(/\n/g, '<br>');
+        }
+        startQuoteRotation();
+      }
+
+      const langDropdown = document.getElementById('langDropdown');
+      const langBtn = document.getElementById('langBtn');
+
+      if (langBtn) {
+        langBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          langDropdown.classList.toggle('open');
+        });
+      }
+
+      document.addEventListener('click', () => {
+        if (langDropdown) langDropdown.classList.remove('open');
+      });
+
+      document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          const lang = e.currentTarget.getAttribute('data-lang');
+          setLanguage(lang);
+          if (langDropdown) langDropdown.classList.remove('open');
+        });
+      });
+
+      // Animación de la baraja de mensajes Gmail
+      const gmailDeck = document.querySelector('.gmail-deck');
+      if (gmailDeck) {
+        const gmailCards = [...gmailDeck.querySelectorAll('.gmail-card')];
+        const paintGmailDeck = () => gmailCards.forEach((card, position) => {
+          const yOffset = position * -12; 
+          const scale = 1 - (position * 0.04); 
+          card.style.transform = `translateY(${yOffset}px) scale(${scale})`;
+          card.style.opacity = 1 - (position * 0.15); 
+          card.style.zIndex = String(gmailCards.length - position);
+          card.style.pointerEvents = position === 0 ? 'auto' : 'none'; 
+        });
+        
+        gmailCards.forEach((card) => {
+          const dismissBtn = card.querySelector('.gmail-dismiss');
+          if (dismissBtn) {
+            dismissBtn.addEventListener('click', () => {
+              gmailCards.push(gmailCards.shift()); 
+              paintGmailDeck();
+            });
+          }
+        });
+        paintGmailDeck();
+      }
+
+      // Control de Modales
+      const overlay = document.getElementById('boltonModalOverlay');
+      const loginModal = document.getElementById('loginModal');
+      const signupModal = document.getElementById('signupModal');
+      const otpModal = document.getElementById('otpModal');
+      const resetPasswordModal = document.getElementById('resetPasswordModal');
+
+      function closeModal() {
+        if (overlay) overlay.classList.remove('active');
+        if (loginModal) loginModal.classList.remove('active');
+        if (signupModal) signupModal.classList.remove('active');
+        if (otpModal) otpModal.classList.remove('active');
+        if (resetPasswordModal) resetPasswordModal.classList.remove('active');
+      }
+
+      const openLoginBtn = document.getElementById('openLoginBtn');
+      if (openLoginBtn) {
+        openLoginBtn.addEventListener('click', () => {
+          closeModal();
+          overlay.classList.add('active');
+          loginModal.classList.add('active');
+        });
+      }
+
+      const openSignupBtn = document.getElementById('openSignupBtn');
+      if (openSignupBtn) {
+        openSignupBtn.addEventListener('click', () => {
+          closeModal();
+          overlay.classList.add('active');
+          signupModal.classList.add('active');
+        });
+      }
+
+      const openResetBtn = document.getElementById('openResetBtn');
+      if (openResetBtn) {
+        openResetBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeModal();
+          overlay.classList.add('active');
+          resetPasswordModal.classList.add('active');
+        });
+      }
+
+      if (overlay) {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) closeModal();
+        });
+      }
+
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', closeModal);
+      });
+
+      startQuoteRotation();
+
+      // ==========================================
+      // RECUPERACIÓN DE CONTRASEÑA
+      // ==========================================
+      async function recuperarContrasena(email) {
+        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/reset-password.html'
+        });
+
+        if (error) {
+          showNotification("Error al enviar el correo: " + error.message, "error");
+        } else {
+          showNotification("Se ha enviado un enlace a tu correo para restablecer la contraseña", "success");
+          closeModal();
+        }
+      }
+
+      const resetPasswordForm = document.getElementById('resetPasswordForm');
+      if (resetPasswordForm) {
+        resetPasswordForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('resetEmail').value.trim();
+          recuperarContrasena(email);
+        });
+      }
+
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: REGISTRO
+      // ==========================================
+      const signupForm = document.getElementById('signupForm');
+      if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const age = parseInt(document.getElementById('signupAge').value, 10);
+          const birthYear = parseInt(document.getElementById('signupBirthYear').value, 10);
+          const currentYear = new Date().getFullYear();
+          
+          if (Math.abs((currentYear - birthYear) - age) > 1) {
+            const errEl = document.getElementById('ageYearError');
+            if (errEl) errEl.style.display = 'block';
+            return;
+          }
+          const errEl = document.getElementById('ageYearError');
+          if (errEl) errEl.style.display = 'none';
+
+          const email = document.getElementById('signupEmail').value.trim();
+          const password = document.getElementById('signupPassword').value;
+
+          const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password
+          });
+
+          if (error) {
+            showNotification("Error al registrar: " + error.message, "error");
+          } else {
+            showNotification("Cuenta creada con éxito", "success");
+            
+            if (data.user) {
+              await supabase.from('profiles').insert([{
+                id: data.user.id,
+                nombre: document.getElementById('signupName').value,
+                apellido: document.getElementById('signupLastname').value,
+                edad: age,
+                anio_nacimiento: birthYear,
+                grado: document.getElementById('signupGrade').value,
+                email: email,
+                materias: parseInt(document.getElementById('signupSubjects').value, 10),
+                telefono: document.getElementById('signupPhone').value,
+                sueno_estudio: document.getElementById('signupDreamJob').value
+              }]);
+            }
+            
+            window.location.href = "stdio.html";
+          }
+        });
+      }
+
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: VERIFICACIÓN CÓDIGO OTP
+      // ==========================================
+      const otpForm = document.getElementById('otpForm');
+      if (otpForm) {
+        otpForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const codigoIngresado = document.getElementById('otpCodeInput').value.trim();
+          const email = pendingOtpEmail || document.getElementById('signupEmail').value.trim();
+
+          const { data: session, error: verifyError } = await supabase.auth.verifyOtp({
+            email: email,
+            token: codigoIngresado,
+            type: 'signup'
+          });
+
+          if (verifyError) {
+            showNotification("Error al verificar código: " + verifyError.message, "error");
+          } else {
+            showNotification("¡Código verificado con éxito! Redirigiendo...", "success");
+            window.location.href = 'stdio.html';
+          }
+        });
+      }
+
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: INICIO DE SESIÓN
+      // ==========================================
+      const loginForm = document.getElementById('realLoginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = document.getElementById('authLoginEmail').value.trim();
+          const password = document.getElementById('authLoginPassword').value;
+
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+          if (error) {
+            showNotification("Correo o contraseña incorrectos", "error");
+          } else {
+            window.location.href = "stdio.html";
+          }
+        });
+      }
+
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: LOGIN CON GOOGLE
+      // ==========================================
+      const googleBtn = document.getElementById('loginGoogleBtn');
+      if (googleBtn) {
+        googleBtn.addEventListener('click', async () => {
+          const redirectUrl = window.location.origin.includes('http')
+            ? window.location.origin + '/stdio.html'
+            : 'stdio.html';
+
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: redirectUrl,
+            },
+          });
+
+          if (error) {
+            showNotification("Error con Google: " + error.message, "error");
+          }
+        });
+      }
+
+    })();
   </script>
 </body>
 </html>
