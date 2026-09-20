@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOLTON · Lugar de Trabajo</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #ffffff;
+    }
+    
+    /* Scrollbar minimalista para zonas internas de vistas */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    /* Glassmorphism Styles */
+    .glass-panel {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 15px 35px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .glass-card-hover {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-hover:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.12));
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: inset 0 1px rgba(255, 255, 255, 0.35), 0 18px 36px rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-input {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+      outline: none;
+      background: rgba(0, 0, 0, 0.35);
+      border-color: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Code Block Styling */
+    .glass-code-block {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    /* Custom Toggle Switch */
+    .toggle-checkbox:checked {
+      right: 0;
+      border-color: #10b981;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #10b981;
+    }
+
+    /* Fondo de pantalla dinámico */
+    #page-background {
+      transition: background-image 0.5s ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="h-full text-slate-100 overflow-x-hidden antialiased selection:bg-white/20 selection:text-white relative bg-slate-900">
+  
+  <!-- CAPA DE FONDO DINÁMICO -->
+  <div id="page-background" class="fixed inset-0 bg-cover bg-center bg-no-repeat -z-20 transition-all duration-700" style="background-image: url('211174977272346.jpg');"></div>
+  
+  <!-- CAPA DE OSCURECIMIENTO / FILTRO SOFT SOBRE EL FONDO -->
+  <div class="fixed inset-0 bg-black/35 backdrop-blur-[2px] -z-10 pointer-events-none"></div>
+
+  <div class="flex h-screen w-screen overflow-hidden relative">
+
+    <!-- OVERLAY PARA NAVEGACION MOVIL -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity" onclick="toggleMobileSidebar()"></div>
+
+    <!-- ========================================== -->
+    <!-- LEFT SIDEBAR (MINIMALISTA COMPACTO NO-SCROLL) -->
+    <!-- ========================================== -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-80 flex flex-col justify-between p-2.5 md:p-3 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out select-none">
+      
+      <!-- Container Glass Panel for Sidebar -->
+      <div class="glass-panel rounded-3xl p-3 flex flex-col h-full w-full overflow-hidden relative border border-white/30 justify-between">
+        
+        <!-- TOP LEFT BRAND HEADER WITH CUSTOM LOGO IMAGE -->
+        <div class="flex items-center justify-between px-2 pt-0.5 pb-2 border-b border-white/15 flex-shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-white text-emerald-900 font-black text-base flex items-center justify-center shadow-lg shadow-black/20 tracking-wider overflow-hidden">
+              <img src="Logo B Casa Bolton(1) 1.png" alt="Logo BOLTON" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='B'">
+            </div>
+            <div>
+              <h1 class="text-base font-black tracking-widest text-white uppercase leading-none">BOLTON</h1>
+              <span class="text-[9px] text-emerald-200/80 tracking-wider font-semibold uppercase">Lugar de Trabajo</span>
+            </div>
+          </div>
+          <!-- Botón Cerrar en Móvil -->
+          <button class="md:hidden text-white/70 hover:text-white p-1" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- LISTA DE NAVEGACION IZQUIERDA -->
+        <div class="flex-1 flex flex-col justify-evenly py-1.5 space-y-0.5 overflow-hidden">
+          
+          <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-regular fa-chart-bar text-xs"></i>
+            </div>
+            <span class="truncate">Dashboard</span>
+          </button>
+
+          <button onclick="switchView('notas')" id="nav-notas" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-regular fa-note-sticky text-xs"></i>
+            </div>
+            <span class="truncate">Notas</span>
+          </button>
+
+          <button onclick="switchView('calendario')" id="nav-calendario" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-regular fa-calendar-days text-xs"></i>
+            </div>
+            <span class="truncate">Calendario</span>
+          </button>
+
+          <button onclick="switchView('tiempo')" id="nav-tiempo" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-regular fa-clock text-xs"></i>
+            </div>
+            <span class="truncate">Tiempo</span>
+          </button>
+
+          <button onclick="switchView('cuadernos')" id="nav-cuadernos" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-regular fa-bookmark text-xs"></i>
+            </div>
+            <span class="truncate">Cuadernos</span>
+          </button>
+
+          <button onclick="switchView('tareas')" id="nav-tareas" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-list-check text-xs"></i>
+            </div>
+            <span class="truncate">Tareas y recordatorios</span>
+          </button>
+
+          <button onclick="switchView('horario')" id="nav-horario" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-graduation-cap text-xs"></i>
+            </div>
+            <span class="truncate">Horario de clases y materias</span>
+          </button>
+
+          <button onclick="switchView('ai')" id="nav-ai" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-purple-500/80 to-pink-500/80 flex items-center justify-center text-white flex-shrink-0 shadow-xs">
+              <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+            </div>
+            <span class="truncate bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-bold">AI Assistant</span>
+            <span class="ml-auto text-[8px] bg-purple-500/30 text-purple-200 px-1.5 py-0.5 rounded font-black uppercase border border-purple-400/30">IA</span>
+          </button>
+
+          <button onclick="switchView('investigacion')" id="nav-investigacion" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </div>
+            <span class="truncate">Investigación</span>
+          </button>
+
+          <button onclick="switchView('cursos')" id="nav-cursos" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-code text-xs"></i>
+            </div>
+            <span class="truncate">Cursos</span>
+          </button>
+
+          <button onclick="switchView('entretenimiento')" id="nav-entretenimiento" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-gamepad text-xs"></i>
+            </div>
+            <span class="truncate">Entretenimiento</span>
+          </button>
+
+        </div>
+
+        <!-- BOTTOM SECTION OF SIDEBAR -->
+        <div class="pt-1.5 border-t border-white/15 space-y-0.5 flex-shrink-0">
+          
+          <button onclick="switchView('ajustes')" id="nav-ajustes" class="nav-btn group w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors text-left">
+            <i class="fa-solid fa-sliders text-white/60 group-hover:text-white text-xs w-4 text-center flex-shrink-0"></i>
+            <span class="truncate">Ajustes</span>
+          </button>
+
+          <!-- ENLACE DIRECTO A INFO.HTML -->
+          <a href="info.html" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors text-left">
+            <i class="fa-regular fa-circle-question text-white/60 group-hover:text-white text-xs w-4 text-center flex-shrink-0"></i>
+            <span class="truncate">Más sobre BOLTON</span>
+          </a>
+
+          <!-- TARJETA DE PERFIL (COMPACTA) -->
+          <div onclick="switchView('perfil')" id="nav-perfil" class="nav-btn mt-1 p-1.5 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all cursor-pointer flex items-center justify-between group shadow-md">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="relative flex-shrink-0">
+                <img id="sidebarAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-white/50 shadow-sm">
+                <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-400 border border-emerald-950 rounded-full"></span>
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span id="sidebarUserName" class="text-xs font-bold text-white truncate leading-tight">Alexia Vance</span>
+                <span id="sidebarUserHandle" class="text-[9px] text-white/70 truncate leading-tight">@alexia_estudio</span>
+              </div>
+            </div>
+            <div class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-white/30 flex items-center justify-center text-white/80 text-[9px] transition-colors flex-shrink-0 ml-1">
+              <i class="fa-solid fa-angle-right"></i>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT AREA                          -->
+    <!-- ========================================== -->
+    <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden relative">
+      
+      <!-- TOP NAVIGATION BAR -->
+      <header class="p-3.5 pb-2 flex items-center justify-between gap-4 z-30 flex-shrink-0">
+        
+        <!-- Toggle en dispositivos móviles -->
+        <button onclick="toggleMobileSidebar()" class="md:hidden w-9 h-9 rounded-xl glass-panel flex items-center justify-center text-white hover:bg-white/20">
+          <i class="fa-solid fa-bars text-sm"></i>
+        </button>
+
+        <!-- Título de vista activa -->
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full glass-panel text-xs font-semibold text-white/90">
+          <i id="viewHeaderIcon" class="fa-solid fa-chart-pie text-emerald-300"></i>
+          <span id="viewHeaderTitle">Dashboard</span>
+        </div>
+
+        <!-- ESQUINA SUPERIOR DERECHA: Búsqueda, Notificaciones, Perfil -->
+        <div class="flex items-center gap-2.5 ml-auto">
+          
+          <!-- BARRA DE BÚSQUEDA -->
+          <div class="relative w-40 sm:w-60 md:w-72">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/50 text-xs"></i>
+            <input type="text" id="globalSearchInput" placeholder="Buscar notas, tareas..." class="glass-input w-full pl-8 pr-7 py-1.5 rounded-full text-xs placeholder:text-white/40 focus:ring-1 focus:ring-white/40">
+            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-white/30 font-mono hidden sm:inline">⌘K</span>
+          </div>
+
+          <!-- CUADRITO DE NOTIFICACIONES -->
+          <div class="relative">
+            <button onclick="toggleNotificationsMenu()" id="notifBtn" class="w-9 h-9 rounded-xl glass-panel flex items-center justify-center text-white hover:bg-white/20 relative transition-all active:scale-95" title="Notificaciones">
+              <i class="fa-regular fa-bell text-xs"></i>
+              <span id="notifBadge" class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8px] font-black flex items-center justify-center border border-emerald-950 shadow-md">3</span>
+            </button>
+
+            <!-- Menú Desplegable -->
+            <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 glass-panel rounded-2xl p-3 shadow-2xl z-50 border border-white/30 text-xs">
+              <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/15">
+                <span class="font-bold text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-inbox text-emerald-300"></i> Notificaciones
+                </span>
+                <button onclick="clearNotifications()" class="text-[10px] text-emerald-200 hover:underline">Limpiar</button>
+              </div>
+              <div class="space-y-2 max-h-56 overflow-y-auto pr-1" id="notifList">
+                <div class="p-2 rounded-xl bg-white/10 border border-white/10 flex gap-2 items-start">
+                  <div class="w-5 h-5 rounded bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <i class="fa-solid fa-calendar-check text-[9px]"></i>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-white text-[11px]">Examen de Matemáticas</p>
+                    <p class="text-[10px] text-white/70">Mañana a las 08:00 AM · Aula 4B</p>
+                  </div>
+                </div>
+
+                <div class="p-2 rounded-xl bg-white/10 border border-white/10 flex gap-2 items-start">
+                  <div class="w-5 h-5 rounded bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <i class="fa-solid fa-clock text-[9px]"></i>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-white text-[11px]">Recordatorio de Proyecto</p>
+                    <p class="text-[10px] text-white/70">Avance de Investigación de Física</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CIRCULO DE PERFIL -->
+          <div class="relative">
+            <button onclick="switchView('perfil')" class="w-9 h-9 rounded-full glass-panel p-0.5 flex items-center justify-center hover:scale-105 transition-transform border border-white/40 shadow-lg" title="Perfil">
+              <img id="topAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Perfil" class="w-full h-full rounded-full object-cover">
+            </button>
+          </div>
+
+        </div>
+
+      </header>
+
+      <!-- VISTAS DINAMICAS DEL WORKSPACE -->
+      <main class="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-5" id="mainContent">
+
+        <!-- ================= DASHBOARD VIEW ================= -->
+        <section id="view-dashboard" class="content-view space-y-5">
+          
+          <!-- Banner Principal -->
+          <div class="glass-panel rounded-3xl p-5 sm:p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-5">
+            <div class="space-y-1.5 max-w-xl z-10 text-center md:text-left">
+              <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-emerald-200 text-[10px] font-bold tracking-wider uppercase border border-white/20">
+                Constancia y Metas
+              </span>
+              <h2 id="heroQuoteText" class="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-white leading-tight">
+                Progreso,<br>no perfección
+              </h2>
+              <p class="text-xs text-white/80 font-light">
+                Bienvenido a tu espacio en <strong class="text-white font-semibold">BOLTON Lugar de Trabajo</strong>. Organiza tus asignaturas y avanza con constancia.
+              </p>
+            </div>
+
+            <!-- Stats Widgets -->
+            <div class="grid grid-cols-2 gap-2.5 w-full md:w-auto flex-shrink-0 z-10">
+              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                <i class="fa-solid fa-fire text-amber-400 text-lg"></i>
+                <div class="text-xl font-extrabold text-white">12</div>
+                <div class="text-[9px] text-white/70 uppercase tracking-wider">Días Racha</div>
+              </div>
+              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                <i class="fa-solid fa-graduation-cap text-sky-400 text-lg"></i>
+                <div class="text-xl font-extrabold text-white">8</div>
+                <div class="text-[9px] text-white/70 uppercase tracking-wider">Materias</div>
+              </div>
+              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                <i class="fa-solid fa-clock text-rose-400 text-lg"></i>
+                <div class="text-xl font-extrabold text-white">24.5h</div>
+                <div class="text-[9px] text-white/70 uppercase tracking-wider">Estudiadas</div>
+              </div>
+              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                <i class="fa-solid fa-check-double text-emerald-400 text-lg"></i>
+                <div class="text-xl font-extrabold text-white">18/20</div>
+                <div class="text-[9px] text-white/70 uppercase tracking-wider">Tareas</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accesos Rápidos -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- Clase de Hoy -->
+            <div class="glass-panel rounded-3xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-chalkboard-user text-indigo-300"></i> Clase de Hoy
+                </h3>
+                <button onclick="switchView('horario')" class="text-[10px] text-emerald-300 hover:underline">Ver todo</button>
+              </div>
+              
+              <div class="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
+                <div class="flex justify-between items-start">
+                  <span class="px-2 py-0.5 rounded-md bg-indigo-500/30 text-indigo-200 text-[9px] font-bold">10:00 AM - 11:30 AM</span>
+                  <span class="text-[10px] text-white/60">Aula 202</span>
+                </div>
+                <h4 class="font-extrabold text-white text-sm">Cálculo Diferencial</h4>
+                <p class="text-[11px] text-white/70">Prof. Lic. Ramírez · Derivadas Implícitas</p>
+              </div>
+            </div>
+
+            <!-- Tareas Pendientes -->
+            <div class="glass-panel rounded-3xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-list-check text-teal-300"></i> Tareas Pendientes
+                </h3>
+                <button onclick="switchView('tareas')" class="text-[10px] text-emerald-300 hover:underline">Gestionar</button>
+              </div>
+
+              <div class="space-y-2">
+                <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/15 cursor-pointer hover:bg-white/15">
+                  <input type="checkbox" checked class="w-3.5 h-3.5 accent-emerald-400 rounded">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-white truncate line-through opacity-70">Resumen Capítulo 4 Historia</p>
+                  </div>
+                </label>
+
+                <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/15 cursor-pointer hover:bg-white/15">
+                  <input type="checkbox" class="w-3.5 h-3.5 accent-emerald-400 rounded">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-white truncate">Ejercicios de Álgebra Lineal</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Consulta Rápida AI -->
+            <div class="glass-panel rounded-3xl p-4 space-y-3 flex flex-col justify-between">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-300"></i> BOLTON AI
+                  </h3>
+                  <span class="px-1.5 py-0.5 rounded-full bg-purple-500/30 text-purple-200 text-[8px] font-bold">Gemini 3</span>
+                </div>
+                <div class="relative">
+                  <input type="text" id="dashAiQuery" placeholder="Ej: Explícame el Teorema de Pitágoras..." class="glass-input w-full px-3 py-2 rounded-xl text-xs pr-8">
+                  <button onclick="sendQuickAiQuery()" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg bg-purple-500 text-white flex items-center justify-center text-xs hover:bg-purple-400">
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="text-[10px] text-purple-200/80 italic">Acceso instantáneo para síntesis y explicaciones académicas.</p>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= NOTAS VIEW ================= -->
+        <section id="view-notas" class="content-view hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-black text-white uppercase tracking-wider">Notas y Apuntes</h2>
+              <p class="text-xs text-white/70">Crea y categoriza tus notas rápidas de clase.</p>
+            </div>
+            <button onclick="createNewNote()" class="px-3.5 py-2 rounded-xl bg-white text-emerald-950 font-bold text-xs hover:bg-white/90 shadow-md">
+              + Nueva Nota
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notesGrid">
+            <div class="glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group">
+              <span class="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 text-[9px] font-extrabold uppercase">Biología</span>
+              <h3 class="font-bold text-sm text-white">Estructura celular y mitocondrias</h3>
+              <p class="text-xs text-white/70">La mitocondria es el organelo encargado de la respiración celular y generación de ATP mediante fosforilación oxidativa...</p>
+            </div>
+
+            <div class="glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group">
+              <span class="px-2 py-0.5 rounded bg-amber-500/30 text-amber-200 text-[9px] font-extrabold uppercase">Historia</span>
+              <h3 class="font-bold text-sm text-white">Revolución Industrial parte II</h3>
+              <p class="text-xs text-white/70">Puntos clave: Máquina de vapor de Watt, expansión del ferrocarril y cambios socioeconómicos...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= CALENDARIO VIEW ================= -->
+        <section id="view-calendario" class="content-view hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-black text-white uppercase tracking-wider">Calendario de Estudio</h2>
+            <button onclick="showToast('Evento agregado al calendario')" class="px-3 py-1.5 rounded-xl bg-white text-emerald-950 font-bold text-xs hover:bg-white/90">
+              + Evento
+            </button>
+          </div>
+
+          <div class="glass-panel rounded-3xl p-4 overflow-x-auto">
+            <div class="min-w-[500px] grid grid-cols-7 gap-1.5 text-center text-xs">
+              <div class="font-bold text-white/50 py-1">DOM</div>
+              <div class="font-bold text-white/50 py-1">LUN</div>
+              <div class="font-bold text-white/50 py-1">MAR</div>
+              <div class="font-bold text-white/50 py-1">MIÉ</div>
+              <div class="font-bold text-white/50 py-1">JUE</div>
+              <div class="font-bold text-white/50 py-1">VIE</div>
+              <div class="font-bold text-white/50 py-1">SÁB</div>
+
+              <div class="p-2 min-h-[60px] rounded-xl bg-white/5 text-white/30 text-left">30</div>
+              <div class="p-2 min-h-[60px] rounded-xl bg-white/5 text-white/30 text-left">31</div>
+              <div class="p-2 min-h-[60px] rounded-xl bg-white/10 text-white/80 text-left">1</div>
+              <div class="p-2 min-h-[60px] rounded-xl bg-white/10 text-white/80 text-left">2</div>
+              <div class="p-2 min-h-[60px] rounded-xl bg-white/10 text-white/80 text-left">3</div>
+              <div class="p-2 min-h-[60px] rounded-xl bg-white/10 text-white/80 text-left">4</div>
+              <div class="p-2 min-h-[60px] rounded-xl bg-white/10 text-white/80 text-left">5</div>
+              <div class="p-2 min-h-[60px] rounded-xl bg-emerald-500/20 border border-emerald-400 text-white font-bold text-left">
+                <span>19 (Hoy)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TIEMPO VIEW ================= -->
+        <section id="view-tiempo" class="content-view hidden space-y-4">
+          <div class="max-w-md mx-auto glass-panel p-6 rounded-3xl text-center space-y-5">
+            <h2 class="text-2xl font-black text-white uppercase tracking-wider">Temporizador Pomodoro</h2>
+            <div class="py-4">
+              <span id="timerDisplay" class="text-5xl sm:text-6xl font-black text-white font-mono tracking-tight">25:00</span>
+            </div>
+            <div class="flex justify-center gap-3">
+              <button onclick="toggleTimer()" id="startTimerBtn" class="px-6 py-2.5 rounded-xl bg-white text-emerald-950 font-black text-xs uppercase tracking-wider hover:scale-105 transition-transform shadow-md">
+                Iniciar
+              </button>
+              <button onclick="resetTimer()" class="w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-white/80 hover:text-white">
+                <i class="fa-solid fa-rotate-right text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= CUADERNOS VIEW ================= -->
+        <section id="view-cuadernos" class="content-view hidden space-y-4">
+          <h2 class="text-xl font-black text-white uppercase tracking-wider">Mis Cuadernos Digitales</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="glass-panel p-4 rounded-2xl space-y-3 glass-card-hover border-t-2 border-t-emerald-400">
+              <h3 class="font-extrabold text-base text-white">Matemáticas I</h3>
+              <p class="text-xs text-white/70">24 páginas · Actualizado hoy</p>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl space-y-3 glass-card-hover border-t-2 border-t-amber-400">
+              <h3 class="font-extrabold text-base text-white">Química Orgánica</h3>
+              <p class="text-xs text-white/70">18 páginas · Actualizado ayer</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAREAS VIEW ================= -->
+        <section id="view-tareas" class="content-view hidden space-y-4">
+          <h2 class="text-xl font-black text-white uppercase tracking-wider">Tareas y Recordatorios</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-panel p-4 rounded-2xl space-y-2">
+              <span class="px-2 py-0.5 rounded bg-rose-500/30 text-rose-200 text-[9px] font-black uppercase">Alta Prioridad</span>
+              <h4 class="font-bold text-xs text-white">Guía de Ejercicios de Física</h4>
+              <p class="text-[11px] text-white/60">Capítulo 3 completo</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= HORARIO VIEW ================= -->
+        <section id="view-horario" class="content-view hidden space-y-4">
+          <h2 class="text-xl font-black text-white uppercase tracking-wider">Horario de Clases</h2>
+          <div class="glass-panel rounded-2xl p-4 overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-white/15 text-white/60">
+                  <th class="p-2">Hora</th>
+                  <th class="p-2">Lunes</th>
+                  <th class="p-2">Martes</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/10">
+                <tr>
+                  <td class="p-2 font-mono text-white/50">08:00 - 09:30</td>
+                  <td class="p-2"><div class="p-2 rounded-lg bg-indigo-500/30 font-bold">Cálculo Diferencial</div></td>
+                  <td class="p-2"><div class="p-2 rounded-lg bg-amber-500/30 font-bold">Química Orgánica</div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================= AI VIEW ================= -->
+        <section id="view-ai" class="content-view hidden space-y-3 h-[calc(100vh-120px)] flex flex-col">
+          <div class="flex items-center justify-between pb-2 border-b border-white/15">
+            <h2 class="text-lg font-black text-white">BOLTON AI Assistant</h2>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">● En Línea</span>
+          </div>
+
+          <div id="aiChatBox" class="flex-1 overflow-y-auto space-y-2.5 p-3 glass-panel rounded-2xl">
+            <div class="p-3 rounded-xl bg-white/10 text-xs text-white">
+              ¡Hola! Soy tu asistente de estudio BOLTON AI. ¿En qué te ayudo hoy?
+            </div>
+          </div>
+
+          <form onsubmit="handleAiSubmit(event)" class="flex gap-2">
+            <input type="text" id="aiInputPrompt" placeholder="Pregunta sobre tus materias o resúmenes..." class="glass-input flex-1 px-3.5 py-2.5 rounded-xl text-xs">
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs">Enviar</button>
+          </form>
+        </section>
+
+        <!-- ================= INVESTIGACION VIEW ================= -->
+        <section id="view-investigacion" class="content-view hidden space-y-4">
+          <h2 class="text-xl font-black text-white uppercase tracking-wider">Centro de Investigación</h2>
+          <div class="glass-panel p-4 rounded-2xl space-y-3">
+            <div class="flex gap-2">
+              <input type="text" id="researchQueryInput" placeholder="Ingresa tema a investigar..." class="glass-input flex-1 px-3.5 py-2 rounded-xl text-xs">
+              <button onclick="executeResearchSearch()" class="px-4 py-2 rounded-xl bg-white text-emerald-950 font-bold text-xs">Buscar</button>
+            </div>
+            <div id="researchResults" class="p-3 rounded-xl bg-white/5 text-xs text-white/70 min-h-[100px]">
+              Escribe un tema arriba para generar un resumen académico.
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= CURSOS VIEW ================= -->
+        <section id="view-cursos" class="content-view hidden space-y-4">
+          <h2 class="text-xl font-black text-white uppercase tracking-wider">Cursos Recomendados</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="glass-panel p-4 rounded-2xl space-y-2">
+              <h3 class="font-bold text-sm text-white">JavaScript desde Cero</h3>
+              <p class="text-xs text-white/70">Aprende bases de programación web.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= ENTRETENIMIENTO VIEW ================= -->
+        <section id="view-entretenimiento" class="content-view hidden space-y-4">
+          <h2 class="text-xl font-black text-white uppercase tracking-wider">Entretenimiento</h2>
+          <div class="glass-panel p-4 rounded-2xl space-y-3">
+            <h3 class="font-bold text-xs text-white">Ambiente Lofi & Lluvia</h3>
+            <button onclick="toggleAmbientSound()" id="soundToggleBtn" class="px-3.5 py-1.5 rounded-xl bg-pink-500 text-white font-bold text-xs">
+              <i class="fa-solid fa-play mr-1"></i> Reproducir
+            </button>
+          </div>
+        </section>
+
+        <!-- ================= AJUSTES VIEW ================= -->
+        <section id="view-ajustes" class="content-view hidden space-y-4">
+          <h2 class="text-xl font-black text-white uppercase tracking-wider">Ajustes</h2>
+          
+          <div class="max-w-md">
+            
+            <!-- TARJETA DE OPCIÓN: CAMBIAR FONDO DE PANTALLA -->
+            <div onclick="openBgModal()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-white/30 group relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-image text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm text-white group-hover:text-emerald-200 transition-colors">Fondo</h3>
+                    <p class="text-xs text-white/70">Personaliza el fondo de pantalla de tu web</p>
+                  </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-white/10 group-hover:bg-white/30 flex items-center justify-center text-white text-xs transition-all">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </div>
+              </div>
+
+              <!-- Vista previa miniatura del fondo actual -->
+              <div class="mt-2 pt-3 border-t border-white/15 flex items-center justify-between">
+                <span class="text-[11px] text-white/80 font-medium">Fondo actual</span>
+                <div class="w-12 h-7 rounded-lg overflow-hidden border border-white/40 shadow-inner bg-slate-800">
+                  <div id="currentBgPreview" class="w-full h-full bg-cover bg-center"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- ================= PERFIL VIEW (RENOVADO) ================= -->
+        <!-- ========================================================= -->
+        <section id="view-perfil" class="content-view hidden space-y-5 max-w-5xl mx-auto">
+          
+          <!-- SUB-NAVIGATION TABS HEADER FOR PERFIL -->
+          <div class="glass-panel p-2 rounded-2xl flex items-center justify-between gap-2 overflow-x-auto border border-white/25 shadow-xl">
+            <div class="flex items-center gap-2 min-w-max">
+              <!-- PESTAÑA 1: PERFIL PÚBLICO -->
+              <button onclick="switchProfileTab('publico')" id="tab-btn-publico" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-white bg-white/20 border border-white/30 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-user text-emerald-300"></i> Perfil público
+              </button>
+
+              <!-- PESTAÑA 2: CUENTA Y CÓDIGO -->
+              <button onclick="switchProfileTab('cuenta')" id="tab-btn-cuenta" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-key text-amber-300"></i> Cuenta
+              </button>
+
+              <!-- PESTAÑA 3: PREFERENCIAS -->
+              <button onclick="switchProfileTab('preferencias')" id="tab-btn-preferencias" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-indigo-300"></i> Preferencias
+              </button>
+            </div>
+
+            <div class="hidden sm:flex items-center gap-2 text-[10px] text-white/60 px-3 font-semibold">
+              <i class="fa-solid fa-shield-halved text-emerald-400"></i> Cuenta Estudiantil Verificada
+            </div>
+          </div>
+
+          <!-- ================= TAB 1: PERFIL PÚBLICO ================= -->
+          <div id="profile-tab-publico" class="profile-tab-content space-y-5">
+            
+            <!-- TARJETA CABECERA DE PERFIL -->
+            <div class="glass-panel rounded-3xl overflow-hidden border border-white/30 shadow-2xl relative">
+              <!-- Banner de Portada -->
+              <div class="h-32 sm:h-44 w-full bg-gradient-to-r from-emerald-600/60 via-teal-700/60 to-indigo-800/60 relative overflow-hidden">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute right-4 top-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-[10px] text-emerald-300 font-bold border border-emerald-400/30">
+                  <i class="fa-solid fa-circle text-[7px] mr-1 text-emerald-400 animate-pulse"></i> En Línea
+                </div>
+              </div>
+
+              <!-- Información de Usuario sobrepuesta -->
+              <div class="p-5 sm:p-6 pt-0 relative flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16">
+                <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
+                  <!-- Avatar Principal -->
+                  <div class="relative group">
+                    <img id="profileMainAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar Principal" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-slate-900/80 shadow-2xl">
+                    <button onclick="showToast('Carga de imagen habilitada en Ajustes')" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110">
+                      <i class="fa-solid fa-camera"></i>
+                    </button>
+                  </div>
+
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2 justify-center sm:justify-start">
+                      <h2 id="profileNameDisplay" class="text-xl sm:text-2xl font-black text-white">Alexia Vance</h2>
+                      <i class="fa-solid fa-circle-check text-emerald-400 text-sm" title="Verificado"></i>
+                    </div>
+                    <p id="profileHandleDisplay" class="text-xs text-emerald-200/90 font-medium">@alexia_estudio</p>
+                    <p id="profileRoleDisplay" class="text-[11px] text-white/70">Estudiante de Ingeniería de Software & Inteligencia Artificial</p>
+                  </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="flex items-center gap-2">
+                  <button onclick="switchProfileTab('cuenta')" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs transition-all border border-white/20 flex items-center gap-1.5">
+                    <i class="fa-solid fa-share-nodes"></i> Compartir
+                  </button>
+                  <button onclick="savePublicProfile()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs transition-all shadow-lg flex items-center gap-1.5">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- GRID DETALLES Y FORMULARIO PÚBLICO -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              
+              <!-- COLUMNA IZQUIERDA: TARJETAS DE ESTADÍSTICAS Y LOGROS -->
+              <div class="space-y-5">
+                <!-- Logros del Estudiante -->
+                <div class="glass-panel p-4 rounded-3xl space-y-3">
+                  <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-award text-amber-300"></i> Insignias de Estudio
+                  </h3>
+                  
+                  <div class="space-y-2">
+                    <div class="p-2.5 rounded-2xl bg-white/10 border border-white/10 flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-fire"></i>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-bold text-white">Racha de 12 Días</h4>
+                        <p class="text-[10px] text-white/60">Estudio ininterrumpido activo</p>
+                      </div>
+                    </div>
+
+                    <div class="p-2.5 rounded-2xl bg-white/10 border border-white/10 flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-bold text-white">Top 5% Promedio</h4>
+                        <p class="text-[10px] text-white/60">Rendimiento destacado en materias</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Enlaces Sociales Públicos -->
+                <div class="glass-panel p-4 rounded-3xl space-y-3">
+                  <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-link text-emerald-300"></i> Redes y Contacto
+                  </h3>
+                  <div class="space-y-2 text-xs">
+                    <div class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10">
+                      <i class="fa-brands fa-github text-white/70 w-4"></i>
+                      <span class="text-white/80 font-mono">github.com/alexia_vance</span>
+                    </div>
+                    <div class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10">
+                      <i class="fa-brands fa-linkedin text-sky-400 w-4"></i>
+                      <span class="text-white/80 font-mono">linkedin.com/in/alexia-vance</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- COLUMNA DERECHA: EDICIÓN DE PERFIL PÚBLICO -->
+              <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-white/15 pb-3">
+                  <i class="fa-solid fa-user-pen text-emerald-300"></i> Información Pública del Estudiante
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-white/80">Nombre Completo</label>
+                    <input type="text" id="inputProfileName" value="Alexia Vance" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-white/80">Nombre de Usuario</label>
+                    <input type="text" id="inputProfileHandle" value="@alexia_estudio" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
+                  <div class="space-y-1 sm:col-span-2">
+                    <label class="text-[11px] font-semibold text-white/80">Título / Carrera Estudiantil</label>
+                    <input type="text" id="inputProfileRole" value="Estudiante de Ingeniería de Software & IA" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
+                  <div class="space-y-1 sm:col-span-2">
+                    <label class="text-[11px] font-semibold text-white/80">Biografía Académica</label>
+                    <textarea id="inputProfileBio" rows="3" class="glass-input w-full p-3 rounded-xl text-xs">Apasionada por las matemáticas, la física computacional y el desarrollo de software. Enfocada en mantener una racha constante de aprendizaje en BOLTON Studio.</textarea>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- ================= TAB 2: CUENTA Y CÓDIGO ================= -->
+          <div id="profile-tab-cuenta" class="profile-tab-content hidden space-y-5">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              
+              <!-- SECCIÓN DEL BLOQUE DE CÓDIGO INTEGRADOR Y DE ACCESO -->
+              <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
+                <div class="flex items-center justify-between border-b border-white/15 pb-3">
+                  <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <i class="fa-solid fa-code text-amber-300"></i> Código de Credenciales de Estudiante
+                    </h3>
+                    <p class="text-[11px] text-white/70">Utiliza este snippet en formato JSON para sincronizar tu cuenta con el ecosistema BOLTON</p>
+                  </div>
+
+                  <button onclick="copyStudentCode()" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md">
+                    <i class="fa-regular fa-copy"></i> Copiar Código
+                  </button>
+                </div>
+
+                <!-- BLOQUE DE CÓDIGO ESTILIZADO -->
+                <div class="relative group">
+                  <pre class="glass-code-block p-4 rounded-2xl text-xs text-emerald-300 overflow-x-auto leading-relaxed border border-white/20 shadow-inner" id="studentCodeBlock"><code>{
+  <span class="text-purple-300">"estudiante"</span>: {
+    <span class="text-purple-300">"id"</span>: <span class="text-amber-200">"STU-2026-BOLTON-8829"</span>,
+    <span class="text-purple-300">"usuario"</span>: <span class="text-amber-200">"@alexia_estudio"</span>,
+    <span class="text-purple-300">"codigo_verificacion"</span>: <span class="text-amber-200">"BLT-994A-69DA-EB80"</span>,
+    <span class="text-purple-300">"nivel_academico"</span>: <span class="text-amber-200">"Universidad / Avanzado"</span>,
+    <span class="text-purple-300">"racha_dias"</span>: <span class="text-sky-300">12</span>,
+    <span class="text-purple-300">"materias_activas"</span>: [<span class="text-amber-200">"Cálculo"</span>, <span class="text-amber-200">"Química"</span>, <span class="text-amber-200">"Física"</span>],
+    <span class="text-purple-300">"api_endpoint"</span>: <span class="text-amber-200">"https://api.bolton.study/v1/user/alexia_estudio"</span>
+  }
+}</code></pre>
+                  <span class="absolute top-2 right-2 text-[9px] font-mono text-white/40 uppercase">JSON / UTF-8</span>
+                </div>
+
+                <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-400/20 text-xs text-amber-200 flex items-start gap-2.5">
+                  <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5 flex-shrink-0"></i>
+                  <span>No compartas tu token o código de acceso privado con desconocidos. Tu código otorga acceso a sincronización de tus cuadernos académicos.</span>
+                </div>
+              </div>
+
+              <!-- SECCIÓN COMPARTIR CUENTA Y SEGURIDAD -->
+              <div class="space-y-5">
+                
+                <!-- Tarjeta de Compartir Perfil -->
+                <div class="glass-panel p-5 rounded-3xl space-y-4">
+                  <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-share-nodes text-sky-300"></i> Compartir Mi Perfil
+                  </h3>
+
+                  <div class="space-y-2">
+                    <label class="text-[10px] text-white/70 font-medium">Enlace público directo</label>
+                    <div class="flex gap-2">
+                      <input type="text" readonly id="profileShareLink" value="https://bolton.study/u/alexia_estudio" class="glass-input flex-1 px-3 py-1.5 rounded-xl text-xs font-mono text-white/80">
+                      <button onclick="copyShareLink()" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs">
+                        <i class="fa-solid fa-copy"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Botones de Redes Sociales -->
+                  <div class="grid grid-cols-2 gap-2 pt-1">
+                    <button onclick="shareSocial('whatsapp')" class="p-2.5 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 border border-emerald-500/30 text-xs font-bold flex items-center justify-center gap-2">
+                      <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                    </button>
+                    <button onclick="shareSocial('telegram')" class="p-2.5 rounded-xl bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 border border-sky-500/30 text-xs font-bold flex items-center justify-center gap-2">
+                      <i class="fa-brands fa-telegram text-sm"></i> Telegram
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Seguridad de la Cuenta -->
+                <div class="glass-panel p-5 rounded-3xl space-y-3">
+                  <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-rose-300"></i> Seguridad de la Cuenta
+                  </h3>
+
+                  <div class="space-y-2 text-xs">
+                    <button onclick="showToast('Solicitud de cambio de contraseña enviada')" class="w-full text-left p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white flex justify-between items-center">
+                      <span>Cambiar Contraseña</span>
+                      <i class="fa-solid fa-chevron-right text-[10px] text-white/50"></i>
+                    </button>
+
+                    <button onclick="showToast('Autenticación en 2 Pasos activada')" class="w-full text-left p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white flex justify-between items-center">
+                      <span>Autenticación de 2 Factores (2FA)</span>
+                      <span class="text-[9px] bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full font-bold">Activo</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- ================= TAB 3: PREFERENCIAS ================= -->
+          <div id="profile-tab-preferencias" class="profile-tab-content hidden space-y-5">
+            
+            <div class="max-w-3xl mx-auto space-y-5">
+              
+              <!-- SECCIÓN DESTACADA: COMPARTIR MI PROGRESO ESTUDIANTIL -->
+              <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4 border-2 border-emerald-400/40 shadow-2xl relative overflow-hidden">
+                <div class="flex items-start justify-between gap-4">
+                  <div class="flex gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-300 text-slate-950 flex items-center justify-center font-black text-lg shadow-lg flex-shrink-0">
+                      <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                      <h3 class="text-base font-extrabold text-white">Compartir mi progreso estudiantil</h3>
+                      <p class="text-xs text-white/70">Permite que tutores, profesores y compañeros de estudio vean tus estadísticas de tiempo de estudio, tareas completadas y rachas activas.</p>
+                    </div>
+                  </div>
+
+                  <!-- TOGGLE SWITCH PRINCIPAL -->
+                  <label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
+                    <input type="checkbox" id="toggleShareProgress" checked onchange="handleProgressToggleChange(this)" class="sr-only peer">
+                    <div class="w-12 h-6 bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                  </label>
+                </div>
+
+                <!-- OPCIONES DE DETALLE DE PROGRESO -->
+                <div id="progressDetailOptions" class="pt-3 border-t border-white/15 space-y-3 transition-all">
+                  <span class="text-[11px] font-bold text-emerald-300 uppercase tracking-wider block">Datos visibles en el perfil público:</span>
+                  
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
+                      <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded">
+                      <span class="text-white/90">Racha de días consecutivos</span>
+                    </label>
+
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
+                      <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded">
+                      <span class="text-white/90">Horas acumuladas Pomodoro</span>
+                    </label>
+
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
+                      <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded">
+                      <span class="text-white/90">Materias y cuadernos activos</span>
+                    </label>
+
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
+                      <input type="checkbox" class="w-4 h-4 accent-emerald-400 rounded">
+                      <span class="text-white/90">Calificaciones de tareas</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OTRAS PREFERENCIAS DE PRIVACIDAD Y NOTIFICACIONES -->
+              <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-white/15 pb-3">
+                  <i class="fa-solid fa-bell text-indigo-300"></i> Notificaciones y Privacidad Generales
+                </h3>
+
+                <div class="space-y-3 text-xs">
+                  
+                  <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
+                    <div>
+                      <h4 class="font-bold text-white">Recordatorios de Exámenes</h4>
+                      <p class="text-[10px] text-white/60">Recibe notificaciones 24 horas antes de cada entrega</p>
+                    </div>
+                    <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded cursor-pointer">
+                  </div>
+
+                  <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
+                    <div>
+                      <h4 class="font-bold text-white">Mostrar Estado "En Línea"</h4>
+                      <p class="text-[10px] text-white/60">Tus compañeros podrán ver cuando estás estudiando</p>
+                    </div>
+                    <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded cursor-pointer">
+                  </div>
+
+                  <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
+                    <div>
+                      <h4 class="font-bold text-white">Sonidos de la Interfaz</h4>
+                      <p class="text-[10px] text-white/60">Efectos sonoros al completar temporizadores de estudio</p>
+                    </div>
+                    <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded cursor-pointer">
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: NUEVO FONDO (SELECCIONAR Y SUBIR FONDO DE PANTALLA)-->
+  <!-- ========================================================= -->
+  <div id="bgModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md hidden transition-opacity duration-300">
+    <div class="glass-panel w-full max-w-4xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-white/20 flex items-center justify-between flex-shrink-0 bg-black/20">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-emerald-300 border border-white/20">
+            <i class="fa-solid fa-palette text-sm"></i>
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-white">Nuevo fondo</h2>
+            <p class="text-[11px] text-white/70">Selecciona o sube la imagen de fondo para tu espacio</p>
+          </div>
+        </div>
+
+        <button onclick="closeBgModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white/80 hover:text-white transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Grid de fondos) -->
+      <div class="p-4 sm:p-6 overflow-y-auto flex-1">
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5" id="bgGrid">
+          
+          <!-- PRIMER BOTÓN: CIRCULITO + PARA SUBIR IMAGEN PROPIA -->
+          <label class="cursor-pointer aspect-[4/3] sm:aspect-square rounded-2xl border-2 border-dashed border-white/40 hover:border-emerald-300 bg-white/5 hover:bg-white/15 flex flex-col items-center justify-center gap-2 transition-all group p-2 text-center shadow-lg">
+            <div class="w-11 h-11 rounded-full bg-emerald-500/20 group-hover:bg-emerald-500 text-emerald-300 group-hover:text-slate-900 border border-emerald-400/40 flex items-center justify-center transition-all group-hover:scale-110 shadow-md">
+              <i class="fa-solid fa-plus text-lg font-black"></i>
+            </div>
+            <span class="text-[11px] font-bold text-white group-hover:text-emerald-200 transition-colors">Subir fondo</span>
+            <span class="text-[9px] text-white/50">Haz clic para buscar foto</span>
+            <input type="file" id="customBgFileInput" accept="image/*" class="hidden" onchange="handleCustomBgUpload(event)">
+          </label>
+
+          <!-- LAS 30 IMÁGENES SE GENERAN DINÁMICAMENTE AQUÍ -->
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3.5 border-t border-white/15 flex items-center justify-between text-xs text-white/60 bg-black/20 flex-shrink-0">
+        <span>30 Galería de Fondos</span>
+        <button onclick="closeBgModal()" class="px-4 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-medium transition-colors">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // LISTA BASE DE IMÁGENES PROPORCIONADAS POR EL USUARIO
+    const baseImages = [
+      '1044272232359838310.jpg',
+      '1092685928366698116.jpg',
+      'Moon Knight.jpg',
+      '423056958750369372.jpg',
+      'Doctor Doom.jpg',
+      '211174977272346.jpg'
+    ];
+
+    // GENERAR ARRAY DE 30 IMÁGENES REPETIDAS EN BUCLE
+    const totalBgList = [];
+    for (let i = 0; i < 30; i++) {
+      totalBgList.push(baseImages[i % baseImages.length]);
+    }
+
+    // Fondo predeterminado
+    const DEFAULT_BG = '211174977272346.jpg';
+
+    // Obtener fondo guardado previamente o usar el por defecto
+    let currentBg = localStorage.getItem('bolton_bg') || DEFAULT_BG;
+
+    // Aplicar el fondo al cargar
+    function applyBackground(bgUrl, save = true) {
+      currentBg = bgUrl;
+      const bgElement = document.getElementById('page-background');
+      const bgPreview = document.getElementById('currentBgPreview');
+
+      if (bgElement) {
+        bgElement.style.backgroundImage = `url('${bgUrl}')`;
+      }
+      if (bgPreview) {
+        bgPreview.style.backgroundImage = `url('${bgUrl}')`;
+      }
+
+      if (save) {
+        localStorage.setItem('bolton_bg', bgUrl);
+      }
+
+      updateActiveBgHighlight();
+    }
+
+    // Modal para seleccionar nuevo fondo
+    function openBgModal() {
+      const modal = document.getElementById('bgModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        renderBgGrid();
+      }
+    }
+
+    function closeBgModal() {
+      const modal = document.getElementById('bgModal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    // Renderizar tarjetas de la galería
+    function renderBgGrid() {
+      const grid = document.getElementById('bgGrid');
+      if (!grid) return;
+
+      const uploadCard = grid.firstElementChild;
+      grid.innerHTML = '';
+      if (uploadCard) grid.appendChild(uploadCard);
+
+      const customSaved = localStorage.getItem('bolton_custom_bg');
+      if (customSaved) {
+        const customCard = createBgCard(customSaved, 'Mi Fondo Subido', true);
+        grid.appendChild(customCard);
+      }
+
+      totalBgList.forEach((imgUrl, index) => {
+        const card = createBgCard(imgUrl, `Fondo ${index + 1}`, false);
+        grid.appendChild(card);
+      });
+
+      updateActiveBgHighlight();
+    }
+
+    function createBgCard(imgUrl, labelText, isCustom) {
+      const card = document.createElement('div');
+      card.className = 'bg-card cursor-pointer aspect-[4/3] sm:aspect-square rounded-2xl overflow-hidden relative border border-white/25 hover:border-emerald-400 group transition-all shadow-md hover:scale-105';
+      card.dataset.bg = imgUrl;
+
+      card.onclick = () => {
+        applyBackground(imgUrl);
+        showToast('Fondo de pantalla actualizado');
+        closeBgModal();
+      };
+
+      card.innerHTML = `
+        <img src="${imgUrl}" alt="${labelText}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" onerror="this.onerror=null; this.src='https://placehold.co/400x400/2a3a38/ffffff?text=Fondo+${labelText}'">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
+          <span class="text-[10px] font-extrabold text-white truncate">${labelText}</span>
+          ${isCustom ? '<span class="text-[8px] text-emerald-300 uppercase font-black tracking-wider">Personalizado</span>' : ''}
+        </div>
+        <div class="active-indicator absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-400 text-slate-950 flex items-center justify-center text-[10px] font-bold shadow-md hidden">
+          <i class="fa-solid fa-check"></i>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function updateActiveBgHighlight() {
+      const cards = document.querySelectorAll('.bg-card');
+      cards.forEach(card => {
+        const indicator = card.querySelector('.active-indicator');
+        if (card.dataset.bg === currentBg) {
+          card.classList.add('ring-2', 'ring-emerald-400', 'border-emerald-400');
+          if (indicator) indicator.classList.remove('hidden');
+        } else {
+          card.classList.remove('ring-2', 'ring-emerald-400', 'border-emerald-400');
+          if (indicator) indicator.classList.add('hidden');
+        }
+      });
+    }
+
+    function handleCustomBgUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast('Por favor selecciona un archivo de imagen válido');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const customDataUrl = e.target.result;
+        try {
+          localStorage.setItem('bolton_custom_bg', customDataUrl);
+          applyBackground(customDataUrl);
+          showToast('¡Fondo guardado y aplicado correctamente!');
+          renderBgGrid();
+          closeBgModal();
+        } catch (err) {
+          showToast('La imagen es demasiado grande para guardar localmente');
+          applyBackground(customDataUrl, false);
+          closeBgModal();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ==========================================
+    // CAMBIO DE SECCIONES INTERNAS DE PERFIL
+    // ==========================================
+    function switchProfileTab(tabName) {
+      const tabs = document.querySelectorAll('.profile-tab-content');
+      tabs.forEach(t => t.classList.add('hidden'));
+
+      const selectedTab = document.getElementById('profile-tab-' + tabName);
+      if (selectedTab) {
+        selectedTab.classList.remove('hidden');
+      }
+
+      const buttons = document.querySelectorAll('.profile-tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-white/20', 'border-white/30', 'text-white', 'font-bold');
+        btn.classList.add('text-white/70', 'font-medium');
+      });
+
+      const activeBtn = document.getElementById('tab-btn-' + tabName);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white/20', 'border-white/30', 'text-white', 'font-bold');
+        activeBtn.classList.remove('text-white/70', 'font-medium');
+      }
+    }
+
+    function savePublicProfile() {
+      const name = document.getElementById('inputProfileName').value.trim();
+      const handle = document.getElementById('inputProfileHandle').value.trim();
+      const role = document.getElementById('inputProfileRole').value.trim();
+
+      if (name) {
+        document.getElementById('profileNameDisplay').textContent = name;
+        document.getElementById('sidebarUserName').textContent = name;
+      }
+      if (handle) {
+        document.getElementById('profileHandleDisplay').textContent = handle;
+        document.getElementById('sidebarUserHandle').textContent = handle;
+      }
+      if (role) {
+        document.getElementById('profileRoleDisplay').textContent = role;
+      }
+
+      showToast('Perfil público actualizado correctamente');
+    }
+
+    function copyStudentCode() {
+      const codeText = document.getElementById('studentCodeBlock').innerText;
+      copyToClipboard(codeText);
+      showToast('¡Código JSON copiado al portapapeles!');
+    }
+
+    function copyShareLink() {
+      const shareInput = document.getElementById('profileShareLink');
+      copyToClipboard(shareInput.value);
+      showToast('Enlace de perfil copiado');
+    }
+
+    function shareSocial(network) {
+      const url = encodeURIComponent(document.getElementById('profileShareLink').value);
+      const msg = encodeURIComponent("¡Echa un vistazo a mi progreso de estudio en BOLTON Studio!");
+      
+      if (network === 'whatsapp') {
+        window.open(`https://api.whatsapp.com/send?text=${msg}%20${url}`, '_blank');
+      } else if (network === 'telegram') {
+        window.open(`https://t.me/share/url?url=${url}&text=${msg}`, '_blank');
+      }
+    }
+
+    function handleProgressToggleChange(checkbox) {
+      const detailOptions = document.getElementById('progressDetailOptions');
+      if (checkbox.checked) {
+        detailOptions.classList.remove('opacity-40', 'pointer-events-none');
+        showToast('Progreso estudiantil público activado');
+      } else {
+        detailOptions.classList.add('opacity-40', 'pointer-events-none');
+        showToast('Progreso estudiantil configurado como privado');
+      }
+    }
+
+    function copyToClipboard(text) {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+    }
+
+    // Navegación entre vistas principales
+    function switchView(viewName) {
+      const views = document.querySelectorAll('.content-view');
+      views.forEach(v => v.classList.add('hidden'));
+
+      const targetView = document.getElementById('view-' + viewName);
+      if (targetView) {
+        targetView.classList.remove('hidden');
+      }
+
+      const navButtons = document.querySelectorAll('.nav-btn');
+      navButtons.forEach(btn => {
+        btn.classList.remove('bg-white/20', 'border-white/30', 'text-white', 'shadow-xs');
+        btn.classList.add('text-white/80');
+      });
+
+      const activeBtn = document.getElementById('nav-' + viewName);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white/20', 'border-white/30', 'text-white', 'shadow-xs');
+        activeBtn.classList.remove('text-white/80');
+      }
+
+      const headerTitle = document.getElementById('viewHeaderTitle');
+      if (headerTitle) {
+        headerTitle.textContent = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+      }
+
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobileOverlay');
+      if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+      }
+      if (overlay && !overlay.classList.contains('hidden')) {
+        overlay.classList.add('hidden');
+      }
+    }
+
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobileOverlay');
+      if (sidebar) sidebar.classList.toggle('-translate-x-full');
+      if (overlay) overlay.classList.toggle('hidden');
+    }
+
+    function toggleNotificationsMenu() {
+      document.getElementById('notifDropdown').classList.toggle('hidden');
+    }
+
+    function clearNotifications() {
+      const list = document.getElementById('notifList');
+      if (list) list.innerHTML = '<p class="text-[11px] text-white/50 text-center py-3">No tienes notificaciones pendientes</p>';
+      const badge = document.getElementById('notifBadge');
+      if (badge) badge.classList.add('hidden');
+    }
+
+    // Pomodoro Timer Logic
+    let timerInterval = null;
+    let timerSeconds = 25 * 60;
+    let isTimerRunning = false;
+
+    function toggleTimer() {
+      const btn = document.getElementById('startTimerBtn');
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btn.textContent = 'Iniciar';
+      } else {
+        isTimerRunning = true;
+        btn.textContent = 'Pausar';
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            btn.textContent = 'Iniciar';
+            showToast('¡Tiempo cumplido! Toma un descanso.');
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerSeconds = 25 * 60;
+      document.getElementById('startTimerBtn').textContent = 'Iniciar';
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+      const secs = (timerSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+    }
+
+    // AI Assistant Handlers
+    function handleAiSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('aiInputPrompt');
+      const query = input.value.trim();
+      if (!query) return;
+
+      const chatBox = document.getElementById('aiChatBox');
+      
+      const userMsg = document.createElement('div');
+      userMsg.className = 'p-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-xs text-white ml-auto max-w-[80%]';
+      userMsg.textContent = query;
+      chatBox.appendChild(userMsg);
+
+      input.value = '';
+
+      setTimeout(() => {
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'p-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white max-w-[85%]';
+        aiMsg.innerHTML = `<strong class="text-purple-300 block mb-1">BOLTON AI:</strong> Entendido. Procesando tu consulta sobre <em>"${query}"</em>. Para ver una explicación detallada, puedes consultar tus notas de la asignatura.`;
+        chatBox.appendChild(aiMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 600);
+    }
+
+    function sendQuickAiQuery() {
+      const q = document.getElementById('dashAiQuery').value.trim();
+      if (!q) return;
+      switchView('ai');
+      const input = document.getElementById('aiInputPrompt');
+      if (input) {
+        input.value = q;
+      }
+    }
+
+    function executeResearchSearch() {
+      const query = document.getElementById('researchQueryInput').value.trim();
+      const results = document.getElementById('researchResults');
+      if (!query) return;
+
+      results.innerHTML = `<div class="space-y-2"><p class="font-bold text-white">Resultados de investigación para "${query}":</p><p class="text-white/80">1. Síntesis conceptual de fuentes bibliográficas académicas verificadas...</p></div>`;
+    }
+
+    function createNewNote() {
+      const notesGrid = document.getElementById('notesGrid');
+      if (!notesGrid) return;
+
+      const newCard = document.createElement('div');
+      newCard.className = 'glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group';
+      newCard.innerHTML = `
+        <span class="px-2 py-0.5 rounded bg-sky-500/30 text-sky-200 text-[9px] font-extrabold uppercase">Nueva Nota</span>
+        <h3 class="font-bold text-sm text-white">Apunte rápido sin título</h3>
+        <p class="text-xs text-white/70">Haz clic para editar el contenido de esta nota...</p>
+      `;
+      notesGrid.prepend(newCard);
+      showToast('Nueva nota creada');
+    }
+
+    // Audio Lofi Simulador
+    let isPlayingSound = false;
+    function toggleAmbientSound() {
+      const btn = document.getElementById('soundToggleBtn');
+      isPlayingSound = !isPlayingSound;
+      if (isPlayingSound) {
+        btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i> Pausar';
+        showToast('Reproduciendo audio de ambiente Lofi');
+      } else {
+        btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+      }
+    }
+
+    // Helper Toast
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'glass-panel px-4 py-2.5 rounded-2xl text-xs text-white shadow-2xl border border-white/30 animate-in fade-in slide-in-from-bottom-2 duration-200';
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    // Inicialización al cargar la ventana
+    document.addEventListener('DOMContentLoaded', () => {
+      applyBackground(currentBg, false);
+      switchView('dashboard');
+    });
+  </script>
+</body>
+</html>
