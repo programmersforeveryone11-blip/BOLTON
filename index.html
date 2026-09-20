@@ -1053,7 +1053,7 @@
           const codigoIngresado = document.getElementById('otpCodeInput').value.trim();
           const email = pendingOtpEmail || document.getElementById('signupEmail').value.trim();
 
-          const { data: session, error: verifyError } = await supabase.auth.verifyOtp({
+          const { data, error: verifyError } = await supabase.auth.verifyOtp({
             email: email,
             token: codigoIngresado,
             type: 'signup'
