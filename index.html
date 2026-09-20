@@ -338,7 +338,6 @@
       </a>
     </div>
 
-    <!-- Contenedor superior derecho (Idioma + Galería) -->
     <div class="top-right-container" aria-label="Controles superiores">
       <div class="lang-dropdown-wrapper" id="langDropdown">
         <button class="lang-switcher-btn" type="button" id="langBtn" aria-label="Cambiar idioma">
@@ -362,7 +361,6 @@
       </div>
     </div>
     
-    <!-- Tarjeta superior izquierda -->
     <aside class="top-left-card glass-card">
       <div class="card-header">
         <div class="avatar">B</div>
@@ -428,7 +426,6 @@
     </div>
 
     <div class="bolton-modal-overlay" id="boltonModalOverlay">
-      <!-- Modal Iniciar Sesión -->
       <div class="bolton-modal glass-card" id="loginModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -454,7 +451,6 @@
         </button>
       </div>
 
-      <!-- Modal Recuperar Contraseña -->
       <div class="bolton-modal glass-card" id="resetPasswordModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -471,7 +467,6 @@
         </form>
       </div>
 
-      <!-- Modal Crear Cuenta -->
       <div class="bolton-modal glass-card" id="signupModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -543,7 +538,6 @@
         </form>
       </div>
 
-      <!-- Modal Verificar Código OTP -->
       <div class="bolton-modal glass-card" id="otpModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -561,18 +555,50 @@
       </div>
     </div>
 
-    <!-- Contenedor de Notificaciones -->
     <div id="notification-container" class="notification-container"></div>
   </main>
 
   <script>
     (() => {
-      // 1. Configuración de Supabase
       const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
       const supabaseAnonKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
       const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
       let pendingOtpEmail = '';
+
+      function showNotification(message, type = 'info') {
+        const container = document.getElementById('notification-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `notification-toast ${type}`;
+
+        let icon = 'ℹ️';
+        if (type === 'error') icon = '❌';
+        if (type === 'success') icon = '✅';
+
+        toast.innerHTML = `
+          <div class="notification-toast-left">
+            <span class="notification-icon">${icon}</span>
+            <span class="notification-message">${message}</span>
+          </div>
+          <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
+        `;
+
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('show'));
+
+        const timeoutId = setTimeout(() => closeToast(toast), 6000);
+        toast.querySelector('.toast-close-btn').addEventListener('click', () => {
+          clearTimeout(timeoutId);
+          closeToast(toast);
+        });
+      }
+
+      function closeToast(toast) {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }
 
       function showContinueSessionPrompt(session) {
         const email = (session && session.user && session.user.email) ? session.user.email : 'esta cuenta';
@@ -617,9 +643,39 @@
         requestAnimationFrame(() => toast.classList.add('show'));
       }
 
-      // 2. Control de estado de sesión
+      async function ensureGoogleAccountExists(session) {
+        if (!session || !session.user || session.user.app_metadata?.provider !== 'google') {
+          return true;
+        }
+
+        const email = session.user.email;
+        if (!email) return true;
+
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle();
+
+        if (error) {
+          console.warn('No se pudo validar la cuenta de Google:', error.message);
+          return true;
+        }
+
+        if (!data) {
+          await supabase.auth.signOut();
+          showNotification('Este correo de Google no está registrado. Crea una cuenta primero.', 'error');
+          return false;
+        }
+
+        return true;
+      }
+
       supabase.auth.onAuthStateChange(async (event, session) => {
         if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+          const allowed = await ensureGoogleAccountExists(session);
+          if (!allowed) return;
+
           const user = session.user;
           const createdAt = new Date(user.created_at).getTime();
           const lastSignIn = new Date(user.last_sign_in_at).getTime();
@@ -629,15 +685,19 @@
           if (isGoogle && isNewUser) {
             await supabase.auth.signOut();
             showNotification('Este correo de Google no está registrado. Crea una cuenta primero.', 'error');
-          } else {
-            showContinueSessionPrompt(session);
+            return;
           }
+
+          showContinueSessionPrompt(session);
         }
       });
 
       window.addEventListener('DOMContentLoaded', async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
+          const allowed = await ensureGoogleAccountExists(session);
+          if (!allowed) return;
+
           const user = session.user;
           const createdAt = new Date(user.created_at).getTime();
           const lastSignIn = new Date(user.last_sign_in_at).getTime();
@@ -649,42 +709,6 @@
         }
       });
 
-      // 3. Sistema de Notificaciones Flotantes (Toast)
-      function showNotification(message, type = 'info') {
-        const container = document.getElementById('notification-container');
-        if (!container) return;
-
-        const toast = document.createElement('div');
-        toast.className = `notification-toast ${type}`;
-        
-        let icon = 'ℹ️';
-        if (type === 'error') icon = '❌';
-        if (type === 'success') icon = '✅';
-
-        toast.innerHTML = `
-          <div class="notification-toast-left">
-            <span class="notification-icon">${icon}</span>
-            <span class="notification-message">${message}</span>
-          </div>
-          <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
-        `;
-        
-        container.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.add('show'));
-
-        const timeoutId = setTimeout(() => closeToast(toast), 6000);
-        toast.querySelector('.toast-close-btn').addEventListener('click', () => {
-          clearTimeout(timeoutId);
-          closeToast(toast);
-        });
-      }
-
-      function closeToast(toast) {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-      }
-
-      // 4. Diccionario Multilenguaje
       const translations = {
         es: {
           knowMore: "conoce mas del proyecto",
@@ -808,7 +832,7 @@
           dreamJobLabel: "Кем хочешь стать?",
           avatarLabel: "Фото профиля",
           signupSubmit: "Зарегистрироваться",
-          ageYearErrorMsg: "Возраст и год рождения не совпадают!",
+          ageYearErrorMsg: "Возра��т и год рождения не совпадают!",
           otpTitle: "Проверить OTP-код",
           otpSubtitle: "Введите 6-значный код, отправленный на вашу почту:",
           otpLabel: "Код подтверждения (OTP)",
@@ -923,7 +947,6 @@
       let index = 0;
       let quoteInterval;
 
-      // Rotación de Frases
       function startQuoteRotation() {
         if (quoteInterval) clearInterval(quoteInterval);
         quoteInterval = window.setInterval(() => {
@@ -938,7 +961,6 @@
         }, 4500);
       }
 
-      // Cambio de Idioma
       function setLanguage(lang) {
         currentLangCode = lang;
         const data = translations[lang];
@@ -993,7 +1015,6 @@
         });
       });
 
-      // Animación de la baraja de mensajes Gmail
       const gmailDeck = document.querySelector('.gmail-deck');
       if (gmailDeck) {
         const gmailCards = [...gmailDeck.querySelectorAll('.gmail-card')];
@@ -1018,7 +1039,6 @@
         paintGmailDeck();
       }
 
-      // Control de Modales
       const overlay = document.getElementById('boltonModalOverlay');
       const loginModal = document.getElementById('loginModal');
       const signupModal = document.getElementById('signupModal');
@@ -1073,9 +1093,6 @@
 
       startQuoteRotation();
 
-      // ==========================================
-      // RECUPERACIÓN DE CONTRASEÑA
-      // ==========================================
       async function recuperarContrasena(email) {
         const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: window.location.origin + '/reset-password.html'
@@ -1098,9 +1115,6 @@
         });
       }
 
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: REGISTRO
-      // ==========================================
       const signupForm = document.getElementById('signupForm');
       if (signupForm) {
         signupForm.addEventListener('submit', async (e) => {
@@ -1151,9 +1165,6 @@
         });
       }
 
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: VERIFICACIÓN CÓDIGO OTP
-      // ==========================================
       const otpForm = document.getElementById('otpForm');
       if (otpForm) {
         otpForm.addEventListener('submit', async (e) => {
@@ -1176,9 +1187,6 @@
         });
       }
 
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: INICIO DE SESIÓN
-      // ==========================================
       const loginForm = document.getElementById('realLoginForm');
       if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -1199,15 +1207,10 @@
         });
       }
 
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: LOGIN CON GOOGLE
-      // ==========================================
       const googleBtn = document.getElementById('loginGoogleBtn');
       if (googleBtn) {
         googleBtn.addEventListener('click', async () => {
-          const redirectUrl = window.location.origin.includes('http')
-            ? window.location.origin + '/stdio.html'
-            : 'stdio.html';
+          const redirectUrl = window.location.origin + '/index.html';
 
           const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
@@ -1221,7 +1224,6 @@
           }
         });
       }
-
     })();
   </script>
 </body>
