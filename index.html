@@ -545,6 +545,21 @@
       // Variable global para almacenar el correo pendiente de verificación OTP
       let pendingOtpEmail = '';
 
+      // Verificación activa de sesión al cargar la página con el servidor de Supabase
+      window.addEventListener('DOMContentLoaded', async () => {
+        // Comprobar la sesión activa con el servidor de Supabase
+        const { data: { session }, error } = await supabase.auth.getSession();
+
+        if (session && !error) {
+          // Solo si la sesión es válida y existe, redirigir al panel
+          window.location.href = "stdio.html";
+        } else {
+          // Si la sesión no es válida (o el usuario fue eliminado), borrar residuos locales
+          await supabase.auth.signOut();
+          localStorage.clear();
+        }
+      });
+
       // 2. Control de estado de sesión (Rechazar Google nuevos, Redirigir autorizados)
       supabase.auth.onAuthStateChange(async (event, session) => {
         if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
@@ -764,7 +779,7 @@
           dreamJobLabel: "Cosa vuoi studiare da grande?",
           avatarLabel: "Foto Profilo",
           signupSubmit: "Registrati",
-          ageYearErrorMsg: "L'età e l'anno di nascita non coincidono!",
+          ageYearErrorMsg: "L'età e l'anno di nascita non coincideno!",
           otpTitle: "Verifica Codice OTP",
           otpSubtitle: "Inserisci il codice a 6 cifre inviato alla tua email:",
           otpLabel: "Codice di Verifica (OTP)",
@@ -1029,7 +1044,7 @@
       }
 
       // ==========================================
-      // INTEGRACIÓN SUPABASE: VERIFICACIÓN CÓDIGO OTP (Alineado si es requerido)
+      // INTEGRACIÓN SUPABASE: VERIFICACIÓN CÓDIGO OTP
       // ==========================================
       const otpForm = document.getElementById('otpForm');
       if (otpForm) {
