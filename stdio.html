@@ -229,6 +229,12 @@
             <span class="truncate">Más sobre BOLTON</span>
           </a>
 
+          <!-- BOTÓN PARA CERRAR SESIÓN -->
+          <button onclick="cerrarSesion()" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-rose-300 hover:text-rose-100 hover:bg-rose-500/20 transition-colors text-left">
+            <i class="fa-solid fa-right-from-bracket text-rose-300 text-xs w-4 text-center flex-shrink-0"></i>
+            <span class="truncate">Cerrar Sesión</span>
+          </button>
+
           <!-- TARJETA DE PERFIL (COMPACTA) -->
           <div onclick="switchView('perfil')" id="nav-perfil" class="nav-btn mt-1 p-1.5 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all cursor-pointer flex items-center justify-between group shadow-md">
             <div class="flex items-center gap-2 min-w-0">
@@ -634,7 +640,7 @@
         <section id="view-ajustes" class="content-view hidden space-y-4">
           <h2 class="text-xl font-black text-white uppercase tracking-wider">Ajustes</h2>
           
-          <div class="max-w-md">
+          <div class="max-w-md space-y-3">
             
             <!-- TARJETA DE OPCIÓN: CAMBIAR FONDO DE PANTALLA -->
             <div onclick="openBgModal()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-white/30 group relative overflow-hidden">
@@ -658,6 +664,24 @@
                 <span class="text-[11px] text-white/80 font-medium">Fondo actual</span>
                 <div class="w-12 h-7 rounded-lg overflow-hidden border border-white/40 shadow-inner bg-slate-800">
                   <div id="currentBgPreview" class="w-full h-full bg-cover bg-center"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TARJETA DE OPCIÓN: CERRAR SESIÓN -->
+            <div onclick="cerrarSesion()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-rose-500/30 group relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center shadow-lg border border-rose-500/30">
+                    <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm text-rose-200 group-hover:text-rose-100 transition-colors">Cerrar Sesión</h3>
+                    <p class="text-xs text-white/70">Salir del sistema y limpiar datos guardados</p>
+                  </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-rose-500/20 group-hover:bg-rose-500/40 flex items-center justify-center text-rose-200 text-xs transition-all">
+                  <i class="fa-solid fa-chevron-right"></i>
                 </div>
               </div>
             </div>
@@ -913,6 +937,11 @@
                       <span>Autenticación de 2 Factores (2FA)</span>
                       <span class="text-[9px] bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full font-bold">Activo</span>
                     </button>
+
+                    <button onclick="cerrarSesion()" class="w-full text-left p-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-200 flex justify-between items-center font-semibold">
+                      <span>Cerrar Sesión Activa</span>
+                      <i class="fa-solid fa-right-from-bracket text-xs text-rose-300"></i>
+                    </button>
                   </div>
                 </div>
 
@@ -1082,6 +1111,25 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
+    // Verificar acceso al cargar stdio.html
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (!session || error) {
+        // Si no hay sesión o la cuenta fue eliminada, limpiar y redirigir a inicio
+        await supabase.auth.signOut();
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+    });
+
+    // Lógica para el botón de Cerrar Sesión (Cerrar sesión manualmente)
+    async function cerrarSesion() {
+      await supabase.auth.signOut();
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
     // LISTA BASE DE IMÁGENES PROPORCIONADAS POR EL USUARIO
     const baseImages = [
       '1044272232359838310.jpg',
