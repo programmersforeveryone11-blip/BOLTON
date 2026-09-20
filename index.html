@@ -338,6 +338,7 @@
       </a>
     </div>
 
+    <!-- Contenedor superior derecho (Idioma + Galería) -->
     <div class="top-right-container" aria-label="Controles superiores">
       <div class="lang-dropdown-wrapper" id="langDropdown">
         <button class="lang-switcher-btn" type="button" id="langBtn" aria-label="Cambiar idioma">
@@ -361,6 +362,7 @@
       </div>
     </div>
     
+    <!-- Tarjeta superior izquierda -->
     <aside class="top-left-card glass-card">
       <div class="card-header">
         <div class="avatar">B</div>
@@ -426,6 +428,7 @@
     </div>
 
     <div class="bolton-modal-overlay" id="boltonModalOverlay">
+      <!-- Modal Iniciar Sesión -->
       <div class="bolton-modal glass-card" id="loginModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -451,6 +454,7 @@
         </button>
       </div>
 
+      <!-- Modal Recuperar Contraseña -->
       <div class="bolton-modal glass-card" id="resetPasswordModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -467,6 +471,7 @@
         </form>
       </div>
 
+      <!-- Modal Crear Cuenta -->
       <div class="bolton-modal glass-card" id="signupModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -538,6 +543,7 @@
         </form>
       </div>
 
+      <!-- Modal Verificar Código OTP -->
       <div class="bolton-modal glass-card" id="otpModal">
         <button class="modal-close-btn" type="button" aria-label="Cerrar">&times;</button>
         <div class="modal-header">
@@ -555,16 +561,63 @@
       </div>
     </div>
 
+    <!-- Contenedor de Notificaciones -->
     <div id="notification-container" class="notification-container"></div>
   </main>
 
   <script>
     (() => {
+      // 1. Configuración de Supabase
       const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
       const supabaseAnonKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
       const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
       let pendingOtpEmail = '';
 
+      function showContinueSessionPrompt(session) {
+        const email = (session && session.user && session.user.email) ? session.user.email : 'esta cuenta';
+        const container = document.getElementById('notification-container');
+        if (!container) return;
+
+        const existing = document.querySelector('[data-bolton-session-prompt="true"]');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.setAttribute('data-bolton-session-prompt', 'true');
+        toast.className = 'notification-toast success';
+        toast.innerHTML = `
+          <div class="notification-toast-left" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="notification-icon">✅</span>
+              <span class="notification-message">Tienes una cuenta iniciada con ${email}. ¿Quieres continuar?</span>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:2px;">
+              <button type="button" data-session-action="continue" style="padding:8px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.12); color:#fff; font-weight:700; cursor:pointer;">Sí</button>
+              <button type="button" data-session-action="stay" style="padding:8px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); color:#fff; font-weight:700; cursor:pointer;">No</button>
+            </div>
+          </div>
+          <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
+        `;
+
+        toast.querySelector('[data-session-action="continue"]').addEventListener('click', () => {
+          window.location.href = 'stdio.html';
+        });
+
+        toast.querySelector('[data-session-action="stay"]').addEventListener('click', () => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 300);
+        });
+
+        toast.querySelector('.toast-close-btn').addEventListener('click', () => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 300);
+        });
+
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('show'));
+      }
+
+      // 2. Control de estado de sesión
       supabase.auth.onAuthStateChange(async (event, session) => {
         if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
           const user = session.user;
@@ -575,17 +628,35 @@
 
           if (isGoogle && isNewUser) {
             await supabase.auth.signOut();
-            showNotification("Este correo de Google no está registrado. Crea una cuenta primero.", "error");
+            showNotification('Este correo de Google no está registrado. Crea una cuenta primero.', 'error');
+          } else {
+            showContinueSessionPrompt(session);
           }
         }
       });
 
+      window.addEventListener('DOMContentLoaded', async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          const user = session.user;
+          const createdAt = new Date(user.created_at).getTime();
+          const lastSignIn = new Date(user.last_sign_in_at).getTime();
+          const isNewUser = Math.abs(lastSignIn - createdAt) < 5000;
+          const isGoogle = user.app_metadata.provider === 'google';
+          if (!(isGoogle && isNewUser)) {
+            showContinueSessionPrompt(session);
+          }
+        }
+      });
+
+      // 3. Sistema de Notificaciones Flotantes (Toast)
       function showNotification(message, type = 'info') {
         const container = document.getElementById('notification-container');
         if (!container) return;
 
         const toast = document.createElement('div');
         toast.className = `notification-toast ${type}`;
+        
         let icon = 'ℹ️';
         if (type === 'error') icon = '❌';
         if (type === 'success') icon = '✅';
@@ -613,6 +684,7 @@
         setTimeout(() => toast.remove(), 400);
       }
 
+      // 4. Diccionario Multilenguaje
       const translations = {
         es: {
           knowMore: "conoce mas del proyecto",
@@ -756,7 +828,7 @@
           knowMore: "scopri di più sul progetto",
           availableWork: "Disponibile ad aiutarti",
           cardTitle: "Organizzazione · Studio",
-          cardDesc: "Bolton è il tuo strumento di fiducia per studiare, tenere in ordine i tuoi compiti e passare con la nota massima tutti gli esami.",
+          cardDesc: "Bolton è il tuo strumento di fiducia per studiare, tenere in ordine i tuoi compiti e passare con il massimo tutti gli esami.",
           weHelp: "Ti aiutiamo a crescere.",
           studioName: "scopri di più su luizabeth's.studios",
           mail1: "Ci sono offerte su tutti i servizi di luizabeth's.studios.",
@@ -851,6 +923,7 @@
       let index = 0;
       let quoteInterval;
 
+      // Rotación de Frases
       function startQuoteRotation() {
         if (quoteInterval) clearInterval(quoteInterval);
         quoteInterval = window.setInterval(() => {
@@ -865,6 +938,7 @@
         }, 4500);
       }
 
+      // Cambio de Idioma
       function setLanguage(lang) {
         currentLangCode = lang;
         const data = translations[lang];
@@ -919,6 +993,7 @@
         });
       });
 
+      // Animación de la baraja de mensajes Gmail
       const gmailDeck = document.querySelector('.gmail-deck');
       if (gmailDeck) {
         const gmailCards = [...gmailDeck.querySelectorAll('.gmail-card')];
@@ -943,6 +1018,7 @@
         paintGmailDeck();
       }
 
+      // Control de Modales
       const overlay = document.getElementById('boltonModalOverlay');
       const loginModal = document.getElementById('loginModal');
       const signupModal = document.getElementById('signupModal');
@@ -997,6 +1073,9 @@
 
       startQuoteRotation();
 
+      // ==========================================
+      // RECUPERACIÓN DE CONTRASEÑA
+      // ==========================================
       async function recuperarContrasena(email) {
         const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: window.location.origin + '/reset-password.html'
@@ -1019,13 +1098,18 @@
         });
       }
 
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: REGISTRO
+      // ==========================================
       const signupForm = document.getElementById('signupForm');
       if (signupForm) {
         signupForm.addEventListener('submit', async (e) => {
           e.preventDefault();
+          
           const age = parseInt(document.getElementById('signupAge').value, 10);
           const birthYear = parseInt(document.getElementById('signupBirthYear').value, 10);
           const currentYear = new Date().getFullYear();
+          
           if (Math.abs((currentYear - birthYear) - age) > 1) {
             const errEl = document.getElementById('ageYearError');
             if (errEl) errEl.style.display = 'block';
@@ -1046,6 +1130,7 @@
             showNotification("Error al registrar: " + error.message, "error");
           } else {
             showNotification("Cuenta creada con éxito", "success");
+            
             if (data.user) {
               await supabase.from('profiles').insert([{
                 id: data.user.id,
@@ -1060,10 +1145,15 @@
                 sueno_estudio: document.getElementById('signupDreamJob').value
               }]);
             }
+            
+            window.location.href = "stdio.html";
           }
         });
       }
 
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: VERIFICACIÓN CÓDIGO OTP
+      // ==========================================
       const otpForm = document.getElementById('otpForm');
       if (otpForm) {
         otpForm.addEventListener('submit', async (e) => {
@@ -1080,11 +1170,15 @@
           if (verifyError) {
             showNotification("Error al verificar código: " + verifyError.message, "error");
           } else {
-            showNotification("¡Código verificado con éxito!", "success");
+            showNotification("¡Código verificado con éxito! Redirigiendo...", "success");
+            window.location.href = 'stdio.html';
           }
         });
       }
 
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: INICIO DE SESIÓN
+      // ==========================================
       const loginForm = document.getElementById('realLoginForm');
       if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -1099,10 +1193,15 @@
 
           if (error) {
             showNotification("Correo o contraseña incorrectos", "error");
+          } else {
+            window.location.href = "stdio.html";
           }
         });
       }
 
+      // ==========================================
+      // INTEGRACIÓN SUPABASE: LOGIN CON GOOGLE
+      // ==========================================
       const googleBtn = document.getElementById('loginGoogleBtn');
       if (googleBtn) {
         googleBtn.addEventListener('click', async () => {
@@ -1112,7 +1211,9 @@
 
           const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: redirectUrl },
+            options: {
+              redirectTo: redirectUrl,
+            },
           });
 
           if (error) {
@@ -1120,6 +1221,7 @@
           }
         });
       }
+
     })();
   </script>
 </body>
