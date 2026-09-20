@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#526765">
   <meta name="description" content="Un espacio para estudiar, organizarte y avanzar con constancia.">
-  <title>BOLTON · Crece a tu ritmo</title>
-  
+  <title>BOLTON</title>
+  <link rel="icon" type="image/png" href="Logo B Casa Bolton(1) 1.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -99,7 +99,7 @@
     
     .lang-menu {
       position: absolute; top: calc(100% + 8px); right: 0;
-      width: 150px; padding: 6px; border-radius: 14px;
+      width: 160px; padding: 6px; border-radius: 14px;
       background: rgba(40, 60, 52, 0.85);
       border: 1px solid rgba(255,255,255,0.25);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -351,6 +351,7 @@
           <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
           <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
           <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+          <button class="lang-option" data-lang="val">🐉 Alto Valirio</button>
         </div>
       </div>
 
@@ -915,6 +916,52 @@
             'Beständigkeit besiegt\nTalent',
             'Große Erfolge sind\nkleine Gewohnheiten'
           ]
+        },
+        val: {
+          knowMore: "prūmia gīmigon",
+          availableWork: "Hēdrissio brōzi",
+          cardTitle: "Gēdyn · Rȳbā",
+          cardDesc: "Bolton issa sȳz bōsa brōzi rȳbā ñuha seka mōrio sytī, tubī sytī ñuha kili.",
+          weHelp: "Skorī sȳz brōzi.",
+          studioName: "luizabeth's.studios pōja",
+          mail1: "Luizabeth's.studios kīdrīse brōzi seka mōrio.",
+          mail2: "Game of Thrones tubī seka gīmigon.",
+          mail3: "Cashea vāji level 5 tubī.",
+          mail4: "Ānogar brōzi ista, sȳz brōzi.",
+          login: "Kīdrīsi",
+          signup: "Bōsa kīdrīsi",
+          loginTitle: "Bolton Kīdrīsi",
+          signupTitle: "Bolton Bōsa Kīdrīsi",
+          emailLabel: "Ēmail ȳdar",
+          passLabel: "Bōsa ȳdar",
+          forgotPassword: "Bōsa kīdrīsi?",
+          loginSubmit: "Kīdrīsi",
+          continueGoogle: "Google sytī",
+          nameLabel: "Nom",
+          lastnameLabel: "Kōl",
+          ageLabel: "Zȳh",
+          birthYearLabel: "Zȳh Mōrio",
+          gradeLabel: "Grad",
+          subjectsLabel: "Mator (Max. 20)",
+          phoneLabel: "Kȳdar",
+          dreamJobLabel: "Mōrio brōzi?",
+          avatarLabel: "Prorīsa",
+          signupSubmit: "Bōsa Kīdrīsi",
+          ageYearErrorMsg: "Zȳh seka mōrio kīdrīsi!",
+          otpTitle: "OTP Kīdrīsi",
+          otpSubtitle: "6-digit OTP kīdrīsi:",
+          otpLabel: "OTP Kīdrīsi",
+          otpSubmit: "OTP Kīdrīsi",
+          resetTitle: "Bōsa Kīdrīsi",
+          resetSubtitle: "Ēmail kīdrīsi:",
+          resetSubmit: "Kīdrīsi",
+          quotes: [
+            'Skorī,\nkiris',
+            'Kīdrīsi,\nsyrio',
+            'Ānogar\nkīdrīsi',
+            'Sȳz brōzi\ntalent',
+            'Kiliris\nsȳz'
+          ]
         }
       };
 
@@ -952,7 +999,7 @@
         });
 
         const langLabels = {
-          es: "ES 🇪🇸", en: "EN 🇬🇧", ru: "RU 🇷🇺", it: "IT 🇮🇹", de: "DE 🇩🇪"
+          es: "ES 🇪🇸", en: "EN 🇬🇧", ru: "RU 🇷🇺", it: "IT 🇮🇹", de: "DE 🇩🇪", val: "VAL 🐉"
         };
         const labelEl = document.getElementById('currentLangLabel');
         if (labelEl) labelEl.textContent = langLabels[lang];
