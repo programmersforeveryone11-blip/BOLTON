@@ -187,7 +187,6 @@
             <span class="truncate">Horario de clases y materias</span>
           </button>
 
-          <!-- NUEVA SECCIÓN 1: PROYECTOS Y TRABAJOS -->
           <button onclick="switchView('proyectos')" id="nav-proyectos" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-diagram-project text-xs"></i>
@@ -195,7 +194,6 @@
             <span class="truncate">Proyectos y Trabajos</span>
           </button>
 
-          <!-- NUEVA SECCIÓN 2: BIBLIOTECA Y RECURSOS -->
           <button onclick="switchView('biblioteca')" id="nav-biblioteca" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-book-bookmark text-xs"></i>
@@ -203,7 +201,6 @@
             <span class="truncate">Biblioteca y Recursos</span>
           </button>
 
-          <!-- NUEVA SECCIÓN 3: FINANZAS ESTUDIANTILES -->
           <button onclick="switchView('finanzas')" id="nav-finanzas" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-wallet text-xs"></i>
@@ -590,7 +587,7 @@
           </div>
         </section>
 
-        <!-- ================= NUEVA VISTA 1: PROYECTOS Y TRABAJOS ================= -->
+        <!-- ================= PROYECTOS Y TRABAJOS ================= -->
         <section id="view-proyectos" class="content-view hidden space-y-4">
           <div class="flex justify-between items-center">
             <div>
@@ -602,10 +599,7 @@
             </button>
           </div>
 
-          <!-- Tablero de Trabajo Kanban -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            
-            <!-- Columna 1: Por Hacer -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
@@ -622,7 +616,6 @@
               </div>
             </div>
 
-            <!-- Columna 2: En Proceso -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
@@ -639,7 +632,6 @@
               </div>
             </div>
 
-            <!-- Columna 3: Entregado -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-2">
@@ -659,7 +651,7 @@
           </div>
         </section>
 
-        <!-- ================= NUEVA VISTA 2: BIBLIOTECA Y RECURSOS ================= -->
+        <!-- ================= BIBLIOTECA Y RECURSOS ================= -->
         <section id="view-biblioteca" class="content-view hidden space-y-4">
           <div class="flex justify-between items-center">
             <div>
@@ -700,7 +692,7 @@
           </div>
         </section>
 
-        <!-- ================= NUEVA VISTA 3: FINANZAS ESTUDIANTILES ================= -->
+        <!-- ================= FINANZAS ESTUDIANTILES ================= -->
         <section id="view-finanzas" class="content-view hidden space-y-4">
           <div class="flex justify-between items-center">
             <div>
@@ -712,7 +704,6 @@
             </button>
           </div>
 
-          <!-- Resumen financiero tarjetas -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="glass-panel p-4 rounded-2xl space-y-1 text-center">
               <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Presupuesto Mensual</span>
@@ -728,7 +719,6 @@
             </div>
           </div>
 
-          <!-- Tabla de Gastos -->
           <div class="glass-panel rounded-2xl p-4 overflow-x-auto space-y-3">
             <h3 class="font-bold text-xs text-white">Últimos Movimientos</h3>
             <table class="w-full text-xs text-left">
@@ -1565,7 +1555,7 @@
       if (badge) badge.classList.add('hidden');
     }
 
-    // Temporizador Pomodoro demo
+    // Temporizador Pomodoro
     let timerInterval = null;
     let timerSeconds = 25 * 60;
     function updateTimerDisplay() {
@@ -1613,12 +1603,16 @@
       if (!input || !input.value.trim()) return;
       const chat = document.getElementById('aiChatBox');
       if (chat) {
-        chat.innerHTML += `<div class="p-3 rounded-xl bg-purple-500/20 text-xs text-purple-100 ml-4 font-semibold">${input.value}</div>`;
-        chat.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs text-white mr-4">Respuesta generada para tu consulta: "${input.value}"</div>`;
-        chat.scrollTop = chat.scrollHeight;
+        const userMsg = input.value.trim();
+        chat.innerHTML += `<div class="p-3 rounded-xl bg-purple-500/20 text-xs text-white border border-purple-500/30 text-right font-medium"><strong>Tú:</strong> ${userMsg}</div>`;
+        input.value = '';
+        setTimeout(() => {
+          chat.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs text-white"><strong>BOLTON AI:</strong> Procesando tu consulta sobre "${userMsg}"...</div>`;
+          chat.scrollTop = chat.scrollHeight;
+        }, 500);
       }
-      input.value = '';
     }
+
     function sendQuickAiQuery() {
       const q = document.getElementById('dashAiQuery');
       if (q && q.value.trim()) {
@@ -1630,130 +1624,110 @@
         }
       }
     }
+
     function executeResearchSearch() {
-      const input = document.getElementById('researchQueryInput');
-      const res = document.getElementById('researchResults');
-      if (input && res && input.value.trim()) {
-        res.innerHTML = `<div class="p-2 font-bold text-white">Resultados para: ${input.value}</div><p class="mt-1 text-white/80">Información sintetizada disponible para guardar en tus cuadernos.</p>`;
+      const query = document.getElementById('researchQueryInput').value;
+      const results = document.getElementById('researchResults');
+      if (query && results) {
+        results.innerHTML = `<p class="font-bold text-emerald-300">Resumen de Investigación: "${query}"</p><p class="mt-2 text-white/80">Información consolidada de bases de datos académicas y fuentes verificadas.</p>`;
       }
     }
-    function createNewNote() {
-      showToast('Nueva nota creada');
-    }
-    let isPlayingSound = false;
+
     function toggleAmbientSound() {
-      isPlayingSound = !isPlayingSound;
       const btn = document.getElementById('soundToggleBtn');
       if (btn) {
-        btn.innerHTML = isPlayingSound ? '<i class="fa-solid fa-pause mr-1"></i> Pausar' : '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+        if (btn.classList.contains('bg-pink-500')) {
+          btn.classList.remove('bg-pink-500');
+          btn.classList.add('bg-emerald-500');
+          btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i> Pausar';
+          showToast('Reproduciendo audio Lofi');
+        } else {
+          btn.classList.remove('bg-emerald-500');
+          btn.classList.add('bg-pink-500');
+          btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+          showToast('Audio pausado');
+        }
       }
-      showToast(isPlayingSound ? 'Ambiente Lofi iniciado' : 'Sonido pausado');
     }
+
+    function createNewNote() {
+      const grid = document.getElementById('notesGrid');
+      if (grid) {
+        const note = document.createElement('div');
+        note.className = 'glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group';
+        note.innerHTML = `
+          <span class="px-2 py-0.5 rounded bg-sky-500/30 text-sky-200 text-[9px] font-extrabold uppercase">General</span>
+          <h3 class="font-bold text-sm text-white">Nueva Nota sin título</h3>
+          <p class="text-xs text-white/70">Haz clic para editar el contenido de esta nota...</p>
+        `;
+        grid.prepend(note);
+        showToast('Nueva nota creada');
+      }
+    }
+
+    // Inicialización al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      applyBackground(currentBg, false);
+      const customBg = localStorage.getItem('bolton_custom_bg');
+      if (customBg && currentBg === customBg) {
+        applyBackground(customBg, false);
+      }
+    });
   </script>
 
-  <!-- ========================================== -->
-  <!-- INTEGRACIÓN Y CONEXIÓN A SUPABASE         -->
-  <!-- ========================================== -->
+  <!-- SCRIPT DE SUPABASE Y AUTO-LOGIN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // 1. CONFIGURACIÓN DE SUPABASE
     const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
     const supabaseAnonKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-    // 2. RECUPERAR DATOS DE SUPABASE AL CARGAR LA PÁGINA
-    window.addEventListener('DOMContentLoaded', async () => {
-      // Aplicar fondo de pantalla guardado
-      applyBackground(currentBg, false);
+    async function checkAutoLogin() {
+      // 1. Obtener sesión activa de Supabase
+      const { data: { session } } = await supabase.auth.getSession();
 
-      // Verificar si hay una sesión activa
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
       if (!session) {
-        // Si no hay sesión activa, redirigir al login
+        // Si no hay sesión iniciada, redirige al login
         window.location.href = 'index2.html';
         return;
       }
-      
+
       const user = session.user;
-      
-      // Consultar los datos adicionales del usuario en la tabla 'profiles'
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-        
-      let fullName = 'Usuario Bolton';
-      let emailDisplay = user.email;
-      let avatarUrl = '';
 
+      // 2. Intentar obtener el perfil guardado en localStorage o desde la base de datos Supabase
+      let profile = JSON.parse(localStorage.getItem('bolton_user_profile'));
+
+      if (!profile) {
+        // Si no está en localStorage, lo consultamos directamente a la tabla 'profiles'
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        profile = profileData;
+      }
+
+      // 3. Renderizar los datos automáticamente en el Workspace (stdio.html)
       if (profile) {
-        // Si el usuario tiene registro en la tabla profiles
-        fullName = `${profile.nombre || ''} ${profile.apellido || ''}`.trim() || 'Usuario Bolton';
-        emailDisplay = profile.email || user.email;
+        const nameEl = document.getElementById('sidebarUserName');
+        const handleEl = document.getElementById('sidebarUserHandle');
         
-        // Rellenar los campos de la vista de perfil si existen en el HTML
-        const profileAge = document.getElementById('profileAge');
-        if (profileAge) profileAge.innerText = `${profile.edad || '--'} años (Nacido en ${profile.anio_nacimiento || '--'})`;
-        
-        const profileGrade = document.getElementById('profileGrade');
-        if (profileGrade) profileGrade.innerText = profile.grado || '--';
-        
-        const profileSubjects = document.getElementById('profileSubjects');
-        if (profileSubjects) profileSubjects.innerText = profile.materias ? `${profile.materias} materias inscritas` : '--';
-        
-        const profilePhone = document.getElementById('profilePhone');
-        if (profilePhone) profilePhone.innerText = profile.telefono || '--';
-        
-        const profileDream = document.getElementById('profileDream');
-        if (profileDream) profileDream.innerText = `"${profile.sueno_estudio || '--'}"`;
-        
-        const dashMateriasCount = document.getElementById('dashMateriasCount');
-        if (dashMateriasCount) {
-          dashMateriasCount.innerText = profile.materias || '0';
-        }
-
-        // Actualizar inputs de edición si existen
-        const inputName = document.getElementById('inputProfileName');
-        if (inputName) inputName.value = fullName;
-      } else if (user.app_metadata && user.app_metadata.provider === 'google') {
-        // Si inició sesión con Google
-        fullName = user.user_metadata.full_name || 'Usuario Google';
-        avatarUrl = user.user_metadata.avatar_url;
+        if (nameEl) nameEl.textContent = `${profile.nombre || ''} ${profile.apellido || ''}`.trim() || user.email;
+        if (handleEl) handleEl.textContent = `@${(profile.nombre || 'usuario').toLowerCase()}`;
       }
+    }
 
-      // Si no cuenta con una foto de avatar externa, se genera una automática con sus iniciales
-      if (!avatarUrl) {
-        avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=10b981&color=fff&bold=true`;
-      }
-
-      // Actualizar los elementos de texto en el Sidebar y Perfil
-      const sidebarUserName = document.getElementById('sidebarUserName');
-      if (sidebarUserName) sidebarUserName.innerText = fullName;
-
-      const sidebarUserHandle = document.getElementById('sidebarUserHandle');
-      if (sidebarUserHandle) sidebarUserHandle.innerText = emailDisplay;
-      
-      const profileNameDisplay = document.getElementById('profileNameDisplay');
-      if (profileNameDisplay) profileNameDisplay.innerText = fullName;
-
-      const profileHandleDisplay = document.getElementById('profileHandleDisplay');
-      if (profileHandleDisplay) profileHandleDisplay.innerText = emailDisplay;
-
-      // Actualizar todas las imágenes de avatar en la interfaz
-      const avatars = ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar', 'mainProfileAvatar'];
-      avatars.forEach(id => {
-        const imgEl = document.getElementById(id);
-        if (imgEl) imgEl.src = avatarUrl;
-      });
-    });
-
-    // 3. FUNCIÓN PARA CERRAR SESIÓN
+    // Función global para Cerrar Sesión
     async function cerrarSesion() {
       await supabase.auth.signOut();
-      localStorage.clear();
+      localStorage.removeItem('bolton_user_profile');
       window.location.href = 'index2.html';
     }
+
+    // Ejecutar verificación al cargar la página
+    window.addEventListener('DOMContentLoaded', checkAutoLogin);
   </script>
+
 </body>
 </html>
