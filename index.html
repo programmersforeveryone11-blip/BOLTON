@@ -351,7 +351,7 @@
           <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
           <button class="lang-option" data-lang="it">🇮🇹 Italiano</button>
           <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
-          <button class="lang-option" data-lang="val">🐉 Alto Valirio</button>
+          <button class="lang-option" data-lang="val">🐉 alto valyrio</button>
         </div>
       </div>
 
@@ -1178,6 +1178,18 @@
           } else {
             showNotification("Cuenta creada con éxito", "success");
             
+            // Agrega esto justo cuando el registro sea exitoso o inicien sesión exitosamente:
+            localStorage.setItem('bolton_user_profile', JSON.stringify({
+              nombre: document.getElementById('signupName') ? document.getElementById('signupName').value : '',
+              apellido: document.getElementById('signupLastname') ? document.getElementById('signupLastname').value : '',
+              edad: document.getElementById('signupAge') ? document.getElementById('signupAge').value : '',
+              grado: document.getElementById('signupGrade') ? document.getElementById('signupGrade').value : '',
+              materias: document.getElementById('signupSubjects') ? document.getElementById('signupSubjects').value : '',
+              telefono: document.getElementById('signupPhone') ? document.getElementById('signupPhone').value : '',
+              dreamJob: document.getElementById('signupDreamJob') ? document.getElementById('signupDreamJob').value : '',
+              email: document.getElementById('signupEmail') ? document.getElementById('signupEmail').value : ''
+            }));
+
             if (data.user) {
               await supabase.from('profiles').insert([{
                 id: data.user.id,
