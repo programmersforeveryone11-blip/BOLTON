@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOLTON · Lugar de Trabajo</title>
+  <title>BOLTON</title>
+  <link rel="icon" type="image/png" href="Logo B Casa Bolton(1) 1.png">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +100,7 @@
 <body class="h-full text-slate-100 overflow-x-hidden antialiased selection:bg-white/20 selection:text-white relative bg-slate-900">
   
   <!-- CAPA DE FONDO DINÁMICO -->
-  <div id="page-background" class="fixed inset-0 bg-cover bg-center bg-no-repeat -z-20 transition-all duration-700" style="background-image: url('211174977272346.jpg');"></div>
+  <div id="page-background" class="fixed inset-0 bg-cover bg-center bg-no-repeat -z-20 transition-all duration-700" style="background-image: url('2040762329295531.jpg');"></div>
   
   <!-- CAPA DE OSCURECIMIENTO / FILTRO SOFT SOBRE EL FONDO -->
   <div class="fixed inset-0 bg-black/35 backdrop-blur-[2px] -z-10 pointer-events-none"></div>
@@ -108,7 +111,7 @@
     <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity" onclick="toggleMobileSidebar()"></div>
 
     <!-- ========================================== -->
-    <!-- LEFT SIDEBAR (MINIMALISTA COMPACTO NO-SCROLL) -->
+    <!-- LEFT SIDEBAR -->
     <!-- ========================================== -->
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-80 flex flex-col justify-between p-2.5 md:p-3 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out select-none">
       
@@ -133,7 +136,7 @@
         </div>
 
         <!-- LISTA DE NAVEGACION IZQUIERDA -->
-        <div class="flex-1 flex flex-col justify-evenly py-1.5 space-y-0.5 overflow-hidden">
+        <div class="flex-1 flex flex-col justify-evenly py-1.5 space-y-0.5 overflow-y-auto">
           
           <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
@@ -182,6 +185,30 @@
               <i class="fa-solid fa-graduation-cap text-xs"></i>
             </div>
             <span class="truncate">Horario de clases y materias</span>
+          </button>
+
+          <!-- NUEVA SECCIÓN 1: PROYECTOS Y TRABAJOS -->
+          <button onclick="switchView('proyectos')" id="nav-proyectos" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-diagram-project text-xs"></i>
+            </div>
+            <span class="truncate">Proyectos y Trabajos</span>
+          </button>
+
+          <!-- NUEVA SECCIÓN 2: BIBLIOTECA Y RECURSOS -->
+          <button onclick="switchView('biblioteca')" id="nav-biblioteca" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-book-bookmark text-xs"></i>
+            </div>
+            <span class="truncate">Biblioteca y Recursos</span>
+          </button>
+
+          <!-- NUEVA SECCIÓN 3: FINANZAS ESTUDIANTILES -->
+          <button onclick="switchView('finanzas')" id="nav-finanzas" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+            <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+              <i class="fa-solid fa-wallet text-xs"></i>
+            </div>
+            <span class="truncate">Finanzas Estudiantes</span>
           </button>
 
           <button onclick="switchView('ai')" id="nav-ai" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
@@ -235,7 +262,7 @@
             <span class="truncate">Cerrar Sesión</span>
           </button>
 
-          <!-- TARJETA DE PERFIL (COMPACTA) -->
+          <!-- TARJETA DE PERFIL -->
           <div onclick="switchView('perfil')" id="nav-perfil" class="nav-btn mt-1 p-1.5 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all cursor-pointer flex items-center justify-between group shadow-md">
             <div class="flex items-center gap-2 min-w-0">
               <div class="relative flex-shrink-0">
@@ -243,8 +270,8 @@
                 <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-400 border border-emerald-950 rounded-full"></span>
               </div>
               <div class="flex flex-col min-w-0">
-                <span id="sidebarUserName" class="text-xs font-bold text-white truncate leading-tight">Alexia Vance</span>
-                <span id="sidebarUserHandle" class="text-[9px] text-white/70 truncate leading-tight">@alexia_estudio</span>
+                <span id="sidebarUserName" class="text-xs font-bold text-white truncate leading-tight">Cargando...</span>
+                <span id="sidebarUserHandle" class="text-[9px] text-white/70 truncate leading-tight">@usuario</span>
               </div>
             </div>
             <div class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-white/30 flex items-center justify-center text-white/80 text-[9px] transition-colors flex-shrink-0 ml-1">
@@ -265,7 +292,7 @@
       <!-- TOP NAVIGATION BAR -->
       <header class="p-3.5 pb-2 flex items-center justify-between gap-4 z-30 flex-shrink-0">
         
-        <!-- Toggle en dispositivos móviles -->
+        <!-- Toggle móvil -->
         <button onclick="toggleMobileSidebar()" class="md:hidden w-9 h-9 rounded-xl glass-panel flex items-center justify-center text-white hover:bg-white/20">
           <i class="fa-solid fa-bars text-sm"></i>
         </button>
@@ -276,24 +303,21 @@
           <span id="viewHeaderTitle">Dashboard</span>
         </div>
 
-        <!-- ESQUINA SUPERIOR DERECHA: Búsqueda, Notificaciones, Perfil -->
+        <!-- Búsqueda, Notificaciones, Perfil -->
         <div class="flex items-center gap-2.5 ml-auto">
           
-          <!-- BARRA DE BÚSQUEDA -->
           <div class="relative w-40 sm:w-60 md:w-72">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/50 text-xs"></i>
             <input type="text" id="globalSearchInput" placeholder="Buscar notas, tareas..." class="glass-input w-full pl-8 pr-7 py-1.5 rounded-full text-xs placeholder:text-white/40 focus:ring-1 focus:ring-white/40">
             <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-white/30 font-mono hidden sm:inline">⌘K</span>
           </div>
 
-          <!-- CUADRITO DE NOTIFICACIONES -->
           <div class="relative">
             <button onclick="toggleNotificationsMenu()" id="notifBtn" class="w-9 h-9 rounded-xl glass-panel flex items-center justify-center text-white hover:bg-white/20 relative transition-all active:scale-95" title="Notificaciones">
               <i class="fa-regular fa-bell text-xs"></i>
               <span id="notifBadge" class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8px] font-black flex items-center justify-center border border-emerald-950 shadow-md">3</span>
             </button>
 
-            <!-- Menú Desplegable -->
             <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 glass-panel rounded-2xl p-3 shadow-2xl z-50 border border-white/30 text-xs">
               <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/15">
                 <span class="font-bold text-white flex items-center gap-1.5">
@@ -325,7 +349,6 @@
             </div>
           </div>
 
-          <!-- CIRCULO DE PERFIL -->
           <div class="relative">
             <button onclick="switchView('perfil')" class="w-9 h-9 rounded-full glass-panel p-0.5 flex items-center justify-center hover:scale-105 transition-transform border border-white/40 shadow-lg" title="Perfil">
               <img id="topAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Perfil" class="w-full h-full rounded-full object-cover">
@@ -341,8 +364,6 @@
 
         <!-- ================= DASHBOARD VIEW ================= -->
         <section id="view-dashboard" class="content-view space-y-5">
-          
-          <!-- Banner Principal -->
           <div class="glass-panel rounded-3xl p-5 sm:p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-5">
             <div class="space-y-1.5 max-w-xl z-10 text-center md:text-left">
               <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-emerald-200 text-[10px] font-bold tracking-wider uppercase border border-white/20">
@@ -356,7 +377,6 @@
               </p>
             </div>
 
-            <!-- Stats Widgets -->
             <div class="grid grid-cols-2 gap-2.5 w-full md:w-auto flex-shrink-0 z-10">
               <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
                 <i class="fa-solid fa-fire text-amber-400 text-lg"></i>
@@ -365,7 +385,7 @@
               </div>
               <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
                 <i class="fa-solid fa-graduation-cap text-sky-400 text-lg"></i>
-                <div class="text-xl font-extrabold text-white">8</div>
+                <div id="dashMateriasCount" class="text-xl font-extrabold text-white">8</div>
                 <div class="text-[9px] text-white/70 uppercase tracking-wider">Materias</div>
               </div>
               <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
@@ -381,10 +401,7 @@
             </div>
           </div>
 
-          <!-- Accesos Rápidos -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            
-            <!-- Clase de Hoy -->
             <div class="glass-panel rounded-3xl p-4 space-y-3">
               <div class="flex items-center justify-between">
                 <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
@@ -392,7 +409,6 @@
                 </h3>
                 <button onclick="switchView('horario')" class="text-[10px] text-emerald-300 hover:underline">Ver todo</button>
               </div>
-              
               <div class="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
                 <div class="flex justify-between items-start">
                   <span class="px-2 py-0.5 rounded-md bg-indigo-500/30 text-indigo-200 text-[9px] font-bold">10:00 AM - 11:30 AM</span>
@@ -403,7 +419,6 @@
               </div>
             </div>
 
-            <!-- Tareas Pendientes -->
             <div class="glass-panel rounded-3xl p-4 space-y-3">
               <div class="flex items-center justify-between">
                 <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
@@ -411,7 +426,6 @@
                 </h3>
                 <button onclick="switchView('tareas')" class="text-[10px] text-emerald-300 hover:underline">Gestionar</button>
               </div>
-
               <div class="space-y-2">
                 <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/15 cursor-pointer hover:bg-white/15">
                   <input type="checkbox" checked class="w-3.5 h-3.5 accent-emerald-400 rounded">
@@ -419,7 +433,6 @@
                     <p class="text-xs font-semibold text-white truncate line-through opacity-70">Resumen Capítulo 4 Historia</p>
                   </div>
                 </label>
-
                 <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/15 cursor-pointer hover:bg-white/15">
                   <input type="checkbox" class="w-3.5 h-3.5 accent-emerald-400 rounded">
                   <div class="min-w-0 flex-1">
@@ -429,7 +442,6 @@
               </div>
             </div>
 
-            <!-- Consulta Rápida AI -->
             <div class="glass-panel rounded-3xl p-4 space-y-3 flex flex-col justify-between">
               <div class="space-y-2">
                 <div class="flex items-center justify-between">
@@ -445,12 +457,9 @@
                   </button>
                 </div>
               </div>
-
               <p class="text-[10px] text-purple-200/80 italic">Acceso instantáneo para síntesis y explicaciones académicas.</p>
             </div>
-
           </div>
-
         </section>
 
         <!-- ================= NOTAS VIEW ================= -->
@@ -469,13 +478,13 @@
             <div class="glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group">
               <span class="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 text-[9px] font-extrabold uppercase">Biología</span>
               <h3 class="font-bold text-sm text-white">Estructura celular y mitocondrias</h3>
-              <p class="text-xs text-white/70">La mitocondria es el organelo encargado de la respiración celular y generación de ATP mediante fosforilación oxidativa...</p>
+              <p class="text-xs text-white/70">La mitocondria es el organelo encargado de la respiración celular...</p>
             </div>
 
             <div class="glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group">
               <span class="px-2 py-0.5 rounded bg-amber-500/30 text-amber-200 text-[9px] font-extrabold uppercase">Historia</span>
               <h3 class="font-bold text-sm text-white">Revolución Industrial parte II</h3>
-              <p class="text-xs text-white/70">Puntos clave: Máquina de vapor de Watt, expansión del ferrocarril y cambios socioeconómicos...</p>
+              <p class="text-xs text-white/70">Puntos clave: Máquina de vapor de Watt, expansión del ferrocarril...</p>
             </div>
           </div>
         </section>
@@ -581,6 +590,171 @@
           </div>
         </section>
 
+        <!-- ================= NUEVA VISTA 1: PROYECTOS Y TRABAJOS ================= -->
+        <section id="view-proyectos" class="content-view hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-black text-white uppercase tracking-wider">Proyectos y Trabajos</h2>
+              <p class="text-xs text-white/70">Gestiona las entregas grupales e individuales.</p>
+            </div>
+            <button onclick="showToast('Nuevo proyecto creado')" class="px-3.5 py-2 rounded-xl bg-white text-emerald-950 font-bold text-xs hover:bg-white/90 shadow-md">
+              + Nuevo Proyecto
+            </button>
+          </div>
+
+          <!-- Tablero de Trabajo Kanban -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- Columna 1: Por Hacer -->
+            <div class="glass-panel p-4 rounded-3xl space-y-3">
+              <div class="flex justify-between items-center pb-2 border-b border-white/15">
+                <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-circle text-[8px]"></i> Por Hacer
+                </span>
+                <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full font-mono">2</span>
+              </div>
+              <div class="space-y-2">
+                <div class="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1.5 glass-card-hover">
+                  <span class="px-2 py-0.5 rounded bg-purple-500/30 text-purple-200 text-[9px] font-bold">Física II</span>
+                  <h4 class="font-bold text-xs text-white">Informe sobre Termodinámica</h4>
+                  <p class="text-[10px] text-white/60">Fecha límite: 25 Sep</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna 2: En Proceso -->
+            <div class="glass-panel p-4 rounded-3xl space-y-3">
+              <div class="flex justify-between items-center pb-2 border-b border-white/15">
+                <span class="text-xs font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-circle text-[8px]"></i> En Proceso
+                </span>
+                <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full font-mono">1</span>
+              </div>
+              <div class="space-y-2">
+                <div class="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1.5 glass-card-hover">
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 text-[9px] font-bold">Programación</span>
+                  <h4 class="font-bold text-xs text-white">Sistema de Gestión en Python</h4>
+                  <p class="text-[10px] text-white/60">Avance 60% completado</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna 3: Entregado -->
+            <div class="glass-panel p-4 rounded-3xl space-y-3">
+              <div class="flex justify-between items-center pb-2 border-b border-white/15">
+                <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-circle text-[8px]"></i> Finalizado
+                </span>
+                <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full font-mono">1</span>
+              </div>
+              <div class="space-y-2">
+                <div class="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1.5 opacity-70">
+                  <span class="px-2 py-0.5 rounded bg-indigo-500/30 text-indigo-200 text-[9px] font-bold">Álgebra</span>
+                  <h4 class="font-bold text-xs text-white line-through">Matriz de Leontief</h4>
+                  <p class="text-[10px] text-emerald-300">Entregado con éxito</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ================= NUEVA VISTA 2: BIBLIOTECA Y RECURSOS ================= -->
+        <section id="view-biblioteca" class="content-view hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-black text-white uppercase tracking-wider">Biblioteca y Recursos</h2>
+              <p class="text-xs text-white/70">Archivos, lecturas en PDF y enlaces útiles.</p>
+            </div>
+            <button onclick="showToast('Subir documento')" class="px-3.5 py-2 rounded-xl bg-white text-emerald-950 font-bold text-xs hover:bg-white/90 shadow-md">
+              + Subir Archivo
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="glass-panel p-4 rounded-2xl space-y-3 glass-card-hover flex items-start justify-between">
+              <div class="space-y-1">
+                <div class="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-sm">
+                  <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <h4 class="font-bold text-xs text-white pt-1">Cálculo de Thomas - Vol 1.pdf</h4>
+                <p class="text-[10px] text-white/60">PDF · 14.2 MB</p>
+              </div>
+              <button onclick="showToast('Descargando archivo...')" class="text-white/60 hover:text-white text-xs p-1">
+                <i class="fa-solid fa-download"></i>
+              </button>
+            </div>
+
+            <div class="glass-panel p-4 rounded-2xl space-y-3 glass-card-hover flex items-start justify-between">
+              <div class="space-y-1">
+                <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold text-sm">
+                  <i class="fa-solid fa-link"></i>
+                </div>
+                <h4 class="font-bold text-xs text-white pt-1">Documentación Python 3</h4>
+                <p class="text-[10px] text-white/60">Enlace Web Externo</p>
+              </div>
+              <button onclick="showToast('Abriendo enlace...')" class="text-white/60 hover:text-white text-xs p-1">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= NUEVA VISTA 3: FINANZAS ESTUDIANTILES ================= -->
+        <section id="view-finanzas" class="content-view hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-black text-white uppercase tracking-wider">Finanzas Estudiantiles</h2>
+              <p class="text-xs text-white/70">Control de gastos, matrículas y presupuesto mensual.</p>
+            </div>
+            <button onclick="showToast('Nuevo registro de gasto agregado')" class="px-3.5 py-2 rounded-xl bg-white text-emerald-950 font-bold text-xs hover:bg-white/90 shadow-md">
+              + Reg. Gasto
+            </button>
+          </div>
+
+          <!-- Resumen financiero tarjetas -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="glass-panel p-4 rounded-2xl space-y-1 text-center">
+              <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Presupuesto Mensual</span>
+              <p class="text-2xl font-black text-emerald-300">$350.00</p>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl space-y-1 text-center">
+              <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Gastos Acumulados</span>
+              <p class="text-2xl font-black text-rose-300">$185.50</p>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl space-y-1 text-center">
+              <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Disponible</span>
+              <p class="text-2xl font-black text-sky-300">$164.50</p>
+            </div>
+          </div>
+
+          <!-- Tabla de Gastos -->
+          <div class="glass-panel rounded-2xl p-4 overflow-x-auto space-y-3">
+            <h3 class="font-bold text-xs text-white">Últimos Movimientos</h3>
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-white/15 text-white/60">
+                  <th class="p-2">Concepto</th>
+                  <th class="p-2">Categoría</th>
+                  <th class="p-2">Monto</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/10">
+                <tr>
+                  <td class="p-2 font-medium">Libros de Texto Semestre</td>
+                  <td class="p-2"><span class="px-2 py-0.5 rounded bg-purple-500/30 text-purple-200 text-[9px] font-bold">Material</span></td>
+                  <td class="p-2 font-mono text-rose-300">-$65.00</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-medium">Suscripción Biblioteca Digital</td>
+                  <td class="p-2"><span class="px-2 py-0.5 rounded bg-sky-500/30 text-sky-200 text-[9px] font-bold">Software</span></td>
+                  <td class="p-2 font-mono text-rose-300">-$12.50</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <!-- ================= AI VIEW ================= -->
         <section id="view-ai" class="content-view hidden space-y-3 h-[calc(100vh-120px)] flex flex-col">
           <div class="flex items-center justify-between pb-2 border-b border-white/15">
@@ -641,8 +815,6 @@
           <h2 class="text-xl font-black text-white uppercase tracking-wider">Ajustes</h2>
           
           <div class="max-w-md space-y-3">
-            
-            <!-- TARJETA DE OPCIÓN: CAMBIAR FONDO DE PANTALLA -->
             <div onclick="openBgModal()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-white/30 group relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -659,7 +831,6 @@
                 </div>
               </div>
 
-              <!-- Vista previa miniatura del fondo actual -->
               <div class="mt-2 pt-3 border-t border-white/15 flex items-center justify-between">
                 <span class="text-[11px] text-white/80 font-medium">Fondo actual</span>
                 <div class="w-12 h-7 rounded-lg overflow-hidden border border-white/40 shadow-inner bg-slate-800">
@@ -668,7 +839,6 @@
               </div>
             </div>
 
-            <!-- TARJETA DE OPCIÓN: CERRAR SESIÓN -->
             <div onclick="cerrarSesion()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-rose-500/30 group relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -685,29 +855,21 @@
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 
-        <!-- ========================================================= -->
-        <!-- ================= PERFIL VIEW (RENOVADO) ================= -->
-        <!-- ========================================================= -->
+        <!-- ================= PERFIL VIEW ================= -->
         <section id="view-perfil" class="content-view hidden space-y-5 max-w-5xl mx-auto">
-          
-          <!-- SUB-NAVIGATION TABS HEADER FOR PERFIL -->
           <div class="glass-panel p-2 rounded-2xl flex items-center justify-between gap-2 overflow-x-auto border border-white/25 shadow-xl">
             <div class="flex items-center gap-2 min-w-max">
-              <!-- PESTAÑA 1: PERFIL PÚBLICO -->
               <button onclick="switchProfileTab('publico')" id="tab-btn-publico" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-white bg-white/20 border border-white/30 transition-all flex items-center gap-2">
                 <i class="fa-solid fa-user text-emerald-300"></i> Perfil público
               </button>
 
-              <!-- PESTAÑA 2: CUENTA Y CÓDIGO -->
               <button onclick="switchProfileTab('cuenta')" id="tab-btn-cuenta" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2">
                 <i class="fa-solid fa-key text-amber-300"></i> Cuenta
               </button>
 
-              <!-- PESTAÑA 3: PREFERENCIAS -->
               <button onclick="switchProfileTab('preferencias')" id="tab-btn-preferencias" class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2">
                 <i class="fa-solid fa-sliders text-indigo-300"></i> Preferencias
               </button>
@@ -718,12 +880,9 @@
             </div>
           </div>
 
-          <!-- ================= TAB 1: PERFIL PÚBLICO ================= -->
+          <!-- TAB 1: PERFIL PÚBLICO -->
           <div id="profile-tab-publico" class="profile-tab-content space-y-5">
-            
-            <!-- TARJETA CABECERA DE PERFIL -->
             <div class="glass-panel rounded-3xl overflow-hidden border border-white/30 shadow-2xl relative">
-              <!-- Banner de Portada -->
               <div class="h-32 sm:h-44 w-full bg-gradient-to-r from-emerald-600/60 via-teal-700/60 to-indigo-800/60 relative overflow-hidden">
                 <div class="absolute inset-0 bg-black/20"></div>
                 <div class="absolute right-4 top-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-[10px] text-emerald-300 font-bold border border-emerald-400/30">
@@ -731,10 +890,8 @@
                 </div>
               </div>
 
-              <!-- Información de Usuario sobrepuesta -->
               <div class="p-5 sm:p-6 pt-0 relative flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16">
                 <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
-                  <!-- Avatar Principal -->
                   <div class="relative group">
                     <img id="profileMainAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar Principal" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-slate-900/80 shadow-2xl">
                     <button onclick="showToast('Carga de imagen habilitada en Ajustes')" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110">
@@ -748,11 +905,10 @@
                       <i class="fa-solid fa-circle-check text-emerald-400 text-sm" title="Verificado"></i>
                     </div>
                     <p id="profileHandleDisplay" class="text-xs text-emerald-200/90 font-medium">@alexia_estudio</p>
-                    <p id="profileRoleDisplay" class="text-[11px] text-white/70">Estudiante de Ingeniería de Software & Inteligencia Artificial</p>
+                    <p id="profileRoleDisplay" class="text-[11px] text-white/70">Estudiante de BOLTON Studio</p>
                   </div>
                 </div>
 
-                <!-- Botones de Acción -->
                 <div class="flex items-center gap-2">
                   <button onclick="switchProfileTab('cuenta')" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs transition-all border border-white/20 flex items-center gap-1.5">
                     <i class="fa-solid fa-share-nodes"></i> Compartir
@@ -764,25 +920,21 @@
               </div>
             </div>
 
-            <!-- GRID DETALLES Y FORMULARIO PÚBLICO -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              
-              <!-- COLUMNA IZQUIERDA: TARJETAS DE ESTADÍSTICAS Y LOGROS -->
               <div class="space-y-5">
-                <!-- Logros del Estudiante -->
                 <div class="glass-panel p-4 rounded-3xl space-y-3">
                   <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-award text-amber-300"></i> Insignias de Estudio
+                    <i class="fa-solid fa-award text-amber-300"></i> Datos Académicos
                   </h3>
                   
                   <div class="space-y-2">
                     <div class="p-2.5 rounded-2xl bg-white/10 border border-white/10 flex items-center gap-3">
                       <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-sm">
-                        <i class="fa-solid fa-fire"></i>
+                        <i class="fa-solid fa-cake-candles"></i>
                       </div>
                       <div>
-                        <h4 class="text-xs font-bold text-white">Racha de 12 Días</h4>
-                        <p class="text-[10px] text-white/60">Estudio ininterrumpido activo</p>
+                        <h4 class="text-xs font-bold text-white">Edad y Año</h4>
+                        <p id="profileAge" class="text-[10px] text-white/70">-- años</p>
                       </div>
                     </div>
 
@@ -791,32 +943,41 @@
                         <i class="fa-solid fa-graduation-cap"></i>
                       </div>
                       <div>
-                        <h4 class="text-xs font-bold text-white">Top 5% Promedio</h4>
-                        <p class="text-[10px] text-white/60">Rendimiento destacado en materias</p>
+                        <h4 class="text-xs font-bold text-white">Grado Académico</h4>
+                        <p id="profileGrade" class="text-[10px] text-white/70">--</p>
+                      </div>
+                    </div>
+
+                    <div class="p-2.5 rounded-2xl bg-white/10 border border-white/10 flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-book-open"></i>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-bold text-white">Materias Inscritas</h4>
+                        <p id="profileSubjects" class="text-[10px] text-white/70">--</p>
+                      </div>
+                    </div>
+
+                    <div class="p-2.5 rounded-2xl bg-white/10 border border-white/10 flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-phone"></i>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-bold text-white">Teléfono</h4>
+                        <p id="profilePhone" class="text-[10px] text-white/70">--</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <!-- Enlaces Sociales Públicos -->
                 <div class="glass-panel p-4 rounded-3xl space-y-3">
                   <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-link text-emerald-300"></i> Redes y Contacto
+                    <i class="fa-solid fa-star text-amber-300"></i> Meta / Sueño
                   </h3>
-                  <div class="space-y-2 text-xs">
-                    <div class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10">
-                      <i class="fa-brands fa-github text-white/70 w-4"></i>
-                      <span class="text-white/80 font-mono">github.com/alexia_vance</span>
-                    </div>
-                    <div class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10">
-                      <i class="fa-brands fa-linkedin text-sky-400 w-4"></i>
-                      <span class="text-white/80 font-mono">linkedin.com/in/alexia-vance</span>
-                    </div>
-                  </div>
+                  <p id="profileDream" class="text-xs text-emerald-200/90 italic p-2 rounded-xl bg-white/5 border border-white/10">"--"</p>
                 </div>
               </div>
 
-              <!-- COLUMNA DERECHA: EDICIÓN DE PERFIL PÚBLICO -->
               <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
                 <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-white/15 pb-3">
                   <i class="fa-solid fa-user-pen text-emerald-300"></i> Información Pública del Estudiante
@@ -844,17 +1005,12 @@
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
 
-          <!-- ================= TAB 2: CUENTA Y CÓDIGO ================= -->
+          <!-- TAB 2: CUENTA Y CÓDIGO -->
           <div id="profile-tab-cuenta" class="profile-tab-content hidden space-y-5">
-            
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              
-              <!-- SECCIÓN DEL BLOQUE DE CÓDIGO INTEGRADOR Y DE ACCESO -->
               <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
                 <div class="flex items-center justify-between border-b border-white/15 pb-3">
                   <div>
@@ -869,7 +1025,6 @@
                   </button>
                 </div>
 
-                <!-- BLOQUE DE CÓDIGO ESTILIZADO -->
                 <div class="relative group">
                   <pre class="glass-code-block p-4 rounded-2xl text-xs text-emerald-300 overflow-x-auto leading-relaxed border border-white/20 shadow-inner" id="studentCodeBlock"><code>{
   <span class="text-purple-300">"estudiante"</span>: {
@@ -891,10 +1046,7 @@
                 </div>
               </div>
 
-              <!-- SECCIÓN COMPARTIR CUENTA Y SEGURIDAD -->
               <div class="space-y-5">
-                
-                <!-- Tarjeta de Compartir Perfil -->
                 <div class="glass-panel p-5 rounded-3xl space-y-4">
                   <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
                     <i class="fa-solid fa-share-nodes text-sky-300"></i> Compartir Mi Perfil
@@ -910,7 +1062,6 @@
                     </div>
                   </div>
 
-                  <!-- Botones de Redes Sociales -->
                   <div class="grid grid-cols-2 gap-2 pt-1">
                     <button onclick="shareSocial('whatsapp')" class="p-2.5 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 border border-emerald-500/30 text-xs font-bold flex items-center justify-center gap-2">
                       <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
@@ -921,7 +1072,6 @@
                   </div>
                 </div>
 
-                <!-- Seguridad de la Cuenta -->
                 <div class="glass-panel p-5 rounded-3xl space-y-3">
                   <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
                     <i class="fa-solid fa-shield-halved text-rose-300"></i> Seguridad de la Cuenta
@@ -944,19 +1094,13 @@
                     </button>
                   </div>
                 </div>
-
               </div>
-
             </div>
-
           </div>
 
-          <!-- ================= TAB 3: PREFERENCIAS ================= -->
+          <!-- TAB 3: PREFERENCIAS -->
           <div id="profile-tab-preferencias" class="profile-tab-content hidden space-y-5">
-            
             <div class="max-w-3xl mx-auto space-y-5">
-              
-              <!-- SECCIÓN DESTACADA: COMPARTIR MI PROGRESO ESTUDIANTIL -->
               <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4 border-2 border-emerald-400/40 shadow-2xl relative overflow-hidden">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex gap-3.5">
@@ -969,14 +1113,12 @@
                     </div>
                   </div>
 
-                  <!-- TOGGLE SWITCH PRINCIPAL -->
                   <label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
                     <input type="checkbox" id="toggleShareProgress" checked onchange="handleProgressToggleChange(this)" class="sr-only peer">
                     <div class="w-12 h-6 bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                   </label>
                 </div>
 
-                <!-- OPCIONES DE DETALLE DE PROGRESO -->
                 <div id="progressDetailOptions" class="pt-3 border-t border-white/15 space-y-3 transition-all">
                   <span class="text-[11px] font-bold text-emerald-300 uppercase tracking-wider block">Datos visibles en el perfil público:</span>
                   
@@ -1004,14 +1146,12 @@
                 </div>
               </div>
 
-              <!-- OTRAS PREFERENCIAS DE PRIVACIDAD Y NOTIFICACIONES -->
               <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
                 <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-white/15 pb-3">
                   <i class="fa-solid fa-bell text-indigo-300"></i> Notificaciones y Privacidad Generales
                 </h3>
 
                 <div class="space-y-3 text-xs">
-                  
                   <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
                     <div>
                       <h4 class="font-bold text-white">Recordatorios de Exámenes</h4>
@@ -1035,14 +1175,10 @@
                     </div>
                     <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded cursor-pointer">
                   </div>
-
                 </div>
               </div>
-
             </div>
-
           </div>
-
         </section>
 
       </main>
@@ -1051,13 +1187,10 @@
 
   </div>
 
-  <!-- ========================================================= -->
-  <!-- MODAL: NUEVO FONDO (SELECCIONAR Y SUBIR FONDO DE PANTALLA)-->
-  <!-- ========================================================= -->
+  <!-- MODAL: NUEVO FONDO -->
   <div id="bgModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md hidden transition-opacity duration-300">
     <div class="glass-panel w-full max-w-4xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-200">
       
-      <!-- Modal Header -->
       <div class="p-4 sm:p-5 border-b border-white/20 flex items-center justify-between flex-shrink-0 bg-black/20">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-emerald-300 border border-white/20">
@@ -1074,12 +1207,8 @@
         </button>
       </div>
 
-      <!-- Modal Body (Grid de fondos) -->
       <div class="p-4 sm:p-6 overflow-y-auto flex-1">
-        
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5" id="bgGrid">
-          
-          <!-- PRIMER BOTÓN: CIRCULITO + PARA SUBIR IMAGEN PROPIA -->
           <label class="cursor-pointer aspect-[4/3] sm:aspect-square rounded-2xl border-2 border-dashed border-white/40 hover:border-emerald-300 bg-white/5 hover:bg-white/15 flex flex-col items-center justify-center gap-2 transition-all group p-2 text-center shadow-lg">
             <div class="w-11 h-11 rounded-full bg-emerald-500/20 group-hover:bg-emerald-500 text-emerald-300 group-hover:text-slate-900 border border-emerald-400/40 flex items-center justify-center transition-all group-hover:scale-110 shadow-md">
               <i class="fa-solid fa-plus text-lg font-black"></i>
@@ -1088,16 +1217,11 @@
             <span class="text-[9px] text-white/50">Haz clic para buscar foto</span>
             <input type="file" id="customBgFileInput" accept="image/*" class="hidden" onchange="handleCustomBgUpload(event)">
           </label>
-
-          <!-- LAS 30 IMÁGENES SE GENERAN DINÁMICAMENTE AQUÍ -->
-
         </div>
-
       </div>
 
-      <!-- Modal Footer -->
       <div class="p-3.5 border-t border-white/15 flex items-center justify-between text-xs text-white/60 bg-black/20 flex-shrink-0">
-        <span>30 Galería de Fondos</span>
+        <span id="bgCountText">Galería de Fondos</span>
         <button onclick="closeBgModal()" class="px-4 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-medium transition-colors">
           Cerrar
         </button>
@@ -1109,70 +1233,85 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT LOGIC DE LA INTERFAZ -->
   <script>
-    // Verificar acceso al cargar stdio.html
-    window.addEventListener('DOMContentLoaded', async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
+    // Mapeo de íconos para el encabezado dinámico de cada vista
+    const viewIcons = {
+      dashboard: 'fa-chart-pie text-emerald-300',
+      notas: 'fa-note-sticky text-amber-300',
+      calendario: 'fa-calendar-days text-sky-300',
+      tiempo: 'fa-clock text-rose-300',
+      cuadernos: 'fa-bookmark text-teal-300',
+      tareas: 'fa-list-check text-indigo-300',
+      horario: 'fa-graduation-cap text-purple-300',
+      proyectos: 'fa-diagram-project text-pink-300',
+      biblioteca: 'fa-book-bookmark text-yellow-300',
+      finanzas: 'fa-wallet text-emerald-400',
+      ai: 'fa-wand-magic-sparkles text-purple-400',
+      investigacion: 'fa-magnifying-glass text-blue-300',
+      cursos: 'fa-code text-indigo-300',
+      entretenimiento: 'fa-gamepad text-rose-400',
+      ajustes: 'fa-sliders text-slate-300',
+      perfil: 'fa-user text-emerald-300'
+    };
 
-      if (!session || error) {
-        // Si no hay sesión o la cuenta fue eliminada, limpiar y redirigir a inicio
-        await supabase.auth.signOut();
-        localStorage.clear();
-        window.location.href = "index.html";
-      }
-    });
-
-    // Lógica para el botón de Cerrar Sesión (Cerrar sesión manualmente)
-    async function cerrarSesion() {
-      await supabase.auth.signOut();
-      localStorage.clear();
-      window.location.href = "index.html";
-    }
-
-    // LISTA BASE DE IMÁGENES PROPORCIONADAS POR EL USUARIO
     const baseImages = [
       '1044272232359838310.jpg',
       '1092685928366698116.jpg',
       'Moon Knight.jpg',
       '423056958750369372.jpg',
       'Doctor Doom.jpg',
-      '211174977272346.jpg'
+      '833588212269481424.jpg',
+      '666743919873121533.jpg',
+      '1110207745670214163.jpg',
+      'gcfc.png',
+      '683984262201953413.jpg',
+      'Cute Fantasy Background Design.jpg',
+      'Whimsy Laptop Wallpapers — Layreen Blog.jpg',
+      '605312006214405708.jpg',
+      '9499849210726543.jpg',
+      '2040762329295531.jpg',
+      '774126623487459838.jpg',
+      'Dan Norris - Spider-Man (2000).jpg',
+      '728527677237033005.jpg',
+      '810155420512887209.jpg',
+      '834643743489443392.jpg',
+      '753649318944871325.jpg',
+      'ׂ╰┈➤desktop wallpaper.jpg',
+      'dream big_.jpg',
+      'Robert Downey Jr_ + Rainbow.jpg',
+      '𝐬𝐩𝐢𝐝𝐞𝐫𝐦𝐚𝐧 𝐰𝐚𝐥𝐥𝐩𝐚𝐩𝐞𝐫.jpg',
+      '884042601875716419.jpg',
+      '994521530217328866.jpg'
     ];
 
-    // GENERAR ARRAY DE 30 IMÁGENES REPETIDAS EN BUCLE
-    const totalBgList = [];
-    for (let i = 0; i < 30; i++) {
-      totalBgList.push(baseImages[i % baseImages.length]);
-    }
-
-    // Fondo predeterminado
-    const DEFAULT_BG = '211174977272346.jpg';
-
-    // Obtener fondo guardado previamente o usar el por defecto
+    const DEFAULT_BG = '2040762329295531.jpg';
     let currentBg = localStorage.getItem('bolton_bg') || DEFAULT_BG;
 
-    // Aplicar el fondo al cargar
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'glass-panel px-4 py-2.5 rounded-2xl text-xs font-semibold text-white shadow-2xl flex items-center gap-2 border border-white/30 animate-in fade-in slide-in-from-bottom-2 pointer-events-auto';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
     function applyBackground(bgUrl, save = true) {
       currentBg = bgUrl;
       const bgElement = document.getElementById('page-background');
       const bgPreview = document.getElementById('currentBgPreview');
 
-      if (bgElement) {
-        bgElement.style.backgroundImage = `url('${bgUrl}')`;
-      }
-      if (bgPreview) {
-        bgPreview.style.backgroundImage = `url('${bgUrl}')`;
-      }
+      if (bgElement) bgElement.style.backgroundImage = `url('${bgUrl}')`;
+      if (bgPreview) bgPreview.style.backgroundImage = `url('${bgUrl}')`;
 
-      if (save) {
-        localStorage.setItem('bolton_bg', bgUrl);
-      }
-
+      if (save) localStorage.setItem('bolton_bg', bgUrl);
       updateActiveBgHighlight();
     }
 
-    // Modal para seleccionar nuevo fondo
     function openBgModal() {
       const modal = document.getElementById('bgModal');
       if (modal) {
@@ -1183,12 +1322,9 @@
 
     function closeBgModal() {
       const modal = document.getElementById('bgModal');
-      if (modal) {
-        modal.classList.add('hidden');
-      }
+      if (modal) modal.classList.add('hidden');
     }
 
-    // Renderizar tarjetas de la galería
     function renderBgGrid() {
       const grid = document.getElementById('bgGrid');
       if (!grid) return;
@@ -1203,10 +1339,14 @@
         grid.appendChild(customCard);
       }
 
-      totalBgList.forEach((imgUrl, index) => {
+      baseImages.forEach((imgUrl, index) => {
         const card = createBgCard(imgUrl, `Fondo ${index + 1}`, false);
         grid.appendChild(card);
       });
+
+      const totalCount = baseImages.length + (customSaved ? 1 : 0);
+      const countText = document.getElementById('bgCountText');
+      if (countText) countText.textContent = `${totalCount} Galería de Fondos`;
 
       updateActiveBgHighlight();
     }
@@ -1277,17 +1417,12 @@
       reader.readAsDataURL(file);
     }
 
-    // ==========================================
-    // CAMBIO DE SECCIONES INTERNAS DE PERFIL
-    // ==========================================
     function switchProfileTab(tabName) {
       const tabs = document.querySelectorAll('.profile-tab-content');
       tabs.forEach(t => t.classList.add('hidden'));
 
       const selectedTab = document.getElementById('profile-tab-' + tabName);
-      if (selectedTab) {
-        selectedTab.classList.remove('hidden');
-      }
+      if (selectedTab) selectedTab.classList.remove('hidden');
 
       const buttons = document.querySelectorAll('.profile-tab-btn');
       buttons.forEach(btn => {
@@ -1303,20 +1438,28 @@
     }
 
     function savePublicProfile() {
-      const name = document.getElementById('inputProfileName').value.trim();
-      const handle = document.getElementById('inputProfileHandle').value.trim();
-      const role = document.getElementById('inputProfileRole').value.trim();
+      const nameInput = document.getElementById('inputProfileName');
+      const handleInput = document.getElementById('inputProfileHandle');
+      const roleInput = document.getElementById('inputProfileRole');
 
-      if (name) {
-        document.getElementById('profileNameDisplay').textContent = name;
-        document.getElementById('sidebarUserName').textContent = name;
+      if (nameInput && nameInput.value.trim()) {
+        const val = nameInput.value.trim();
+        const el1 = document.getElementById('profileNameDisplay');
+        const el2 = document.getElementById('sidebarUserName');
+        if (el1) el1.textContent = val;
+        if (el2) el2.textContent = val;
       }
-      if (handle) {
-        document.getElementById('profileHandleDisplay').textContent = handle;
-        document.getElementById('sidebarUserHandle').textContent = handle;
+      if (handleInput && handleInput.value.trim()) {
+        const val = handleInput.value.trim();
+        const el1 = document.getElementById('profileHandleDisplay');
+        const el2 = document.getElementById('sidebarUserHandle');
+        if (el1) el1.textContent = val;
+        if (el2) el2.textContent = val;
       }
-      if (role) {
-        document.getElementById('profileRoleDisplay').textContent = role;
+      if (roleInput && roleInput.value.trim()) {
+        const val = roleInput.value.trim();
+        const el1 = document.getElementById('profileRoleDisplay');
+        if (el1) el1.textContent = val;
       }
 
       showToast('Perfil público actualizado correctamente');
@@ -1337,7 +1480,6 @@
     function shareSocial(network) {
       const url = encodeURIComponent(document.getElementById('profileShareLink').value);
       const msg = encodeURIComponent("¡Echa un vistazo a mi progreso de estudio en BOLTON Studio!");
-      
       if (network === 'whatsapp') {
         window.open(`https://api.whatsapp.com/send?text=${msg}%20${url}`, '_blank');
       } else if (network === 'telegram') {
@@ -1365,15 +1507,13 @@
       document.body.removeChild(tempInput);
     }
 
-    // Navegación entre vistas principales
+    // Navegación principal
     function switchView(viewName) {
       const views = document.querySelectorAll('.content-view');
       views.forEach(v => v.classList.add('hidden'));
 
       const targetView = document.getElementById('view-' + viewName);
-      if (targetView) {
-        targetView.classList.remove('hidden');
-      }
+      if (targetView) targetView.classList.remove('hidden');
 
       const navButtons = document.querySelectorAll('.nav-btn');
       navButtons.forEach(btn => {
@@ -1390,6 +1530,11 @@
       const headerTitle = document.getElementById('viewHeaderTitle');
       if (headerTitle) {
         headerTitle.textContent = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+      }
+
+      const headerIcon = document.getElementById('viewHeaderIcon');
+      if (headerIcon && viewIcons[viewName]) {
+        headerIcon.className = `fa-solid ${viewIcons[viewName]}`;
       }
 
       const sidebar = document.getElementById('sidebar');
@@ -1420,137 +1565,195 @@
       if (badge) badge.classList.add('hidden');
     }
 
-    // Pomodoro Timer Logic
+    // Temporizador Pomodoro demo
     let timerInterval = null;
     let timerSeconds = 25 * 60;
-    let isTimerRunning = false;
-
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+      const secs = (timerSeconds % 60).toString().padStart(2, '0');
+      const display = document.getElementById('timerDisplay');
+      if (display) display.textContent = `${mins}:${secs}`;
+    }
     function toggleTimer() {
       const btn = document.getElementById('startTimerBtn');
-      if (isTimerRunning) {
+      if (timerInterval) {
         clearInterval(timerInterval);
-        isTimerRunning = false;
-        btn.textContent = 'Iniciar';
+        timerInterval = null;
+        if (btn) btn.textContent = 'Iniciar';
       } else {
-        isTimerRunning = true;
-        btn.textContent = 'Pausar';
+        if (btn) btn.textContent = 'Pausar';
         timerInterval = setInterval(() => {
           if (timerSeconds > 0) {
             timerSeconds--;
             updateTimerDisplay();
           } else {
             clearInterval(timerInterval);
-            isTimerRunning = false;
-            btn.textContent = 'Iniciar';
-            showToast('¡Tiempo cumplido! Toma un descanso.');
+            timerInterval = null;
+            if (btn) btn.textContent = 'Iniciar';
+            showToast('¡Tiempo Pomodoro completado!');
           }
         }, 1000);
       }
     }
-
     function resetTimer() {
-      clearInterval(timerInterval);
-      isTimerRunning = false;
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
       timerSeconds = 25 * 60;
-      document.getElementById('startTimerBtn').textContent = 'Iniciar';
       updateTimerDisplay();
+      const btn = document.getElementById('startTimerBtn');
+      if (btn) btn.textContent = 'Iniciar';
     }
 
-    function updateTimerDisplay() {
-      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-      const secs = (timerSeconds % 60).toString().padStart(2, '0');
-      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
-    }
-
-    // AI Assistant Handlers
+    // AI & Búsqueda
     function handleAiSubmit(e) {
       e.preventDefault();
       const input = document.getElementById('aiInputPrompt');
-      const query = input.value.trim();
-      if (!query) return;
-
-      const chatBox = document.getElementById('aiChatBox');
-      
-      const userMsg = document.createElement('div');
-      userMsg.className = 'p-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-xs text-white ml-auto max-w-[80%]';
-      userMsg.textContent = query;
-      chatBox.appendChild(userMsg);
-
+      if (!input || !input.value.trim()) return;
+      const chat = document.getElementById('aiChatBox');
+      if (chat) {
+        chat.innerHTML += `<div class="p-3 rounded-xl bg-purple-500/20 text-xs text-purple-100 ml-4 font-semibold">${input.value}</div>`;
+        chat.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs text-white mr-4">Respuesta generada para tu consulta: "${input.value}"</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }
       input.value = '';
-
-      setTimeout(() => {
-        const aiMsg = document.createElement('div');
-        aiMsg.className = 'p-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white max-w-[85%]';
-        aiMsg.innerHTML = `<strong class="text-purple-300 block mb-1">BOLTON AI:</strong> Entendido. Procesando tu consulta sobre <em>"${query}"</em>. Para ver una explicación detallada, puedes consultar tus notas de la asignatura.`;
-        chatBox.appendChild(aiMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }, 600);
     }
-
     function sendQuickAiQuery() {
-      const q = document.getElementById('dashAiQuery').value.trim();
-      if (!q) return;
-      switchView('ai');
-      const input = document.getElementById('aiInputPrompt');
-      if (input) {
-        input.value = q;
+      const q = document.getElementById('dashAiQuery');
+      if (q && q.value.trim()) {
+        switchView('ai');
+        const input = document.getElementById('aiInputPrompt');
+        if (input) {
+          input.value = q.value;
+          q.value = '';
+        }
       }
     }
-
     function executeResearchSearch() {
-      const query = document.getElementById('researchQueryInput').value.trim();
-      const results = document.getElementById('researchResults');
-      if (!query) return;
-
-      results.innerHTML = `<div class="space-y-2"><p class="font-bold text-white">Resultados de investigación para "${query}":</p><p class="text-white/80">1. Síntesis conceptual de fuentes bibliográficas académicas verificadas...</p></div>`;
+      const input = document.getElementById('researchQueryInput');
+      const res = document.getElementById('researchResults');
+      if (input && res && input.value.trim()) {
+        res.innerHTML = `<div class="p-2 font-bold text-white">Resultados para: ${input.value}</div><p class="mt-1 text-white/80">Información sintetizada disponible para guardar en tus cuadernos.</p>`;
+      }
     }
-
     function createNewNote() {
-      const notesGrid = document.getElementById('notesGrid');
-      if (!notesGrid) return;
-
-      const newCard = document.createElement('div');
-      newCard.className = 'glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group';
-      newCard.innerHTML = `
-        <span class="px-2 py-0.5 rounded bg-sky-500/30 text-sky-200 text-[9px] font-extrabold uppercase">Nueva Nota</span>
-        <h3 class="font-bold text-sm text-white">Apunte rápido sin título</h3>
-        <p class="text-xs text-white/70">Haz clic para editar el contenido de esta nota...</p>
-      `;
-      notesGrid.prepend(newCard);
       showToast('Nueva nota creada');
     }
-
-    // Audio Lofi Simulador
     let isPlayingSound = false;
     function toggleAmbientSound() {
-      const btn = document.getElementById('soundToggleBtn');
       isPlayingSound = !isPlayingSound;
-      if (isPlayingSound) {
-        btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i> Pausar';
-        showToast('Reproduciendo audio de ambiente Lofi');
-      } else {
-        btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+      const btn = document.getElementById('soundToggleBtn');
+      if (btn) {
+        btn.innerHTML = isPlayingSound ? '<i class="fa-solid fa-pause mr-1"></i> Pausar' : '<i class="fa-solid fa-play mr-1"></i> Reproducir';
       }
+      showToast(isPlayingSound ? 'Ambiente Lofi iniciado' : 'Sonido pausado');
     }
+  </script>
 
-    // Helper Toast
-    function showToast(message) {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      toast.className = 'glass-panel px-4 py-2.5 rounded-2xl text-xs text-white shadow-2xl border border-white/30 animate-in fade-in slide-in-from-bottom-2 duration-200';
-      toast.textContent = message;
-      container.appendChild(toast);
+  <!-- ========================================== -->
+  <!-- INTEGRACIÓN Y CONEXIÓN A SUPABASE         -->
+  <!-- ========================================== -->
+  <script>
+    // 1. CONFIGURACIÓN DE SUPABASE
+    const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
+    const supabaseAnonKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
-    }
-
-    // Inicialización al cargar la ventana
-    document.addEventListener('DOMContentLoaded', () => {
+    // 2. RECUPERAR DATOS DE SUPABASE AL CARGAR LA PÁGINA
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Aplicar fondo de pantalla guardado
       applyBackground(currentBg, false);
-      switchView('dashboard');
+
+      // Verificar si hay una sesión activa
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // Si no hay sesión activa, redirigir al login
+        window.location.href = 'index2.html';
+        return;
+      }
+      
+      const user = session.user;
+      
+      // Consultar los datos adicionales del usuario en la tabla 'profiles'
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+        
+      let fullName = 'Usuario Bolton';
+      let emailDisplay = user.email;
+      let avatarUrl = '';
+
+      if (profile) {
+        // Si el usuario tiene registro en la tabla profiles
+        fullName = `${profile.nombre || ''} ${profile.apellido || ''}`.trim() || 'Usuario Bolton';
+        emailDisplay = profile.email || user.email;
+        
+        // Rellenar los campos de la vista de perfil si existen en el HTML
+        const profileAge = document.getElementById('profileAge');
+        if (profileAge) profileAge.innerText = `${profile.edad || '--'} años (Nacido en ${profile.anio_nacimiento || '--'})`;
+        
+        const profileGrade = document.getElementById('profileGrade');
+        if (profileGrade) profileGrade.innerText = profile.grado || '--';
+        
+        const profileSubjects = document.getElementById('profileSubjects');
+        if (profileSubjects) profileSubjects.innerText = profile.materias ? `${profile.materias} materias inscritas` : '--';
+        
+        const profilePhone = document.getElementById('profilePhone');
+        if (profilePhone) profilePhone.innerText = profile.telefono || '--';
+        
+        const profileDream = document.getElementById('profileDream');
+        if (profileDream) profileDream.innerText = `"${profile.sueno_estudio || '--'}"`;
+        
+        const dashMateriasCount = document.getElementById('dashMateriasCount');
+        if (dashMateriasCount) {
+          dashMateriasCount.innerText = profile.materias || '0';
+        }
+
+        // Actualizar inputs de edición si existen
+        const inputName = document.getElementById('inputProfileName');
+        if (inputName) inputName.value = fullName;
+      } else if (user.app_metadata && user.app_metadata.provider === 'google') {
+        // Si inició sesión con Google
+        fullName = user.user_metadata.full_name || 'Usuario Google';
+        avatarUrl = user.user_metadata.avatar_url;
+      }
+
+      // Si no cuenta con una foto de avatar externa, se genera una automática con sus iniciales
+      if (!avatarUrl) {
+        avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=10b981&color=fff&bold=true`;
+      }
+
+      // Actualizar los elementos de texto en el Sidebar y Perfil
+      const sidebarUserName = document.getElementById('sidebarUserName');
+      if (sidebarUserName) sidebarUserName.innerText = fullName;
+
+      const sidebarUserHandle = document.getElementById('sidebarUserHandle');
+      if (sidebarUserHandle) sidebarUserHandle.innerText = emailDisplay;
+      
+      const profileNameDisplay = document.getElementById('profileNameDisplay');
+      if (profileNameDisplay) profileNameDisplay.innerText = fullName;
+
+      const profileHandleDisplay = document.getElementById('profileHandleDisplay');
+      if (profileHandleDisplay) profileHandleDisplay.innerText = emailDisplay;
+
+      // Actualizar todas las imágenes de avatar en la interfaz
+      const avatars = ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar', 'mainProfileAvatar'];
+      avatars.forEach(id => {
+        const imgEl = document.getElementById(id);
+        if (imgEl) imgEl.src = avatarUrl;
+      });
     });
+
+    // 3. FUNCIÓN PARA CERRAR SESIÓN
+    async function cerrarSesion() {
+      await supabase.auth.signOut();
+      localStorage.clear();
+      window.location.href = 'index2.html';
+    }
   </script>
 </body>
 </html>
