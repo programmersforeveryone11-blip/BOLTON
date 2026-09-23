@@ -1253,6 +1253,28 @@
           if (error) {
             showNotification("Correo o contraseña incorrectos", "error");
           } else {
+            // 1. Obtener los datos del perfil desde la base de datos
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', data.user.id)
+              .single();
+
+            // 2. Guardar en el almacenamiento local (caché)
+            if (profile) {
+              localStorage.setItem('bolton_user_profile', JSON.stringify({
+                nombre: profile.nombre,
+                apellido: profile.apellido,
+                edad: profile.edad,
+                grado: profile.grado,
+                materias: profile.materias,
+                telefono: profile.telefono,
+                dreamJob: profile.sueno_estudio,
+                email: profile.email
+              }));
+            }
+            
+            // 3. Redirigir al área de trabajo
             window.location.href = "stdio.html";
           }
         });
