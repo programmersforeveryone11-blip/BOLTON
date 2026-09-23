@@ -1254,284 +1254,203 @@
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- SCRIPT MAESTRO CON FUSIÓN DE DATOS Y PERSISTENCIA COMPLETA -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    (() => {
-      const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
-      const supabaseKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
-      const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+  <!-- SCRIPT MAESTRO DE SINCRONIZACIÓN AUTOMÁTICA POR SESIÓN / USUARIO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (() => {
+    const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
+    const supabaseKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
+    const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
-      function cleanNulls(obj) {
-        const clean = {};
-        for (const k in obj) {
-          if (obj[k] !== null && obj[k] !== undefined && obj[k] !== '') {
-            clean[k] = obj[k];
-          }
-        }
-        return clean;
-      }
+    function pintarPerfil(data) {
+      if (!data) return;
 
-      function pintarPerfil(data) {
-        if (!data) return;
+      const nombre = data.nombre || data.first_name || data.full_name || '';
+      const apellido = data.apellido || data.last_name || '';
+      let nombreCompleto = `${nombre} ${apellido}`.trim();
+      if (!nombreCompleto && data.email) nombreCompleto = data.email.split('@')[0];
+      if (!nombreCompleto) nombreCompleto = 'Estudiante Bolton';
 
-        const nombre = data.nombre || data.first_name || data.full_name || '';
-        const apellido = data.apellido || data.last_name || '';
-        let nombreCompleto = `${nombre} ${apellido}`.trim();
-        if (!nombreCompleto && data.email) nombreCompleto = data.email.split('@')[0];
-        if (!nombreCompleto) nombreCompleto = 'Estudiante Bolton';
+      const email = data.email || '';
+      const rawUser = data.nombre_usuario || data.username || (email ? email.split('@')[0] : 'estudiante');
+      const handle = rawUser.startsWith('@') ? rawUser : `@${rawUser}`;
 
-        const email = data.email || '';
-        const rawUser = data.nombre_usuario || data.username || (email ? email.split('@')[0] : 'estudiante');
-        const handle = rawUser.startsWith('@') ? rawUser : `@${rawUser}`;
-
-        const setTex = (id, val) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = val;
-        };
-
-        // Nombres y Handles
-        setTex('sidebarName', nombreCompleto);
-        setTex('sidebarHandle', handle);
-        setTex('profileNameDisplay', nombreCompleto);
-        setTex('profileHandleDisplay', handle);
-
-        // Datos Académicos
-        const edadVal = data.edad || data.age;
-        setTex('profileAge', edadVal ? `${edadVal} años` : '--');
-
-        const gradoVal = data.grado || data.grade;
-        setTex('profileGrade', gradoVal || '--');
-
-        const materiasVal = data.materias || data.subjects;
-        setTex('profileSubjects', materiasVal ? `${materiasVal} materias inscritas` : '0 materias');
-        setTex('dashMateriasCount', materiasVal || '0');
-
-        const telefonoVal = data.telefono || data.phone;
-        setTex('profilePhone', telefonoVal || '--');
-
-        const suenoVal = data.sueno_estudio || data.dreamJob || data.dream;
-        setTex('profileDream', suenoVal ? `"${suenoVal}"` : '"--"');
-
-        // Rellenar inputs del formulario de edición
-        const setInp = (id, val) => {
-          const el = document.getElementById(id);
-          if (el && val !== undefined && val !== null) el.value = val;
-        };
-
-        setInp('inputProfileName', nombreCompleto);
-        setInp('inputProfileHandle', handle);
-        setInp('inputProfileAge', edadVal || '');
-        setInp('inputProfileGrade', gradoVal || '');
-        setInp('inputProfileSubjects', materiasVal || '');
-        setInp('inputProfilePhone', telefonoVal || '');
-        setInp('inputProfileDream', suenoVal || '');
-        if (data.titulo_carrera) setInp('inputProfileRole', data.titulo_carrera);
-        if (data.biografia) setInp('inputProfileBio', data.biografia);
-
-        // Avatares
-        const avatarUrl = data.avatar_url || data.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreCompleto)}&background=10b981&color=fff&bold=true`;
-        ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar'].forEach(id => {
-          const img = document.getElementById(id);
-          if (img) img.src = avatarUrl;
-        });
-      }
-
-      async function cargarPerfil() {
-        let cachedProfile = {};
-        try {
-          const raw = localStorage.getItem('bolton_user_profile');
-          if (raw) cachedProfile = JSON.parse(raw) || {};
-        } catch (e) {}
-
-        pintarPerfil(cachedProfile);
-
-        if (supabase) {
-          try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session && session.user) {
-              const { data: dbProfile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', session.user.id)
-                .maybeSingle();
-
-              const meta = session.user.user_metadata || {};
-
-              // Fusión limpia: Evita que valores nulos de Supabase borren la caché local
-              const perfilFusionado = {
-                nombre: 'Estudiante',
-                apellido: 'Bolton',
-                ...cleanNulls(meta),
-                ...cleanNulls(cachedProfile),
-                ...cleanNulls(dbProfile || {}),
-                email: session.user.email
-              };
-
-              localStorage.setItem('bolton_user_profile', JSON.stringify(perfilFusionado));
-              pintarPerfil(perfilFusionado);
-            }
-          } catch (err) {
-            console.warn("Aviso al consultar Supabase:", err);
-          }
-        }
-      }
-
-      window.savePublicProfile = async function() {
-        const nameInput = document.getElementById('inputProfileName')?.value || '';
-        const handleInput = document.getElementById('inputProfileHandle')?.value || '';
-        const roleInput = document.getElementById('inputProfileRole')?.value || '';
-        const bioInput = document.getElementById('inputProfileBio')?.value || '';
-
-        const ageInput = document.getElementById('inputProfileAge')?.value || '';
-        const gradeInput = document.getElementById('inputProfileGrade')?.value || '';
-        const subjectsInput = document.getElementById('inputProfileSubjects')?.value || '';
-        const phoneInput = document.getElementById('inputProfilePhone')?.value || '';
-        const dreamInput = document.getElementById('inputProfileDream')?.value || '';
-
-        let actual = {};
-        try {
-          actual = JSON.parse(localStorage.getItem('bolton_user_profile')) || {};
-        } catch(e){}
-
-        const partesNombre = nameInput.trim().split(' ');
-        const nombre = partesNombre[0] || actual.nombre || 'Estudiante';
-        const apellido = partesNombre.slice(1).join(' ') || actual.apellido || '';
-
-        const perfilActualizado = {
-          ...actual,
-          nombre: nombre,
-          apellido: apellido,
-          nombre_usuario: handleInput.replace(/^@/, ''),
-          titulo_carrera: roleInput,
-          biografia: bioInput,
-          edad: ageInput || actual.edad,
-          grado: gradeInput || actual.grado,
-          materias: subjectsInput || actual.materias,
-          telefono: phoneInput || actual.telefono,
-          sueno_estudio: dreamInput || actual.sueno_estudio
-        };
-
-        localStorage.setItem('bolton_user_profile', JSON.stringify(perfilActualizado));
-        pintarPerfil(perfilActualizado);
-
-        if (supabase) {
-          try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-              await supabase.from('profiles').upsert({
-                id: session.user.id,
-                nombre: nombre,
-                apellido: apellido,
-                email: session.user.email,
-                nombre_usuario: perfilActualizado.nombre_usuario,
-                edad: ageInput ? parseInt(ageInput, 10) : null,
-                grado: gradeInput,
-                materias: subjectsInput ? parseInt(subjectsInput, 10) : null,
-                telefono: phoneInput,
-                sueno_estudio: dreamInput
-              });
-            }
-          } catch(e) {
-            console.warn("No se pudo sincronizar en Supabase:", e);
-          }
-        }
-
-        if (window.showToast) window.showToast('Perfil actualizado con éxito');
+      const setTex = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
       };
 
+      // Actualizar textos generales y de la barra lateral
+      setTex('sidebarName', nombreCompleto);
+      setTex('sidebarHandle', handle);
+      setTex('profileNameDisplay', nombreCompleto);
+      setTex('profileHandleDisplay', handle);
+
+      // Datos Académicos
+      const edadVal = data.edad || data.age;
+      setTex('profileAge', edadVal ? `${edadVal} años` : '--');
+
+      const gradoVal = data.grado || data.grade;
+      setTex('profileGrade', gradoVal || '--');
+
+      const materiasVal = data.materias || data.subjects;
+      setTex('profileSubjects', materiasVal ? `${materiasVal} materias inscritas` : '0 materias');
+      setTex('dashMateriasCount', materiasVal || '0');
+
+      const telefonoVal = data.telefono || data.phone;
+      setTex('profilePhone', telefonoVal || '--');
+
+      const suenoVal = data.sueno_estudio || data.dreamJob || data.dream;
+      setTex('profileDream', suenoVal ? `"${suenoVal}"` : '"--"');
+
+      // Rellenar formulario de edición automáticamente
+      const setInp = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val !== undefined && val !== null) el.value = val;
+      };
+
+      setInp('inputProfileName', nombreCompleto);
+      setInp('inputProfileHandle', handle);
+      setInp('inputProfileAge', edadVal || '');
+      setInp('inputProfileGrade', gradoVal || '');
+      setInp('inputProfileSubjects', materiasVal || '');
+      setInp('inputProfilePhone', telefonoVal || '');
+      setInp('inputProfileDream', suenoVal || '');
+      if (data.titulo_carrera) setInp('inputProfileRole', data.titulo_carrera);
+      if (data.biografia) setInp('inputProfileBio', data.biografia);
+
+      // Avatares
+      const avatarUrl = data.avatar_url || data.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreCompleto)}&background=10b981&color=fff&bold=true`;
+      ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar'].forEach(id => {
+        const img = document.getElementById(id);
+        if (img) img.src = avatarUrl;
+      });
+    }
+
+    async function cargarPerfil() {
+      let perfilFinal = {};
+
+      // 1. Intentar recuperar caché previa local
+      try {
+        const raw = localStorage.getItem('bolton_user_profile');
+        if (raw) perfilFinal = JSON.parse(raw) || {};
+      } catch (e) {}
+
+      pintarPerfil(perfilFinal);
+
+      // 2. Buscar directamente en Supabase por la sesión activa o por correo/usuario
       if (supabase) {
-        supabase.auth.onAuthStateChange((event, session) => {
-          if (session) cargarPerfil();
-        });
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          
+          if (session && session.user) {
+            // Consultar tabla profiles usando el ID del usuario autenticado
+            let { data: dbProfile, error } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .maybeSingle();
+
+            // Si no encuentra por ID, intentar buscar por correo electrónico
+            if (!dbProfile && session.user.email) {
+              const { data: emailProfile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('email', session.user.email)
+                .maybeSingle();
+              if (emailProfile) dbProfile = emailProfile;
+            }
+
+            if (dbProfile) {
+              perfilFinal = {
+                ...perfilFinal,
+                ...dbProfile,
+                email: session.user.email
+              };
+              localStorage.setItem('bolton_user_profile', JSON.stringify(perfilFinal));
+              pintarPerfil(perfilFinal);
+            }
+          }
+        } catch (err) {
+          console.warn("Error al sincronizar con Supabase:", err);
+        }
+      }
+    }
+
+    window.savePublicProfile = async function() {
+      const nameInput = document.getElementById('inputProfileName')?.value || '';
+      const handleInput = document.getElementById('inputProfileHandle')?.value || '';
+      const roleInput = document.getElementById('inputProfileRole')?.value || '';
+      const bioInput = document.getElementById('inputProfileBio')?.value || '';
+      const ageInput = document.getElementById('inputProfileAge')?.value || '';
+      const gradeInput = document.getElementById('inputProfileGrade')?.value || '';
+      const subjectsInput = document.getElementById('inputProfileSubjects')?.value || '';
+      const phoneInput = document.getElementById('inputProfilePhone')?.value || '';
+      const dreamInput = document.getElementById('inputProfileDream')?.value || '';
+
+      let actual = {};
+      try {
+        actual = JSON.parse(localStorage.getItem('bolton_user_profile')) || {};
+      } catch(e){}
+
+      const partesNombre = nameInput.trim().split(' ');
+      const nombre = partesNombre[0] || actual.nombre || 'Estudiante';
+      const apellido = partesNombre.slice(1).join(' ') || actual.apellido || '';
+
+      const perfilActualizado = {
+        ...actual,
+        nombre: nombre,
+        apellido: apellido,
+        nombre_usuario: handleInput.replace(/^@/, ''),
+        titulo_carrera: roleInput,
+        biografia: bioInput,
+        edad: ageInput,
+        grado: gradeInput,
+        materias: subjectsInput,
+        telefono: phoneInput,
+        sueno_estudio: dreamInput
+      };
+
+      localStorage.setItem('bolton_user_profile', JSON.stringify(perfilActualizado));
+      pintarPerfil(perfilActualizado);
+
+      if (supabase) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            await supabase.from('profiles').upsert({
+              id: session.user.id,
+              nombre: nombre,
+              apellido: apellido,
+              email: session.user.email,
+              nombre_usuario: perfilActualizado.nombre_usuario,
+              edad: ageInput ? parseInt(ageInput, 10) : null,
+              grado: gradeInput,
+              materias: subjectsInput ? parseInt(subjectsInput, 10) : null,
+              telefono: phoneInput,
+              sueno_estudio: dreamInput
+            });
+          }
+        } catch(e) {
+          console.warn("No se pudo guardar en Supabase:", e);
+        }
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', cargarPerfil);
-      } else {
-        cargarPerfil();
-      }
-    })();
-  </script>
-
-  <!-- CONTROLADORES DE LA INTERFAZ -->
-  <script>
-    const viewIcons = {
-      'dashboard': 'fa-solid fa-chart-pie text-emerald-300',
-      'notas': 'fa-regular fa-note-sticky text-amber-300',
-      'calendario': 'fa-regular fa-calendar-days text-sky-300',
-      'tiempo': 'fa-regular fa-clock text-rose-300',
-      'cuadernos': 'fa-regular fa-bookmark text-indigo-300',
-      'tareas': 'fa-solid fa-list-check text-teal-300',
-      'horario': 'fa-solid fa-graduation-cap text-purple-300',
-      'proyectos': 'fa-solid fa-diagram-project text-orange-300',
-      'biblioteca': 'fa-solid fa-book-bookmark text-blue-300',
-      'finanzas': 'fa-solid fa-wallet text-emerald-300',
-      'ai': 'fa-solid fa-wand-magic-sparkles text-purple-300',
-      'investigacion': 'fa-solid fa-magnifying-glass text-yellow-300',
-      'cursos': 'fa-solid fa-code text-cyan-300',
-      'entretenimiento': 'fa-solid fa-gamepad text-pink-300',
-      'ajustes': 'fa-solid fa-sliders text-white/50',
-      'perfil': 'fa-solid fa-user text-emerald-300'
+      if (window.showToast) window.showToast('Perfil actualizado con éxito');
     };
 
-    function switchView(viewId) {
-      document.querySelectorAll('.content-view').forEach(el => el.classList.add('hidden'));
-      const view = document.getElementById('view-' + viewId);
-      if (view) view.classList.remove('hidden');
-
-      const titleEl = document.getElementById('viewHeaderTitle');
-      const iconEl = document.getElementById('viewHeaderIcon');
-      if (titleEl) titleEl.textContent = viewId.charAt(0).toUpperCase() + viewId.slice(1);
-      if (iconEl && viewIcons[viewId]) iconEl.className = viewIcons[viewId];
-    }
-
-    function toggleMobileSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('mobileOverlay');
-      sidebar.classList.toggle('-translate-x-full');
-      overlay.classList.toggle('hidden');
-    }
-
-    function showToast(msg) {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      toast.className = 'glass-panel px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg animate-in slide-in-from-right duration-300 border border-emerald-500/50';
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i>${msg}`;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'transition-opacity');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-
-    function switchProfileTab(tabId) {
-      document.querySelectorAll('.profile-tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.profile-tab-btn').forEach(el => {
-        el.classList.remove('bg-white/20', 'border-white/30', 'text-white');
-        el.classList.add('text-white/70');
+    if (supabase) {
+      supabase.auth.onAuthStateChange((event, session) => {
+        if (session) cargarPerfil();
       });
-      document.getElementById('profile-tab-' + tabId).classList.remove('hidden');
-      const btn = document.getElementById('tab-btn-' + tabId);
-      if(btn) {
-        btn.classList.add('bg-white/20', 'border-white/30', 'text-white');
-        btn.classList.remove('text-white/70');
-      }
     }
 
-    function toggleNotificationsMenu() {
-       document.getElementById('notifDropdown').classList.toggle('hidden');
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', cargarPerfil);
+    } else {
+      cargarPerfil();
     }
-
-    function clearNotifications() {
-       document.getElementById('notifList').innerHTML = '<div class="text-center text-white/50 text-[10px] py-4">Sin notificaciones nuevas</div>';
-       document.getElementById('notifBadge').classList.add('hidden');
-    }
-
-    function cerrarSesion() {
-       localStorage.removeItem('bolton_user_profile');
-       if (window.supabase) window.supabase.auth.signOut();
-       window.location.reload();
-    }
-  </script>
+  })();
+</script>
 </body>
 </html>
