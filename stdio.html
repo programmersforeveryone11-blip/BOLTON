@@ -990,14 +990,39 @@
                     <input type="text" id="inputProfileHandle" placeholder="@usuario" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
                   </div>
 
+                  <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-white/80">Edad</label>
+                    <input type="number" id="inputProfileAge" placeholder="Ej: 16" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-white/80">Grado Académico</label>
+                    <input type="text" id="inputProfileGrade" placeholder="Ej: 4to Año / 1er Semestre" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-white/80">Materias Cursando</label>
+                    <input type="number" id="inputProfileSubjects" placeholder="Ej: 8" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-white/80">Teléfono</label>
+                    <input type="tel" id="inputProfilePhone" placeholder="+58 412..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
+                  <div class="space-y-1 sm:col-span-2">
+                    <label class="text-[11px] font-semibold text-white/80">¿Qué quieres estudiar de grande? (Sueño / Meta)</label>
+                    <input type="text" id="inputProfileDream" placeholder="Ej: Ingeniería en Sistemas, Medicina..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                  </div>
+
                   <div class="space-y-1 sm:col-span-2">
                     <label class="text-[11px] font-semibold text-white/80">Título / Carrera Estudiantil</label>
-                    <input type="text" id="inputProfileRole" value="Estudiante de Ingeniería de Software & IA" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                    <input type="text" id="inputProfileRole" placeholder="Estudiante de Ingeniería de Software & IA" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
                   </div>
 
                   <div class="space-y-1 sm:col-span-2">
                     <label class="text-[11px] font-semibold text-white/80">Biografía Académica</label>
-                    <textarea id="inputProfileBio" rows="3" class="glass-input w-full p-3 rounded-xl text-xs">Apasionado por el aprendizaje contínuo y el desarrollo en BOLTON Studio.</textarea>
+                    <textarea id="inputProfileBio" rows="3" class="glass-input w-full p-3 rounded-xl text-xs" placeholder="Describe tu perfil académico...">Apasionado por el aprendizaje continuo y el desarrollo en BOLTON Studio.</textarea>
                   </div>
                 </div>
               </div>
@@ -1228,16 +1253,24 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- SCRIPT MAESTRO CON FUSIÓN DE DATOS Y PERSISTENCIA -->
+  <!-- SCRIPT MAESTRO CON FUSIÓN DE DATOS Y PERSISTENCIA COMPLETA -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (() => {
-      // 1. Configuración de Supabase
       const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
       const supabaseKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
       const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
-      // 2. Función para renderizar todos los datos en la interfaz
+      function cleanNulls(obj) {
+        const clean = {};
+        for (const k in obj) {
+          if (obj[k] !== null && obj[k] !== undefined && obj[k] !== '') {
+            clean[k] = obj[k];
+          }
+        }
+        return clean;
+      }
+
       function pintarPerfil(data) {
         if (!data) return;
 
@@ -1262,14 +1295,7 @@
         setTex('profileNameDisplay', nombreCompleto);
         setTex('profileHandleDisplay', handle);
 
-        // Campos de texto editables
-        const inputName = document.getElementById('inputProfileName');
-        if (inputName) inputName.value = nombreCompleto;
-
-        const inputHandle = document.getElementById('inputProfileHandle');
-        if (inputHandle) inputHandle.value = handle;
-
-        // Datos Académicos (Soporta múltiples nomenclaturas para evitar '--')
+        // Datos Académicos
         const edadVal = data.edad || data.age;
         setTex('profileAge', edadVal ? `${edadVal} años` : '--');
 
@@ -1286,7 +1312,23 @@
         const suenoVal = data.sueno_estudio || data.dreamJob || data.dream;
         setTex('profileDream', suenoVal ? `"${suenoVal}"` : '"--"');
 
-        // Actualización de Avatares
+        // Rellenar inputs del formulario de edición
+        const setInp = (id, val) => {
+          const el = document.getElementById(id);
+          if (el && val !== undefined && val !== null) el.value = val;
+        };
+
+        setInp('inputProfileName', nombreCompleto);
+        setInp('inputProfileHandle', handle);
+        setInp('inputProfileAge', edadVal || '');
+        setInp('inputProfileGrade', gradoVal || '');
+        setInp('inputProfileSubjects', materiasVal || '');
+        setInp('inputProfilePhone', telefonoVal || '');
+        setInp('inputProfileDream', suenoVal || '');
+        if (data.titulo_carrera) setInp('inputProfileRole', data.titulo_carrera);
+        if (data.biografia) setInp('inputProfileBio', data.biografia);
+
+        // Avatares
         const avatarUrl = data.avatar_url || data.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreCompleto)}&background=10b981&color=fff&bold=true`;
         ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar'].forEach(id => {
           const img = document.getElementById(id);
@@ -1294,22 +1336,15 @@
         });
       }
 
-      // 3. Carga inteligente (No destruye la caché)
       async function cargarPerfil() {
         let cachedProfile = {};
-        
-        // Paso 1: Leer caché local primero
         try {
           const raw = localStorage.getItem('bolton_user_profile');
           if (raw) cachedProfile = JSON.parse(raw) || {};
-        } catch (e) {
-          console.warn("Sin cache previa.");
-        }
+        } catch (e) {}
 
-        // Renderizar caché de inmediato
         pintarPerfil(cachedProfile);
 
-        // Paso 2: Consultar Supabase y fusionar con la caché existente
         if (supabase) {
           try {
             const { data: { session } } = await supabase.auth.getSession();
@@ -1322,13 +1357,13 @@
 
               const meta = session.user.user_metadata || {};
 
-              // FUSIÓN INTELIGENTE: DB > Caché Local > Metadata Auth
+              // Fusión limpia: Evita que valores nulos de Supabase borren la caché local
               const perfilFusionado = {
                 nombre: 'Estudiante',
                 apellido: 'Bolton',
-                ...meta,
-                ...cachedProfile,
-                ...(dbProfile || {}),
+                ...cleanNulls(meta),
+                ...cleanNulls(cachedProfile),
+                ...cleanNulls(dbProfile || {}),
                 email: session.user.email
               };
 
@@ -1341,11 +1376,18 @@
         }
       }
 
-      // 4. Guardar cambios públicos en LocalStorage y Supabase
       window.savePublicProfile = async function() {
         const nameInput = document.getElementById('inputProfileName')?.value || '';
         const handleInput = document.getElementById('inputProfileHandle')?.value || '';
-        
+        const roleInput = document.getElementById('inputProfileRole')?.value || '';
+        const bioInput = document.getElementById('inputProfileBio')?.value || '';
+
+        const ageInput = document.getElementById('inputProfileAge')?.value || '';
+        const gradeInput = document.getElementById('inputProfileGrade')?.value || '';
+        const subjectsInput = document.getElementById('inputProfileSubjects')?.value || '';
+        const phoneInput = document.getElementById('inputProfilePhone')?.value || '';
+        const dreamInput = document.getElementById('inputProfileDream')?.value || '';
+
         let actual = {};
         try {
           actual = JSON.parse(localStorage.getItem('bolton_user_profile')) || {};
@@ -1360,6 +1402,13 @@
           nombre: nombre,
           apellido: apellido,
           nombre_usuario: handleInput.replace(/^@/, ''),
+          titulo_carrera: roleInput,
+          biografia: bioInput,
+          edad: ageInput || actual.edad,
+          grado: gradeInput || actual.grado,
+          materias: subjectsInput || actual.materias,
+          telefono: phoneInput || actual.telefono,
+          sueno_estudio: dreamInput || actual.sueno_estudio
         };
 
         localStorage.setItem('bolton_user_profile', JSON.stringify(perfilActualizado));
@@ -1374,7 +1423,12 @@
                 nombre: nombre,
                 apellido: apellido,
                 email: session.user.email,
-                ...perfilActualizado
+                nombre_usuario: perfilActualizado.nombre_usuario,
+                edad: ageInput ? parseInt(ageInput, 10) : null,
+                grado: gradeInput,
+                materias: subjectsInput ? parseInt(subjectsInput, 10) : null,
+                telefono: phoneInput,
+                sueno_estudio: dreamInput
               });
             }
           } catch(e) {
@@ -1385,7 +1439,6 @@
         if (window.showToast) window.showToast('Perfil actualizado con éxito');
       };
 
-      // Escuchar autenticación
       if (supabase) {
         supabase.auth.onAuthStateChange((event, session) => {
           if (session) cargarPerfil();
@@ -1400,12 +1453,8 @@
     })();
   </script>
 
+  <!-- CONTROLADORES DE LA INTERFAZ -->
   <script>
-    /* ========================================== */
-    /* GLOBAL STATE & VIEW CONTROLLER             */
-    /* ========================================== */
-    
-    // Icon mapping for header title
     const viewIcons = {
       'dashboard': 'fa-solid fa-chart-pie text-emerald-300',
       'notas': 'fa-regular fa-note-sticky text-amber-300',
@@ -1421,402 +1470,68 @@
       'investigacion': 'fa-solid fa-magnifying-glass text-yellow-300',
       'cursos': 'fa-solid fa-code text-cyan-300',
       'entretenimiento': 'fa-solid fa-gamepad text-pink-300',
-      'ajustes': 'fa-solid fa-sliders text-slate-300',
+      'ajustes': 'fa-solid fa-sliders text-white/50',
       'perfil': 'fa-solid fa-user text-emerald-300'
     };
 
-    const viewTitles = {
-      'dashboard': 'Dashboard',
-      'notas': 'Notas y Apuntes',
-      'calendario': 'Calendario',
-      'tiempo': 'Temporizador Pomodoro',
-      'cuadernos': 'Cuadernos Digitales',
-      'tareas': 'Tareas y Recordatorios',
-      'horario': 'Horario de Clases',
-      'proyectos': 'Proyectos y Trabajos',
-      'biblioteca': 'Biblioteca y Recursos',
-      'finanzas': 'Finanzas Estudiantiles',
-      'ai': 'BOLTON AI Assistant',
-      'investigacion': 'Investigación',
-      'cursos': 'Cursos Recomendados',
-      'entretenimiento': 'Entretenimiento & Lofi',
-      'ajustes': 'Ajustes del Sistema',
-      'perfil': 'Perfil del Estudiante'
-    };
+    function switchView(viewId) {
+      document.querySelectorAll('.content-view').forEach(el => el.classList.add('hidden'));
+      const view = document.getElementById('view-' + viewId);
+      if (view) view.classList.remove('hidden');
 
-    window.switchView = function(viewId) {
-      // Hide all view sections
-      const views = document.querySelectorAll('.content-view');
-      views.forEach(v => v.classList.add('hidden'));
+      const titleEl = document.getElementById('viewHeaderTitle');
+      const iconEl = document.getElementById('viewHeaderIcon');
+      if (titleEl) titleEl.textContent = viewId.charAt(0).toUpperCase() + viewId.slice(1);
+      if (iconEl && viewIcons[viewId]) iconEl.className = viewIcons[viewId];
+    }
 
-      // Show requested view
-      const targetView = document.getElementById(`view-${viewId}`);
-      if (targetView) {
-        targetView.classList.remove('hidden');
-      }
-
-      // Update sidebar nav active state
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('bg-white/20', 'border-white/30', 'text-white');
-      });
-
-      const activeNav = document.getElementById(`nav-${viewId}`);
-      if (activeNav) {
-        activeNav.classList.add('bg-white/20', 'border-white/30', 'text-white');
-      }
-
-      // Update Header Title & Icon
-      const headerTitle = document.getElementById('viewHeaderTitle');
-      const headerIcon = document.getElementById('viewHeaderIcon');
-      if (headerTitle && viewTitles[viewId]) {
-        headerTitle.textContent = viewTitles[viewId];
-      }
-      if (headerIcon && viewIcons[viewId]) {
-        headerIcon.className = viewIcons[viewId];
-      }
-
-      // Close mobile sidebar if open
+    function toggleMobileSidebar() {
       const sidebar = document.getElementById('sidebar');
-      const mobileOverlay = document.getElementById('mobileOverlay');
-      if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
-        toggleMobileSidebar();
-      }
-    };
+      const overlay = document.getElementById('mobileOverlay');
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    }
 
-    window.toggleMobileSidebar = function() {
-      const sidebar = document.getElementById('sidebar');
-      const mobileOverlay = document.getElementById('mobileOverlay');
-      if (sidebar && mobileOverlay) {
-        sidebar.classList.toggle('-translate-x-full');
-        mobileOverlay.classList.toggle('hidden');
-      }
-    };
-
-    window.showToast = function(message) {
+    function showToast(msg) {
       const container = document.getElementById('toastContainer');
-      if (!container) return;
-
       const toast = document.createElement('div');
-      toast.className = 'glass-panel px-4 py-2.5 rounded-2xl text-xs font-bold text-white border border-white/30 shadow-2xl flex items-center gap-2 transform transition-all duration-300 opacity-0 translate-y-3 pointer-events-auto';
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i> <span>${message}</span>`;
-      
+      toast.className = 'glass-panel px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg animate-in slide-in-from-right duration-300 border border-emerald-500/50';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i>${msg}`;
       container.appendChild(toast);
-
-      // Animate In
-      requestAnimationFrame(() => {
-        toast.classList.remove('opacity-0', 'translate-y-3');
-      });
-
-      // Remove after 3 seconds
       setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-3');
+        toast.classList.add('opacity-0', 'transition-opacity');
         setTimeout(() => toast.remove(), 300);
       }, 3000);
-    };
-
-    window.toggleNotificationsMenu = function() {
-      const dropdown = document.getElementById('notifDropdown');
-      if (dropdown) {
-        dropdown.classList.toggle('hidden');
-      }
-    };
-
-    window.clearNotifications = function() {
-      const list = document.getElementById('notifList');
-      const badge = document.getElementById('notifBadge');
-      if (list) {
-        list.innerHTML = '<p class="text-[11px] text-white/50 text-center py-4">No hay notificaciones pendientes</p>';
-      }
-      if (badge) {
-        badge.classList.add('hidden');
-      }
-    };
-
-    let timerInterval = null;
-    let timerSeconds = 25 * 60;
-    let isTimerRunning = false;
-
-    window.toggleTimer = function() {
-      const startBtn = document.getElementById('startTimerBtn');
-      if (!isTimerRunning) {
-        isTimerRunning = true;
-        if (startBtn) startBtn.textContent = 'Pausar';
-        timerInterval = setInterval(() => {
-          if (timerSeconds > 0) {
-            timerSeconds--;
-            updateTimerDisplay();
-          } else {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            if (startBtn) startBtn.textContent = 'Iniciar';
-            showToast('¡Tiempo Pomodoro completado!');
-          }
-        }, 1000);
-      } else {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        if (startBtn) startBtn.textContent = 'Reanudar';
-      }
-    };
-
-    window.resetTimer = function() {
-      clearInterval(timerInterval);
-      isTimerRunning = false;
-      timerSeconds = 25 * 60;
-      updateTimerDisplay();
-      const startBtn = document.getElementById('startTimerBtn');
-      if (startBtn) startBtn.textContent = 'Iniciar';
-    };
-
-    function updateTimerDisplay() {
-      const display = document.getElementById('timerDisplay');
-      if (!display) return;
-      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-      const secs = String(timerSeconds % 60).padStart(2, '0');
-      display.textContent = `${mins}:${secs}`;
     }
 
-    window.sendQuickAiQuery = function() {
-      const input = document.getElementById('dashAiQuery');
-      if (input && input.value.trim()) {
-        const query = input.value.trim();
-        input.value = '';
-        switchView('ai');
-        appendAiMessage(query, 'user');
-        simulateAiReply(query);
-      }
-    };
-
-    window.handleAiSubmit = function(e) {
-      if (e) e.preventDefault();
-      const input = document.getElementById('aiInputPrompt');
-      if (input && input.value.trim()) {
-        const query = input.value.trim();
-        input.value = '';
-        appendAiMessage(query, 'user');
-        simulateAiReply(query);
-      }
-    };
-
-    function appendAiMessage(text, sender) {
-      const box = document.getElementById('aiChatBox');
-      if (!box) return;
-      const msg = document.createElement('div');
-      if (sender === 'user') {
-        msg.className = 'p-3 rounded-xl bg-purple-600/40 border border-purple-400/30 text-xs text-white ml-auto max-w-[80%] font-medium';
-      } else {
-        msg.className = 'p-3 rounded-xl bg-white/10 border border-white/15 text-xs text-white max-w-[85%]';
-      }
-      msg.textContent = text;
-      box.appendChild(msg);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function simulateAiReply(query) {
-      setTimeout(() => {
-        appendAiMessage(`Análisis sobre "${query}": Basado en tu plan de estudios de BOLTON, he registrado esta consulta en tus apuntes académicos. ¿Deseas generar un resumen o ficha de memoria?`, 'ai');
-      }, 800);
-    }
-
-    window.executeResearchSearch = function() {
-      const input = document.getElementById('researchQueryInput');
-      const resBox = document.getElementById('researchResults');
-      if (input && input.value.trim() && resBox) {
-        resBox.innerHTML = `<div class="space-y-2">
-          <p class="font-bold text-emerald-300">Resultados de investigación para: "${input.value}"</p>
-          <p class="text-white/80">1. Conceptos clave y definiciones académicas unificadas.</p>
-          <p class="text-white/80">2. Referencias recomendadas en la Biblioteca Bolton.</p>
-        </div>`;
-        showToast('Búsqueda de investigación completada');
-      }
-    };
-
-    window.createNewNote = function() {
-      const grid = document.getElementById('notesGrid');
-      if (!grid) return;
-      const note = document.createElement('div');
-      note.className = 'glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group';
-      note.innerHTML = `
-        <span class="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 text-[9px] font-extrabold uppercase">General</span>
-        <h3 class="font-bold text-sm text-white">Nueva Nota de Estudio</h3>
-        <p class="text-xs text-white/70">Haz clic para escribir tus apuntes y resúmenes aquí...</p>
-      `;
-      grid.prepend(note);
-      showToast('Nota creada');
-    };
-
-    window.switchProfileTab = function(tabName) {
-      document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.add('hidden'));
-      document.querySelectorAll('.profile-tab-btn').forEach(b => {
-        b.classList.remove('bg-white/20', 'border-white/30', 'text-white');
-        b.classList.add('text-white/70');
+    function switchProfileTab(tabId) {
+      document.querySelectorAll('.profile-tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.profile-tab-btn').forEach(el => {
+        el.classList.remove('bg-white/20', 'border-white/30', 'text-white');
+        el.classList.add('text-white/70');
       });
-
-      const activeTab = document.getElementById(`profile-tab-${tabName}`);
-      if (activeTab) activeTab.classList.remove('hidden');
-
-      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-white/20', 'border-white/30', 'text-white');
-        activeBtn.classList.remove('text-white/70');
+      document.getElementById('profile-tab-' + tabId).classList.remove('hidden');
+      const btn = document.getElementById('tab-btn-' + tabId);
+      if(btn) {
+        btn.classList.add('bg-white/20', 'border-white/30', 'text-white');
+        btn.classList.remove('text-white/70');
       }
-    };
-
-    window.copyStudentCode = function() {
-      const codeBlock = document.getElementById('studentCodeBlock');
-      if (codeBlock) {
-        navigator.clipboard.writeText(codeBlock.innerText);
-        showToast('Código copiado al portapapeles');
-      }
-    };
-
-    window.copyShareLink = function() {
-      const input = document.getElementById('profileShareLink');
-      if (input) {
-        navigator.clipboard.writeText(input.value);
-        showToast('Enlace de perfil copiado');
-      }
-    };
-
-    window.shareSocial = function(platform) {
-      const url = encodeURIComponent(document.getElementById('profileShareLink')?.value || window.location.href);
-      if (platform === 'whatsapp') {
-        window.open(`https://api.whatsapp.com/send?text=Mi%20Perfil%20Bolton:%20${url}`, '_blank');
-      } else if (platform === 'telegram') {
-        window.open(`https://t.me/share/url?url=${url}&text=Mi%20Perfil%20Bolton`, '_blank');
-      }
-    };
-
-    window.handleProgressToggleChange = function(cb) {
-      const opts = document.getElementById('progressDetailOptions');
-      if (opts) {
-        if (cb.checked) {
-          opts.classList.remove('opacity-40', 'pointer-events-none');
-        } else {
-          opts.classList.add('opacity-40', 'pointer-events-none');
-        }
-      }
-    };
-
-    const bgGallery = [
-      { name: 'Predeterminado', url: '2040762329295531.jpg' },
-      { name: 'Naturaleza Verde', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80' },
-      { name: 'Cielo Estrellado', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=1200&auto=format&fit=crop&q=80' },
-      { name: 'Estudio Neón', url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80' },
-      { name: 'Montañas Místicas', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&auto=format&fit=crop&q=80' },
-      { name: 'Minimalista Oscuro', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80' }
-    ];
-
-    window.openBgModal = function() {
-      const modal = document.getElementById('bgModal');
-      if (!modal) return;
-      renderBgGrid();
-      modal.classList.remove('hidden');
-    };
-
-    window.closeBgModal = function() {
-      const modal = document.getElementById('bgModal');
-      if (modal) modal.classList.add('hidden');
-    };
-
-    function renderBgGrid() {
-      const grid = document.getElementById('bgGrid');
-      if (!grid) return;
-
-      // Keep upload item
-      const uploadBtnHTML = grid.firstElementChild ? grid.firstElementChild.outerHTML : '';
-      grid.innerHTML = uploadBtnHTML;
-
-      bgGallery.forEach(bg => {
-        const card = document.createElement('div');
-        card.className = 'cursor-pointer aspect-[4/3] sm:aspect-square rounded-2xl overflow-hidden border-2 border-white/20 hover:border-emerald-400 relative group transition-all shadow-md';
-        card.onclick = () => selectBg(bg.url);
-        card.innerHTML = `
-          <img src="${bg.url}" alt="${bg.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
-            <span class="text-[10px] font-bold text-white truncate">${bg.name}</span>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-
-      const countText = document.getElementById('bgCountText');
-      if (countText) countText.textContent = `${bgGallery.length} Fondos Disponibles`;
     }
 
-    window.selectBg = function(url) {
-      const bgContainer = document.getElementById('page-background');
-      const preview = document.getElementById('currentBgPreview');
-      if (bgContainer) bgContainer.style.backgroundImage = `url('${url}')`;
-      if (preview) preview.style.backgroundImage = `url('${url}')`;
-      localStorage.setItem('bolton_bg_url', url);
-      showToast('Fondo de pantalla actualizado');
-      closeBgModal();
-    };
+    function toggleNotificationsMenu() {
+       document.getElementById('notifDropdown').classList.toggle('hidden');
+    }
 
-    window.handleCustomBgUpload = function(e) {
-      const file = e.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          if (evt.target?.result) {
-            selectBg(evt.target.result);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    };
+    function clearNotifications() {
+       document.getElementById('notifList').innerHTML = '<div class="text-center text-white/50 text-[10px] py-4">Sin notificaciones nuevas</div>';
+       document.getElementById('notifBadge').classList.add('hidden');
+    }
 
-    let isAudioPlaying = false;
-    let audioElem = null;
-
-    window.toggleAmbientSound = function() {
-      const btn = document.getElementById('soundToggleBtn');
-      if (!audioElem) {
-        audioElem = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3');
-        audioElem.loop = true;
-      }
-
-      if (!isAudioPlaying) {
-        audioElem.play().then(() => {
-          isAudioPlaying = true;
-          if (btn) btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i> Pausar Lofi';
-          showToast('Música Lofi iniciada');
-        }).catch(() => {
-          showToast('Presiona de nuevo para reproducir');
-        });
-      } else {
-        audioElem.pause();
-        isAudioPlaying = false;
-        if (btn) btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Reproducir';
-        showToast('Música pausada');
-      }
-    };
-
-    window.cerrarSesion = async function() {
-      localStorage.removeItem('bolton_user_profile');
-      if (window.supabase) {
-        try {
-          const client = window.supabase.createClient('https://wyseqehqidydqdjsicxl.supabase.co', 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_');
-          await client.auth.signOut();
-        } catch(e){}
-      }
-      showToast('Cerrando sesión...');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    };
-
-    // Restore background on boot
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedBg = localStorage.getItem('bolton_bg_url');
-      if (savedBg) {
-        const bgContainer = document.getElementById('page-background');
-        const preview = document.getElementById('currentBgPreview');
-        if (bgContainer) bgContainer.style.backgroundImage = `url('${savedBg}')`;
-        if (preview) preview.style.backgroundImage = `url('${savedBg}')`;
-      }
-    });
+    function cerrarSesion() {
+       localStorage.removeItem('bolton_user_profile');
+       if (window.supabase) window.supabase.auth.signOut();
+       window.location.reload();
+    }
   </script>
 </body>
 </html>
