@@ -1253,8 +1253,8 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- SCRIPT MAESTRO CON FUSIÓN DE DATOS Y PERSISTENCIA COMPLETA -->
-  <!-- SCRIPT MAESTRO DE SINCRONIZACIÓN AUTOMÁTICA POR SESIÓN / USUARIO -->
+  <!-- SCRIPT MAESTRO DE EXTRACCIÓN Y SINCRONIZACIÓN AUTOMÁTICA -->
+<!-- SCRIPT MAESTRO ADAPTADO A TUS COLUMNAS DE SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   (() => {
@@ -1280,33 +1280,34 @@
         if (el) el.textContent = val;
       };
 
-      // Actualizar textos generales y de la barra lateral
+      // Textos generales y de la barra lateral
       setTex('sidebarName', nombreCompleto);
       setTex('sidebarHandle', handle);
       setTex('profileNameDisplay', nombreCompleto);
       setTex('profileHandleDisplay', handle);
 
-      // Datos Académicos
-      const edadVal = data.edad || data.age;
+      // Datos Académicos (Mapeados con tus columnas reales)
+      const edadVal = data.edad;
       setTex('profileAge', edadVal ? `${edadVal} años` : '--');
 
-      const gradoVal = data.grado || data.grade;
+      const gradoVal = data.grado;
       setTex('profileGrade', gradoVal || '--');
 
-      const materiasVal = data.materias || data.subjects;
+      const materiasVal = data.materias;
       setTex('profileSubjects', materiasVal ? `${materiasVal} materias inscritas` : '0 materias');
       setTex('dashMateriasCount', materiasVal || '0');
 
-      const telefonoVal = data.telefono || data.phone;
-      setTex('profilePhone', telefonoVal || '--');
+      const telefonoVal = data.telefono;
+      setTex('profilePhone', telefonoVal ? telefonoVal : '--');
 
-      const suenoVal = data.sueno_estudio || data.dreamJob || data.dream;
+      // Columna correcta en tu base de datos: carrera_futuro
+      const suenoVal = data.carrera_futuro || data.sueno_estudio || data.dreamJob;
       setTex('profileDream', suenoVal ? `"${suenoVal}"` : '"--"');
 
       // Rellenar formulario de edición automáticamente
       const setInp = (id, val) => {
         const el = document.getElementById(id);
-        if (el && val !== undefined && val !== null) el.value = val;
+        if (el && val !== undefined && val !== null && val !== '') el.value = val;
       };
 
       setInp('inputProfileName', nombreCompleto);
@@ -1316,11 +1317,9 @@
       setInp('inputProfileSubjects', materiasVal || '');
       setInp('inputProfilePhone', telefonoVal || '');
       setInp('inputProfileDream', suenoVal || '');
-      if (data.titulo_carrera) setInp('inputProfileRole', data.titulo_carrera);
-      if (data.biografia) setInp('inputProfileBio', data.biografia);
 
       // Avatares
-      const avatarUrl = data.avatar_url || data.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreCompleto)}&background=10b981&color=fff&bold=true`;
+      const avatarUrl = data.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreCompleto)}&background=10b981&color=fff&bold=true`;
       ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar'].forEach(id => {
         const img = document.getElementById(id);
         if (img) img.src = avatarUrl;
@@ -1328,30 +1327,25 @@
     }
 
     async function cargarPerfil() {
-      let perfilFinal = {};
-
-      // 1. Intentar recuperar caché previa local
+      let perfilLocal = {};
       try {
         const raw = localStorage.getItem('bolton_user_profile');
-        if (raw) perfilFinal = JSON.parse(raw) || {};
+        if (raw) perfilLocal = JSON.parse(raw) || {};
       } catch (e) {}
 
-      pintarPerfil(perfilFinal);
+      pintarPerfil(perfilLocal);
 
-      // 2. Buscar directamente en Supabase por la sesión activa o por correo/usuario
       if (supabase) {
         try {
           const { data: { session } } = await supabase.auth.getSession();
           
           if (session && session.user) {
-            // Consultar tabla profiles usando el ID del usuario autenticado
-            let { data: dbProfile, error } = await supabase
+            let { data: dbProfile } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', session.user.id)
               .maybeSingle();
 
-            // Si no encuentra por ID, intentar buscar por correo electrónico
             if (!dbProfile && session.user.email) {
               const { data: emailProfile } = await supabase
                 .from('profiles')
@@ -1362,17 +1356,17 @@
             }
 
             if (dbProfile) {
-              perfilFinal = {
-                ...perfilFinal,
+              perfilLocal = {
+                ...perfilLocal,
                 ...dbProfile,
                 email: session.user.email
               };
-              localStorage.setItem('bolton_user_profile', JSON.stringify(perfilFinal));
-              pintarPerfil(perfilFinal);
+              localStorage.setItem('bolton_user_profile', JSON.stringify(perfilLocal));
+              pintarPerfil(perfilLocal);
             }
           }
         } catch (err) {
-          console.warn("Error al sincronizar con Supabase:", err);
+          console.warn("Aviso al sincronizar con Supabase:", err);
         }
       }
     }
@@ -1380,8 +1374,6 @@
     window.savePublicProfile = async function() {
       const nameInput = document.getElementById('inputProfileName')?.value || '';
       const handleInput = document.getElementById('inputProfileHandle')?.value || '';
-      const roleInput = document.getElementById('inputProfileRole')?.value || '';
-      const bioInput = document.getElementById('inputProfileBio')?.value || '';
       const ageInput = document.getElementById('inputProfileAge')?.value || '';
       const gradeInput = document.getElementById('inputProfileGrade')?.value || '';
       const subjectsInput = document.getElementById('inputProfileSubjects')?.value || '';
@@ -1402,13 +1394,11 @@
         nombre: nombre,
         apellido: apellido,
         nombre_usuario: handleInput.replace(/^@/, ''),
-        titulo_carrera: roleInput,
-        biografia: bioInput,
         edad: ageInput,
         grado: gradeInput,
         materias: subjectsInput,
         telefono: phoneInput,
-        sueno_estudio: dreamInput
+        carrera_futuro: dreamInput
       };
 
       localStorage.setItem('bolton_user_profile', JSON.stringify(perfilActualizado));
@@ -1426,9 +1416,9 @@
               nombre_usuario: perfilActualizado.nombre_usuario,
               edad: ageInput ? parseInt(ageInput, 10) : null,
               grado: gradeInput,
-              materias: subjectsInput ? parseInt(subjectsInput, 10) : null,
-              telefono: phoneInput,
-              sueno_estudio: dreamInput
+              materias: subjectsInput,
+              telefono: phoneInput ? parseInt(phoneInput, 10) : null,
+              carrera_futuro: dreamInput
             });
           }
         } catch(e) {
