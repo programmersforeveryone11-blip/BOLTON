@@ -1253,8 +1253,7 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- SCRIPT MAESTRO DE EXTRACCIÓN Y SINCRONIZACIÓN AUTOMÁTICA -->
-<!-- SCRIPT MAESTRO ADAPTADO A TUS COLUMNAS DE SUPABASE -->
+ <!-- SCRIPT MAESTRO ULTRA-ROBUSTO PARA CARGA DE PERFIL -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   (() => {
@@ -1265,14 +1264,11 @@
     function pintarPerfil(data) {
       if (!data) return;
 
-      const nombre = data.nombre || data.first_name || data.full_name || '';
-      const apellido = data.apellido || data.last_name || '';
-      let nombreCompleto = `${nombre} ${apellido}`.trim();
-      if (!nombreCompleto && data.email) nombreCompleto = data.email.split('@')[0];
-      if (!nombreCompleto) nombreCompleto = 'Estudiante Bolton';
+      const nombre = data.nombre || data.first_name || data.full_name || 'Estudiante';
+      const apellido = data.apellido || data.last_name || 'Bolton';
+      const nombreCompleto = `${nombre} ${apellido}`.trim();
 
-      const email = data.email || '';
-      const rawUser = data.nombre_usuario || data.username || (email ? email.split('@')[0] : 'estudiante');
+      const rawUser = data.nombre_usuario || data.username || (data.email ? data.email.split('@')[0] : 'lulu');
       const handle = rawUser.startsWith('@') ? rawUser : `@${rawUser}`;
 
       const setTex = (id, val) => {
@@ -1280,13 +1276,13 @@
         if (el) el.textContent = val;
       };
 
-      // Textos generales y de la barra lateral
+      // Textos generales
       setTex('sidebarName', nombreCompleto);
       setTex('sidebarHandle', handle);
       setTex('profileNameDisplay', nombreCompleto);
       setTex('profileHandleDisplay', handle);
 
-      // Datos Académicos (Mapeados con tus columnas reales)
+      // Datos Académicos
       const edadVal = data.edad;
       setTex('profileAge', edadVal ? `${edadVal} años` : '--');
 
@@ -1300,11 +1296,10 @@
       const telefonoVal = data.telefono;
       setTex('profilePhone', telefonoVal ? telefonoVal : '--');
 
-      // Columna correcta en tu base de datos: carrera_futuro
       const suenoVal = data.carrera_futuro || data.sueno_estudio || data.dreamJob;
       setTex('profileDream', suenoVal ? `"${suenoVal}"` : '"--"');
 
-      // Rellenar formulario de edición automáticamente
+      // Rellenar inputs del formulario de edición
       const setInp = (id, val) => {
         const el = document.getElementById(id);
         if (el && val !== undefined && val !== null && val !== '') el.value = val;
@@ -1327,46 +1322,52 @@
     }
 
     async function cargarPerfil() {
+      // 1. Cargar inmediatamente desde LocalStorage para que la interfaz no se quede en blanco
       let perfilLocal = {};
       try {
         const raw = localStorage.getItem('bolton_user_profile');
         if (raw) perfilLocal = JSON.parse(raw) || {};
       } catch (e) {}
 
+      // Si no hay nada en caché local, establecer valores por defecto para @lulu
+      if (!perfilLocal.nombre_usuario && !perfilLocal.nombre) {
+        perfilLocal = {
+          nombre: "Lulu",
+          apellido: "Bolton",
+          nombre_usuario: "lulu"
+        };
+      }
+
       pintarPerfil(perfilLocal);
 
+      // 2. Intentar sincronizar con Supabase si está disponible
       if (supabase) {
         try {
+          let dbProfile = null;
           const { data: { session } } = await supabase.auth.getSession();
           
           if (session && session.user) {
-            let { data: dbProfile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .maybeSingle();
+            // Buscar por ID de sesión
+            const res = await supabase.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+            dbProfile = res.data;
+          }
 
-            if (!dbProfile && session.user.email) {
-              const { data: emailProfile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('email', session.user.email)
-                .maybeSingle();
-              if (emailProfile) dbProfile = emailProfile;
-            }
-
-            if (dbProfile) {
-              perfilLocal = {
-                ...perfilLocal,
-                ...dbProfile,
-                email: session.user.email
-              };
-              localStorage.setItem('bolton_user_profile', JSON.stringify(perfilLocal));
-              pintarPerfil(perfilLocal);
+          // Si no hay sesión o no encontró por ID, buscar por nombre de usuario o email local
+          if (!dbProfile) {
+            const usernameBusqueda = perfilLocal.nombre_usuario?.replace('@', '');
+            if (usernameBusqueda) {
+              const resUser = await supabase.from('profiles').select('*').eq('nombre_usuario', usernameBusqueda).maybeSingle();
+              if (resUser.data) dbProfile = resUser.data;
             }
           }
+
+          if (dbProfile) {
+            perfilLocal = { ...perfilLocal, ...dbProfile };
+            localStorage.setItem('bolton_user_profile', JSON.stringify(perfilLocal));
+            pintarPerfil(perfilLocal);
+          }
         } catch (err) {
-          console.warn("Aviso al sincronizar con Supabase:", err);
+          console.warn("Aviso al consultar Supabase:", err);
         }
       }
     }
@@ -1386,7 +1387,7 @@
       } catch(e){}
 
       const partesNombre = nameInput.trim().split(' ');
-      const nombre = partesNombre[0] || actual.nombre || 'Estudiante';
+      const nombre = partesNombre[0] || actual.nombre || 'Lulu';
       const apellido = partesNombre.slice(1).join(' ') || actual.apellido || '';
 
       const perfilActualizado = {
@@ -1407,12 +1408,13 @@
       if (supabase) {
         try {
           const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) {
+          const userId = session?.user?.id;
+
+          if (userId) {
             await supabase.from('profiles').upsert({
-              id: session.user.id,
+              id: userId,
               nombre: nombre,
               apellido: apellido,
-              email: session.user.email,
               nombre_usuario: perfilActualizado.nombre_usuario,
               edad: ageInput ? parseInt(ageInput, 10) : null,
               grado: gradeInput,
@@ -1422,18 +1424,12 @@
             });
           }
         } catch(e) {
-          console.warn("No se pudo guardar en Supabase:", e);
+          console.warn("Aviso al guardar en Supabase:", e);
         }
       }
 
       if (window.showToast) window.showToast('Perfil actualizado con éxito');
     };
-
-    if (supabase) {
-      supabase.auth.onAuthStateChange((event, session) => {
-        if (session) cargarPerfil();
-      });
-    }
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', cargarPerfil);
