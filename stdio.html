@@ -1613,147 +1613,94 @@
       if (!input || !input.value.trim()) return;
       const chat = document.getElementById('aiChatBox');
       if (chat) {
-        chat.innerHTML += `<div class="p-3 rounded-xl bg-purple-500/20 text-xs text-purple-100 ml-4 font-semibold">${input.value}</div>`;
-        chat.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs text-white mr-4">Respuesta generada para tu consulta: "${input.value}"</div>`;
+        const userMsg = input.value.trim();
+        chat.innerHTML += `<div class="p-3 rounded-xl bg-purple-500/20 text-xs text-white"><strong>Tú:</strong> ${userMsg}</div>`;
+        input.value = '';
+        setTimeout(() => {
+          chat.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs text-white"><strong>BOLTON AI:</strong> He procesado tu consulta sobre "${userMsg}".</div>`;
+          chat.scrollTop = chat.scrollHeight;
+        }, 600);
         chat.scrollTop = chat.scrollHeight;
       }
-      input.value = '';
     }
+
     function sendQuickAiQuery() {
-      const q = document.getElementById('dashAiQuery');
-      if (q && q.value.trim()) {
+      const input = document.getElementById('dashAiQuery');
+      if (input && input.value.trim()) {
         switchView('ai');
-        const input = document.getElementById('aiInputPrompt');
-        if (input) {
-          input.value = q.value;
-          q.value = '';
+        const aiInput = document.getElementById('aiInputPrompt');
+        if (aiInput) {
+          aiInput.value = input.value;
+          input.value = '';
         }
       }
     }
-    function executeResearchSearch() {
-      const input = document.getElementById('researchQueryInput');
-      const res = document.getElementById('researchResults');
-      if (input && res && input.value.trim()) {
-        res.innerHTML = `<div class="p-2 font-bold text-white">Resultados para: ${input.value}</div><p class="mt-1 text-white/80">Información sintetizada disponible para guardar en tus cuadernos.</p>`;
-      }
-    }
+
     function createNewNote() {
       showToast('Nueva nota creada');
     }
-    let isPlayingSound = false;
+
+    function executeResearchSearch() {
+      const query = document.getElementById('researchQueryInput');
+      const results = document.getElementById('researchResults');
+      if (query && query.value.trim() && results) {
+        results.innerHTML = `<p class="font-bold text-emerald-300">Resumen de investigación para "${query.value}":</p><p class="mt-1">Generando síntesis académica y fuentes bibliográficas...</p>`;
+      }
+    }
+
     function toggleAmbientSound() {
-      isPlayingSound = !isPlayingSound;
       const btn = document.getElementById('soundToggleBtn');
       if (btn) {
-        btn.innerHTML = isPlayingSound ? '<i class="fa-solid fa-pause mr-1"></i> Pausar' : '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+        if (btn.classList.contains('bg-pink-500')) {
+          btn.classList.remove('bg-pink-500');
+          btn.classList.add('bg-emerald-500');
+          btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i> Pausar';
+          showToast('Reproduciendo sonido de ambiente Lofi');
+        } else {
+          btn.classList.remove('bg-emerald-500');
+          btn.classList.add('bg-pink-500');
+          btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+          showToast('Sonido pausado');
+        }
       }
-      showToast(isPlayingSound ? 'Ambiente Lofi iniciado' : 'Sonido pausado');
     }
+
+    function cerrarSesion() {
+      localStorage.removeItem('bolton_user_profile');
+      showToast('Sesión cerrada');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
+
+    // Cargar fondo al inicio
+    document.addEventListener('DOMContentLoaded', () => {
+      applyBackground(currentBg, false);
+    });
   </script>
 
-  <!-- ========================================== -->
-  <!-- INTEGRACIÓN Y CONEXIÓN A SUPABASE         -->
-  <!-- ========================================== -->
   <script>
-    // 1. CONFIGURACIÓN DE SUPABASE
-    const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
-    const supabaseAnonKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-    // 2. RECUPERAR DATOS DE SUPABASE AL CARGAR LA PÁGINA
-    window.addEventListener('DOMContentLoaded', async () => {
-      // Aplicar fondo de pantalla guardado
-      applyBackground(currentBg, false);
-
-      // Verificar si hay una sesión activa
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    document.addEventListener('DOMContentLoaded', () => {
+      // Leer el caché del navegador
+      const userDataString = localStorage.getItem('bolton_user_profile');
       
-      if (!session) {
-        // Si no hay sesión activa, redirigir al login
-        window.location.href = 'index2.html';
-        return;
-      }
-      
-      const user = session.user;
-      
-      // Consultar los datos adicionales del usuario en la tabla 'profiles'
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
         
-      let fullName = 'Usuario Bolton';
-      let emailDisplay = user.email;
-      let avatarUrl = '';
-
-      if (profile) {
-        // Si el usuario tiene registro en la tabla profiles
-        fullName = `${profile.nombre || ''} ${profile.apellido || ''}`.trim() || 'Usuario Bolton';
-        emailDisplay = profile.email || user.email;
+        // Actualizar nombre y usuario en la barra lateral
+        const nameEl = document.getElementById('sidebarUserName');
+        const handleEl = document.getElementById('sidebarUserHandle');
         
-        // Rellenar los campos de la vista de perfil si existen en el HTML
-        const profileAge = document.getElementById('profileAge');
-        if (profileAge) profileAge.innerText = `${profile.edad || '--'} años (Nacido en ${profile.anio_nacimiento || '--'})`;
+        if (nameEl) nameEl.textContent = `${userData.nombre} ${userData.apellido}`;
+        if (handleEl) handleEl.textContent = `@${userData.nombre.toLowerCase().replace(/\s+/g, '')}`;
         
-        const profileGrade = document.getElementById('profileGrade');
-        if (profileGrade) profileGrade.innerText = profile.grado || '--';
-        
-        const profileSubjects = document.getElementById('profileSubjects');
-        if (profileSubjects) profileSubjects.innerText = profile.materias ? `${profile.materias} materias inscritas` : '--';
-        
-        const profilePhone = document.getElementById('profilePhone');
-        if (profilePhone) profilePhone.innerText = profile.telefono || '--';
-        
-        const profileDream = document.getElementById('profileDream');
-        if (profileDream) profileDream.innerText = `"${profile.sueno_estudio || '--'}"`;
-        
-        const dashMateriasCount = document.getElementById('dashMateriasCount');
-        if (dashMateriasCount) {
-          dashMateriasCount.innerText = profile.materias || '0';
+        // Actualizar estadísticas (ej: materias)
+        const materiasEl = document.getElementById('dashMateriasCount');
+        if (materiasEl && userData.materias) {
+          materiasEl.textContent = userData.materias;
         }
-
-        // Actualizar inputs de edición si existen
-        const inputName = document.getElementById('inputProfileName');
-        if (inputName) inputName.value = fullName;
-      } else if (user.app_metadata && user.app_metadata.provider === 'google') {
-        // Si inició sesión con Google
-        fullName = user.user_metadata.full_name || 'Usuario Google';
-        avatarUrl = user.user_metadata.avatar_url;
       }
-
-      // Si no cuenta con una foto de avatar externa, se genera una automática con sus iniciales
-      if (!avatarUrl) {
-        avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=10b981&color=fff&bold=true`;
-      }
-
-      // Actualizar los elementos de texto en el Sidebar y Perfil
-      const sidebarUserName = document.getElementById('sidebarUserName');
-      if (sidebarUserName) sidebarUserName.innerText = fullName;
-
-      const sidebarUserHandle = document.getElementById('sidebarUserHandle');
-      if (sidebarUserHandle) sidebarUserHandle.innerText = emailDisplay;
-      
-      const profileNameDisplay = document.getElementById('profileNameDisplay');
-      if (profileNameDisplay) profileNameDisplay.innerText = fullName;
-
-      const profileHandleDisplay = document.getElementById('profileHandleDisplay');
-      if (profileHandleDisplay) profileHandleDisplay.innerText = emailDisplay;
-
-      // Actualizar todas las imágenes de avatar en la interfaz
-      const avatars = ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar', 'mainProfileAvatar'];
-      avatars.forEach(id => {
-        const imgEl = document.getElementById(id);
-        if (imgEl) imgEl.src = avatarUrl;
-      });
     });
-
-    // 3. FUNCIÓN PARA CERRAR SESIÓN
-    async function cerrarSesion() {
-      await supabase.auth.signOut();
-      localStorage.clear();
-      window.location.href = 'index2.html';
-    }
   </script>
 </body>
 </html>
