@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOLTON</title>
+  <title>BOLTON - Lugar de Trabajo</title>
   <link rel="icon" type="image/png" href="Logo B Casa Bolton(1) 1.png">
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -187,7 +191,6 @@
             <span class="truncate">Horario de clases y materias</span>
           </button>
 
-          <!-- NUEVA SECCIÓN 1: PROYECTOS Y TRABAJOS -->
           <button onclick="switchView('proyectos')" id="nav-proyectos" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-diagram-project text-xs"></i>
@@ -195,7 +198,6 @@
             <span class="truncate">Proyectos y Trabajos</span>
           </button>
 
-          <!-- NUEVA SECCIÓN 2: BIBLIOTECA Y RECURSOS -->
           <button onclick="switchView('biblioteca')" id="nav-biblioteca" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-book-bookmark text-xs"></i>
@@ -203,7 +205,6 @@
             <span class="truncate">Biblioteca y Recursos</span>
           </button>
 
-          <!-- NUEVA SECCIÓN 3: FINANZAS ESTUDIANTILES -->
           <button onclick="switchView('finanzas')" id="nav-finanzas" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-wallet text-xs"></i>
@@ -250,13 +251,11 @@
             <span class="truncate">Ajustes</span>
           </button>
 
-          <!-- ENLACE DIRECTO A INFO.HTML -->
           <a href="info.html" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors text-left">
             <i class="fa-regular fa-circle-question text-white/60 group-hover:text-white text-xs w-4 text-center flex-shrink-0"></i>
             <span class="truncate">Más sobre BOLTON</span>
           </a>
 
-          <!-- BOTÓN PARA CERRAR SESIÓN -->
           <button onclick="cerrarSesion()" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-rose-300 hover:text-rose-100 hover:bg-rose-500/20 transition-colors text-left">
             <i class="fa-solid fa-right-from-bracket text-rose-300 text-xs w-4 text-center flex-shrink-0"></i>
             <span class="truncate">Cerrar Sesión</span>
@@ -270,8 +269,8 @@
                 <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-400 border border-emerald-950 rounded-full"></span>
               </div>
               <div class="flex flex-col min-w-0">
-                <span id="sidebarUserName" class="text-xs font-bold text-white truncate leading-tight">Cargando...</span>
-                <span id="sidebarUserHandle" class="text-[9px] text-white/70 truncate leading-tight">@usuario</span>
+                <span id="sidebarName" class="text-xs font-bold text-white truncate leading-tight">Cargando...</span>
+                <span id="sidebarHandle" class="text-[9px] text-white/70 truncate leading-tight">@usuario</span>
               </div>
             </div>
             <div class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-white/30 flex items-center justify-center text-white/80 text-[9px] transition-colors flex-shrink-0 ml-1">
@@ -315,7 +314,7 @@
           <div class="relative">
             <button onclick="toggleNotificationsMenu()" id="notifBtn" class="w-9 h-9 rounded-xl glass-panel flex items-center justify-center text-white hover:bg-white/20 relative transition-all active:scale-95" title="Notificaciones">
               <i class="fa-regular fa-bell text-xs"></i>
-              <span id="notifBadge" class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8px] font-black flex items-center justify-center border border-emerald-950 shadow-md">3</span>
+              <span id="notifBadge" class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8px] font-black flex items-center justify-center border border-emerald-950 shadow-md">2</span>
             </button>
 
             <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 glass-panel rounded-2xl p-3 shadow-2xl z-50 border border-white/30 text-xs">
@@ -590,7 +589,7 @@
           </div>
         </section>
 
-        <!-- ================= NUEVA VISTA 1: PROYECTOS Y TRABAJOS ================= -->
+        <!-- ================= PROYECTOS Y TRABAJOS ================= -->
         <section id="view-proyectos" class="content-view hidden space-y-4">
           <div class="flex justify-between items-center">
             <div>
@@ -604,8 +603,7 @@
 
           <!-- Tablero de Trabajo Kanban -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            
-            <!-- Columna 1: Por Hacer -->
+            <!-- Por Hacer -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
@@ -622,7 +620,7 @@
               </div>
             </div>
 
-            <!-- Columna 2: En Proceso -->
+            <!-- En Proceso -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
@@ -639,7 +637,7 @@
               </div>
             </div>
 
-            <!-- Columna 3: Entregado -->
+            <!-- Entregado -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-2">
@@ -659,7 +657,7 @@
           </div>
         </section>
 
-        <!-- ================= NUEVA VISTA 2: BIBLIOTECA Y RECURSOS ================= -->
+        <!-- ================= BIBLIOTECA Y RECURSOS ================= -->
         <section id="view-biblioteca" class="content-view hidden space-y-4">
           <div class="flex justify-between items-center">
             <div>
@@ -700,7 +698,7 @@
           </div>
         </section>
 
-        <!-- ================= NUEVA VISTA 3: FINANZAS ESTUDIANTILES ================= -->
+        <!-- ================= FINANZAS ESTUDIANTILES ================= -->
         <section id="view-finanzas" class="content-view hidden space-y-4">
           <div class="flex justify-between items-center">
             <div>
@@ -712,7 +710,6 @@
             </button>
           </div>
 
-          <!-- Resumen financiero tarjetas -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="glass-panel p-4 rounded-2xl space-y-1 text-center">
               <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Presupuesto Mensual</span>
@@ -728,7 +725,6 @@
             </div>
           </div>
 
-          <!-- Tabla de Gastos -->
           <div class="glass-panel rounded-2xl p-4 overflow-x-auto space-y-3">
             <h3 class="font-bold text-xs text-white">Últimos Movimientos</h3>
             <table class="w-full text-xs text-left">
@@ -901,10 +897,10 @@
 
                   <div class="space-y-1">
                     <div class="flex items-center gap-2 justify-center sm:justify-start">
-                      <h2 id="profileNameDisplay" class="text-xl sm:text-2xl font-black text-white">Alexia Vance</h2>
+                      <h2 id="profileNameDisplay" class="text-xl sm:text-2xl font-black text-white">Cargando...</h2>
                       <i class="fa-solid fa-circle-check text-emerald-400 text-sm" title="Verificado"></i>
                     </div>
-                    <p id="profileHandleDisplay" class="text-xs text-emerald-200/90 font-medium">@alexia_estudio</p>
+                    <p id="profileHandleDisplay" class="text-xs text-emerald-200/90 font-medium">@usuario</p>
                     <p id="profileRoleDisplay" class="text-[11px] text-white/70">Estudiante de BOLTON Studio</p>
                   </div>
                 </div>
@@ -933,8 +929,8 @@
                         <i class="fa-solid fa-cake-candles"></i>
                       </div>
                       <div>
-                        <h4 class="text-xs font-bold text-white">Edad y Año</h4>
-                        <p id="profileAge" class="text-[10px] text-white/70">-- años</p>
+                        <h4 class="text-xs font-bold text-white">Edad</h4>
+                        <p id="profileAge" class="text-[10px] text-white/70">--</p>
                       </div>
                     </div>
 
@@ -954,7 +950,7 @@
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-white">Materias Inscritas</h4>
-                        <p id="profileSubjects" class="text-[10px] text-white/70">--</p>
+                        <p id="profileSubjects" class="text-[10px] text-white/70">8 materias</p>
                       </div>
                     </div>
 
@@ -986,12 +982,12 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="space-y-1">
                     <label class="text-[11px] font-semibold text-white/80">Nombre Completo</label>
-                    <input type="text" id="inputProfileName" value="Alexia Vance" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                    <input type="text" id="inputProfileName" placeholder="Tu Nombre" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
                   </div>
 
                   <div class="space-y-1">
                     <label class="text-[11px] font-semibold text-white/80">Nombre de Usuario</label>
-                    <input type="text" id="inputProfileHandle" value="@alexia_estudio" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                    <input type="text" id="inputProfileHandle" placeholder="@usuario" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
                   </div>
 
                   <div class="space-y-1 sm:col-span-2">
@@ -1001,7 +997,7 @@
 
                   <div class="space-y-1 sm:col-span-2">
                     <label class="text-[11px] font-semibold text-white/80">Biografía Académica</label>
-                    <textarea id="inputProfileBio" rows="3" class="glass-input w-full p-3 rounded-xl text-xs">Apasionada por las matemáticas, la física computacional y el desarrollo de software. Enfocada en mantener una racha constante de aprendizaje en BOLTON Studio.</textarea>
+                    <textarea id="inputProfileBio" rows="3" class="glass-input w-full p-3 rounded-xl text-xs">Apasionado por el aprendizaje contínuo y el desarrollo en BOLTON Studio.</textarea>
                   </div>
                 </div>
               </div>
@@ -1029,12 +1025,11 @@
                   <pre class="glass-code-block p-4 rounded-2xl text-xs text-emerald-300 overflow-x-auto leading-relaxed border border-white/20 shadow-inner" id="studentCodeBlock"><code>{
   <span class="text-purple-300">"estudiante"</span>: {
     <span class="text-purple-300">"id"</span>: <span class="text-amber-200">"STU-2026-BOLTON-8829"</span>,
-    <span class="text-purple-300">"usuario"</span>: <span class="text-amber-200">"@alexia_estudio"</span>,
+    <span class="text-purple-300">"usuario"</span>: <span class="text-amber-200">"@usuario"</span>,
     <span class="text-purple-300">"codigo_verificacion"</span>: <span class="text-amber-200">"BLT-994A-69DA-EB80"</span>,
-    <span class="text-purple-300">"nivel_academico"</span>: <span class="text-amber-200">"Universidad / Avanzado"</span>,
+    <span class="text-purple-300">"nivel_academico"</span>: <span class="text-amber-200">"Avanzado"</span>,
     <span class="text-purple-300">"racha_dias"</span>: <span class="text-sky-300">12</span>,
-    <span class="text-purple-300">"materias_activas"</span>: [<span class="text-amber-200">"Cálculo"</span>, <span class="text-amber-200">"Química"</span>, <span class="text-amber-200">"Física"</span>],
-    <span class="text-purple-300">"api_endpoint"</span>: <span class="text-amber-200">"https://api.bolton.study/v1/user/alexia_estudio"</span>
+    <span class="text-purple-300">"materias_activas"</span>: [<span class="text-amber-200">"Cálculo"</span>, <span class="text-amber-200">"Química"</span>, <span class="text-amber-200">"Física"</span>]
   }
 }</code></pre>
                   <span class="absolute top-2 right-2 text-[9px] font-mono text-white/40 uppercase">JSON / UTF-8</span>
@@ -1055,7 +1050,7 @@
                   <div class="space-y-2">
                     <label class="text-[10px] text-white/70 font-medium">Enlace público directo</label>
                     <div class="flex gap-2">
-                      <input type="text" readonly id="profileShareLink" value="https://bolton.study/u/alexia_estudio" class="glass-input flex-1 px-3 py-1.5 rounded-xl text-xs font-mono text-white/80">
+                      <input type="text" readonly id="profileShareLink" value="https://bolton.study/u/estudiante" class="glass-input flex-1 px-3 py-1.5 rounded-xl text-xs font-mono text-white/80">
                       <button onclick="copyShareLink()" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs">
                         <i class="fa-solid fa-copy"></i>
                       </button>
@@ -1233,472 +1228,593 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- JAVASCRIPT LOGIC DE LA INTERFAZ -->
+  <!-- SCRIPT MAESTRO CON FUSIÓN DE DATOS Y PERSISTENCIA -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Mapeo de íconos para el encabezado dinámico de cada vista
+    (() => {
+      // 1. Configuración de Supabase
+      const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
+      const supabaseKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
+      const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+
+      // 2. Función para renderizar todos los datos en la interfaz
+      function pintarPerfil(data) {
+        if (!data) return;
+
+        const nombre = data.nombre || data.first_name || data.full_name || '';
+        const apellido = data.apellido || data.last_name || '';
+        let nombreCompleto = `${nombre} ${apellido}`.trim();
+        if (!nombreCompleto && data.email) nombreCompleto = data.email.split('@')[0];
+        if (!nombreCompleto) nombreCompleto = 'Estudiante Bolton';
+
+        const email = data.email || '';
+        const rawUser = data.nombre_usuario || data.username || (email ? email.split('@')[0] : 'estudiante');
+        const handle = rawUser.startsWith('@') ? rawUser : `@${rawUser}`;
+
+        const setTex = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = val;
+        };
+
+        // Nombres y Handles
+        setTex('sidebarName', nombreCompleto);
+        setTex('sidebarHandle', handle);
+        setTex('profileNameDisplay', nombreCompleto);
+        setTex('profileHandleDisplay', handle);
+
+        // Campos de texto editables
+        const inputName = document.getElementById('inputProfileName');
+        if (inputName) inputName.value = nombreCompleto;
+
+        const inputHandle = document.getElementById('inputProfileHandle');
+        if (inputHandle) inputHandle.value = handle;
+
+        // Datos Académicos (Soporta múltiples nomenclaturas para evitar '--')
+        const edadVal = data.edad || data.age;
+        setTex('profileAge', edadVal ? `${edadVal} años` : '--');
+
+        const gradoVal = data.grado || data.grade;
+        setTex('profileGrade', gradoVal || '--');
+
+        const materiasVal = data.materias || data.subjects;
+        setTex('profileSubjects', materiasVal ? `${materiasVal} materias inscritas` : '0 materias');
+        setTex('dashMateriasCount', materiasVal || '0');
+
+        const telefonoVal = data.telefono || data.phone;
+        setTex('profilePhone', telefonoVal || '--');
+
+        const suenoVal = data.sueno_estudio || data.dreamJob || data.dream;
+        setTex('profileDream', suenoVal ? `"${suenoVal}"` : '"--"');
+
+        // Actualización de Avatares
+        const avatarUrl = data.avatar_url || data.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreCompleto)}&background=10b981&color=fff&bold=true`;
+        ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar'].forEach(id => {
+          const img = document.getElementById(id);
+          if (img) img.src = avatarUrl;
+        });
+      }
+
+      // 3. Carga inteligente (No destruye la caché)
+      async function cargarPerfil() {
+        let cachedProfile = {};
+        
+        // Paso 1: Leer caché local primero
+        try {
+          const raw = localStorage.getItem('bolton_user_profile');
+          if (raw) cachedProfile = JSON.parse(raw) || {};
+        } catch (e) {
+          console.warn("Sin cache previa.");
+        }
+
+        // Renderizar caché de inmediato
+        pintarPerfil(cachedProfile);
+
+        // Paso 2: Consultar Supabase y fusionar con la caché existente
+        if (supabase) {
+          try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session && session.user) {
+              const { data: dbProfile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .maybeSingle();
+
+              const meta = session.user.user_metadata || {};
+
+              // FUSIÓN INTELIGENTE: DB > Caché Local > Metadata Auth
+              const perfilFusionado = {
+                nombre: 'Estudiante',
+                apellido: 'Bolton',
+                ...meta,
+                ...cachedProfile,
+                ...(dbProfile || {}),
+                email: session.user.email
+              };
+
+              localStorage.setItem('bolton_user_profile', JSON.stringify(perfilFusionado));
+              pintarPerfil(perfilFusionado);
+            }
+          } catch (err) {
+            console.warn("Aviso al consultar Supabase:", err);
+          }
+        }
+      }
+
+      // 4. Guardar cambios públicos en LocalStorage y Supabase
+      window.savePublicProfile = async function() {
+        const nameInput = document.getElementById('inputProfileName')?.value || '';
+        const handleInput = document.getElementById('inputProfileHandle')?.value || '';
+        
+        let actual = {};
+        try {
+          actual = JSON.parse(localStorage.getItem('bolton_user_profile')) || {};
+        } catch(e){}
+
+        const partesNombre = nameInput.trim().split(' ');
+        const nombre = partesNombre[0] || actual.nombre || 'Estudiante';
+        const apellido = partesNombre.slice(1).join(' ') || actual.apellido || '';
+
+        const perfilActualizado = {
+          ...actual,
+          nombre: nombre,
+          apellido: apellido,
+          nombre_usuario: handleInput.replace(/^@/, ''),
+        };
+
+        localStorage.setItem('bolton_user_profile', JSON.stringify(perfilActualizado));
+        pintarPerfil(perfilActualizado);
+
+        if (supabase) {
+          try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+              await supabase.from('profiles').upsert({
+                id: session.user.id,
+                nombre: nombre,
+                apellido: apellido,
+                email: session.user.email,
+                ...perfilActualizado
+              });
+            }
+          } catch(e) {
+            console.warn("No se pudo sincronizar en Supabase:", e);
+          }
+        }
+
+        if (window.showToast) window.showToast('Perfil actualizado con éxito');
+      };
+
+      // Escuchar autenticación
+      if (supabase) {
+        supabase.auth.onAuthStateChange((event, session) => {
+          if (session) cargarPerfil();
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', cargarPerfil);
+      } else {
+        cargarPerfil();
+      }
+    })();
+  </script>
+
+  <script>
+    /* ========================================== */
+    /* GLOBAL STATE & VIEW CONTROLLER             */
+    /* ========================================== */
+    
+    // Icon mapping for header title
     const viewIcons = {
-      dashboard: 'fa-chart-pie text-emerald-300',
-      notas: 'fa-note-sticky text-amber-300',
-      calendario: 'fa-calendar-days text-sky-300',
-      tiempo: 'fa-clock text-rose-300',
-      cuadernos: 'fa-bookmark text-teal-300',
-      tareas: 'fa-list-check text-indigo-300',
-      horario: 'fa-graduation-cap text-purple-300',
-      proyectos: 'fa-diagram-project text-pink-300',
-      biblioteca: 'fa-book-bookmark text-yellow-300',
-      finanzas: 'fa-wallet text-emerald-400',
-      ai: 'fa-wand-magic-sparkles text-purple-400',
-      investigacion: 'fa-magnifying-glass text-blue-300',
-      cursos: 'fa-code text-indigo-300',
-      entretenimiento: 'fa-gamepad text-rose-400',
-      ajustes: 'fa-sliders text-slate-300',
-      perfil: 'fa-user text-emerald-300'
+      'dashboard': 'fa-solid fa-chart-pie text-emerald-300',
+      'notas': 'fa-regular fa-note-sticky text-amber-300',
+      'calendario': 'fa-regular fa-calendar-days text-sky-300',
+      'tiempo': 'fa-regular fa-clock text-rose-300',
+      'cuadernos': 'fa-regular fa-bookmark text-indigo-300',
+      'tareas': 'fa-solid fa-list-check text-teal-300',
+      'horario': 'fa-solid fa-graduation-cap text-purple-300',
+      'proyectos': 'fa-solid fa-diagram-project text-orange-300',
+      'biblioteca': 'fa-solid fa-book-bookmark text-blue-300',
+      'finanzas': 'fa-solid fa-wallet text-emerald-300',
+      'ai': 'fa-solid fa-wand-magic-sparkles text-purple-300',
+      'investigacion': 'fa-solid fa-magnifying-glass text-yellow-300',
+      'cursos': 'fa-solid fa-code text-cyan-300',
+      'entretenimiento': 'fa-solid fa-gamepad text-pink-300',
+      'ajustes': 'fa-solid fa-sliders text-slate-300',
+      'perfil': 'fa-solid fa-user text-emerald-300'
     };
 
-    const baseImages = [
-      '1044272232359838310.jpg',
-      '1092685928366698116.jpg',
-      'Moon Knight.jpg',
-      '423056958750369372.jpg',
-      'Doctor Doom.jpg',
-      '833588212269481424.jpg',
-      '666743919873121533.jpg',
-      '1110207745670214163.jpg',
-      'gcfc.png',
-      '683984262201953413.jpg',
-      'Cute Fantasy Background Design.jpg',
-      'Whimsy Laptop Wallpapers — Layreen Blog.jpg',
-      '605312006214405708.jpg',
-      '9499849210726543.jpg',
-      '2040762329295531.jpg',
-      '774126623487459838.jpg',
-      'Dan Norris - Spider-Man (2000).jpg',
-      '728527677237033005.jpg',
-      '810155420512887209.jpg',
-      '834643743489443392.jpg',
-      '753649318944871325.jpg',
-      'ׂ╰┈➤desktop wallpaper.jpg',
-      'dream big_.jpg',
-      'Robert Downey Jr_ + Rainbow.jpg',
-      '𝐬𝐩𝐢𝐝𝐞𝐫𝐦𝐚𝐧 𝐰𝐚𝐥𝐥𝐩𝐚𝐩𝐞𝐫.jpg',
-      '884042601875716419.jpg',
-      '994521530217328866.jpg'
-    ];
+    const viewTitles = {
+      'dashboard': 'Dashboard',
+      'notas': 'Notas y Apuntes',
+      'calendario': 'Calendario',
+      'tiempo': 'Temporizador Pomodoro',
+      'cuadernos': 'Cuadernos Digitales',
+      'tareas': 'Tareas y Recordatorios',
+      'horario': 'Horario de Clases',
+      'proyectos': 'Proyectos y Trabajos',
+      'biblioteca': 'Biblioteca y Recursos',
+      'finanzas': 'Finanzas Estudiantiles',
+      'ai': 'BOLTON AI Assistant',
+      'investigacion': 'Investigación',
+      'cursos': 'Cursos Recomendados',
+      'entretenimiento': 'Entretenimiento & Lofi',
+      'ajustes': 'Ajustes del Sistema',
+      'perfil': 'Perfil del Estudiante'
+    };
 
-    const DEFAULT_BG = '2040762329295531.jpg';
-    let currentBg = localStorage.getItem('bolton_bg') || DEFAULT_BG;
-
-    function showToast(message) {
-      const container = document.getElementById('toastContainer');
-      if (!container) return;
-      const toast = document.createElement('div');
-      toast.className = 'glass-panel px-4 py-2.5 rounded-2xl text-xs font-semibold text-white shadow-2xl flex items-center gap-2 border border-white/30 animate-in fade-in slide-in-from-bottom-2 pointer-events-auto';
-      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${message}`;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
-    }
-
-    function applyBackground(bgUrl, save = true) {
-      currentBg = bgUrl;
-      const bgElement = document.getElementById('page-background');
-      const bgPreview = document.getElementById('currentBgPreview');
-
-      if (bgElement) bgElement.style.backgroundImage = `url('${bgUrl}')`;
-      if (bgPreview) bgPreview.style.backgroundImage = `url('${bgUrl}')`;
-
-      if (save) localStorage.setItem('bolton_bg', bgUrl);
-      updateActiveBgHighlight();
-    }
-
-    function openBgModal() {
-      const modal = document.getElementById('bgModal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        renderBgGrid();
-      }
-    }
-
-    function closeBgModal() {
-      const modal = document.getElementById('bgModal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-    function renderBgGrid() {
-      const grid = document.getElementById('bgGrid');
-      if (!grid) return;
-
-      const uploadCard = grid.firstElementChild;
-      grid.innerHTML = '';
-      if (uploadCard) grid.appendChild(uploadCard);
-
-      const customSaved = localStorage.getItem('bolton_custom_bg');
-      if (customSaved) {
-        const customCard = createBgCard(customSaved, 'Mi Fondo Subido', true);
-        grid.appendChild(customCard);
-      }
-
-      baseImages.forEach((imgUrl, index) => {
-        const card = createBgCard(imgUrl, `Fondo ${index + 1}`, false);
-        grid.appendChild(card);
-      });
-
-      const totalCount = baseImages.length + (customSaved ? 1 : 0);
-      const countText = document.getElementById('bgCountText');
-      if (countText) countText.textContent = `${totalCount} Galería de Fondos`;
-
-      updateActiveBgHighlight();
-    }
-
-    function createBgCard(imgUrl, labelText, isCustom) {
-      const card = document.createElement('div');
-      card.className = 'bg-card cursor-pointer aspect-[4/3] sm:aspect-square rounded-2xl overflow-hidden relative border border-white/25 hover:border-emerald-400 group transition-all shadow-md hover:scale-105';
-      card.dataset.bg = imgUrl;
-
-      card.onclick = () => {
-        applyBackground(imgUrl);
-        showToast('Fondo de pantalla actualizado');
-        closeBgModal();
-      };
-
-      card.innerHTML = `
-        <img src="${imgUrl}" alt="${labelText}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" onerror="this.onerror=null; this.src='https://placehold.co/400x400/2a3a38/ffffff?text=Fondo+${labelText}'">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
-          <span class="text-[10px] font-extrabold text-white truncate">${labelText}</span>
-          ${isCustom ? '<span class="text-[8px] text-emerald-300 uppercase font-black tracking-wider">Personalizado</span>' : ''}
-        </div>
-        <div class="active-indicator absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-400 text-slate-950 flex items-center justify-center text-[10px] font-bold shadow-md hidden">
-          <i class="fa-solid fa-check"></i>
-        </div>
-      `;
-
-      return card;
-    }
-
-    function updateActiveBgHighlight() {
-      const cards = document.querySelectorAll('.bg-card');
-      cards.forEach(card => {
-        const indicator = card.querySelector('.active-indicator');
-        if (card.dataset.bg === currentBg) {
-          card.classList.add('ring-2', 'ring-emerald-400', 'border-emerald-400');
-          if (indicator) indicator.classList.remove('hidden');
-        } else {
-          card.classList.remove('ring-2', 'ring-emerald-400', 'border-emerald-400');
-          if (indicator) indicator.classList.add('hidden');
-        }
-      });
-    }
-
-    function handleCustomBgUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-        showToast('Por favor selecciona un archivo de imagen válido');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const customDataUrl = e.target.result;
-        try {
-          localStorage.setItem('bolton_custom_bg', customDataUrl);
-          applyBackground(customDataUrl);
-          showToast('¡Fondo guardado y aplicado correctamente!');
-          renderBgGrid();
-          closeBgModal();
-        } catch (err) {
-          showToast('La imagen es demasiado grande para guardar localmente');
-          applyBackground(customDataUrl, false);
-          closeBgModal();
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function switchProfileTab(tabName) {
-      const tabs = document.querySelectorAll('.profile-tab-content');
-      tabs.forEach(t => t.classList.add('hidden'));
-
-      const selectedTab = document.getElementById('profile-tab-' + tabName);
-      if (selectedTab) selectedTab.classList.remove('hidden');
-
-      const buttons = document.querySelectorAll('.profile-tab-btn');
-      buttons.forEach(btn => {
-        btn.classList.remove('bg-white/20', 'border-white/30', 'text-white', 'font-bold');
-        btn.classList.add('text-white/70', 'font-medium');
-      });
-
-      const activeBtn = document.getElementById('tab-btn-' + tabName);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-white/20', 'border-white/30', 'text-white', 'font-bold');
-        activeBtn.classList.remove('text-white/70', 'font-medium');
-      }
-    }
-
-    function savePublicProfile() {
-      const nameInput = document.getElementById('inputProfileName');
-      const handleInput = document.getElementById('inputProfileHandle');
-      const roleInput = document.getElementById('inputProfileRole');
-
-      if (nameInput && nameInput.value.trim()) {
-        const val = nameInput.value.trim();
-        const el1 = document.getElementById('profileNameDisplay');
-        const el2 = document.getElementById('sidebarUserName');
-        if (el1) el1.textContent = val;
-        if (el2) el2.textContent = val;
-      }
-      if (handleInput && handleInput.value.trim()) {
-        const val = handleInput.value.trim();
-        const el1 = document.getElementById('profileHandleDisplay');
-        const el2 = document.getElementById('sidebarUserHandle');
-        if (el1) el1.textContent = val;
-        if (el2) el2.textContent = val;
-      }
-      if (roleInput && roleInput.value.trim()) {
-        const val = roleInput.value.trim();
-        const el1 = document.getElementById('profileRoleDisplay');
-        if (el1) el1.textContent = val;
-      }
-
-      showToast('Perfil público actualizado correctamente');
-    }
-
-    function copyStudentCode() {
-      const codeText = document.getElementById('studentCodeBlock').innerText;
-      copyToClipboard(codeText);
-      showToast('¡Código JSON copiado al portapapeles!');
-    }
-
-    function copyShareLink() {
-      const shareInput = document.getElementById('profileShareLink');
-      copyToClipboard(shareInput.value);
-      showToast('Enlace de perfil copiado');
-    }
-
-    function shareSocial(network) {
-      const url = encodeURIComponent(document.getElementById('profileShareLink').value);
-      const msg = encodeURIComponent("¡Echa un vistazo a mi progreso de estudio en BOLTON Studio!");
-      if (network === 'whatsapp') {
-        window.open(`https://api.whatsapp.com/send?text=${msg}%20${url}`, '_blank');
-      } else if (network === 'telegram') {
-        window.open(`https://t.me/share/url?url=${url}&text=${msg}`, '_blank');
-      }
-    }
-
-    function handleProgressToggleChange(checkbox) {
-      const detailOptions = document.getElementById('progressDetailOptions');
-      if (checkbox.checked) {
-        detailOptions.classList.remove('opacity-40', 'pointer-events-none');
-        showToast('Progreso estudiantil público activado');
-      } else {
-        detailOptions.classList.add('opacity-40', 'pointer-events-none');
-        showToast('Progreso estudiantil configurado como privado');
-      }
-    }
-
-    function copyToClipboard(text) {
-      const tempInput = document.createElement('textarea');
-      tempInput.value = text;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-    }
-
-    // Navegación principal
-    function switchView(viewName) {
+    window.switchView = function(viewId) {
+      // Hide all view sections
       const views = document.querySelectorAll('.content-view');
       views.forEach(v => v.classList.add('hidden'));
 
-      const targetView = document.getElementById('view-' + viewName);
-      if (targetView) targetView.classList.remove('hidden');
+      // Show requested view
+      const targetView = document.getElementById(`view-${viewId}`);
+      if (targetView) {
+        targetView.classList.remove('hidden');
+      }
 
-      const navButtons = document.querySelectorAll('.nav-btn');
-      navButtons.forEach(btn => {
-        btn.classList.remove('bg-white/20', 'border-white/30', 'text-white', 'shadow-xs');
-        btn.classList.add('text-white/80');
+      // Update sidebar nav active state
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-white/20', 'border-white/30', 'text-white');
       });
 
-      const activeBtn = document.getElementById('nav-' + viewName);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-white/20', 'border-white/30', 'text-white', 'shadow-xs');
-        activeBtn.classList.remove('text-white/80');
+      const activeNav = document.getElementById(`nav-${viewId}`);
+      if (activeNav) {
+        activeNav.classList.add('bg-white/20', 'border-white/30', 'text-white');
       }
 
+      // Update Header Title & Icon
       const headerTitle = document.getElementById('viewHeaderTitle');
-      if (headerTitle) {
-        headerTitle.textContent = viewName.charAt(0).toUpperCase() + viewName.slice(1);
-      }
-
       const headerIcon = document.getElementById('viewHeaderIcon');
-      if (headerIcon && viewIcons[viewName]) {
-        headerIcon.className = `fa-solid ${viewIcons[viewName]}`;
+      if (headerTitle && viewTitles[viewId]) {
+        headerTitle.textContent = viewTitles[viewId];
+      }
+      if (headerIcon && viewIcons[viewId]) {
+        headerIcon.className = viewIcons[viewId];
       }
 
+      // Close mobile sidebar if open
       const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('mobileOverlay');
+      const mobileOverlay = document.getElementById('mobileOverlay');
       if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.add('-translate-x-full');
+        toggleMobileSidebar();
       }
-      if (overlay && !overlay.classList.contains('hidden')) {
-        overlay.classList.add('hidden');
-      }
-    }
+    };
 
-    function toggleMobileSidebar() {
+    window.toggleMobileSidebar = function() {
       const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('mobileOverlay');
-      if (sidebar) sidebar.classList.toggle('-translate-x-full');
-      if (overlay) overlay.classList.toggle('hidden');
-    }
+      const mobileOverlay = document.getElementById('mobileOverlay');
+      if (sidebar && mobileOverlay) {
+        sidebar.classList.toggle('-translate-x-full');
+        mobileOverlay.classList.toggle('hidden');
+      }
+    };
 
-    function toggleNotificationsMenu() {
-      document.getElementById('notifDropdown').classList.toggle('hidden');
-    }
+    window.showToast = function(message) {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
 
-    function clearNotifications() {
+      const toast = document.createElement('div');
+      toast.className = 'glass-panel px-4 py-2.5 rounded-2xl text-xs font-bold text-white border border-white/30 shadow-2xl flex items-center gap-2 transform transition-all duration-300 opacity-0 translate-y-3 pointer-events-auto';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i> <span>${message}</span>`;
+      
+      container.appendChild(toast);
+
+      // Animate In
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-3');
+      });
+
+      // Remove after 3 seconds
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-3');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    };
+
+    window.toggleNotificationsMenu = function() {
+      const dropdown = document.getElementById('notifDropdown');
+      if (dropdown) {
+        dropdown.classList.toggle('hidden');
+      }
+    };
+
+    window.clearNotifications = function() {
       const list = document.getElementById('notifList');
-      if (list) list.innerHTML = '<p class="text-[11px] text-white/50 text-center py-3">No tienes notificaciones pendientes</p>';
       const badge = document.getElementById('notifBadge');
-      if (badge) badge.classList.add('hidden');
-    }
+      if (list) {
+        list.innerHTML = '<p class="text-[11px] text-white/50 text-center py-4">No hay notificaciones pendientes</p>';
+      }
+      if (badge) {
+        badge.classList.add('hidden');
+      }
+    };
 
-    // Temporizador Pomodoro demo
     let timerInterval = null;
     let timerSeconds = 25 * 60;
-    function updateTimerDisplay() {
-      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-      const secs = (timerSeconds % 60).toString().padStart(2, '0');
-      const display = document.getElementById('timerDisplay');
-      if (display) display.textContent = `${mins}:${secs}`;
-    }
-    function toggleTimer() {
-      const btn = document.getElementById('startTimerBtn');
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        if (btn) btn.textContent = 'Iniciar';
-      } else {
-        if (btn) btn.textContent = 'Pausar';
+    let isTimerRunning = false;
+
+    window.toggleTimer = function() {
+      const startBtn = document.getElementById('startTimerBtn');
+      if (!isTimerRunning) {
+        isTimerRunning = true;
+        if (startBtn) startBtn.textContent = 'Pausar';
         timerInterval = setInterval(() => {
           if (timerSeconds > 0) {
             timerSeconds--;
             updateTimerDisplay();
           } else {
             clearInterval(timerInterval);
-            timerInterval = null;
-            if (btn) btn.textContent = 'Iniciar';
+            isTimerRunning = false;
+            if (startBtn) startBtn.textContent = 'Iniciar';
             showToast('¡Tiempo Pomodoro completado!');
           }
         }, 1000);
-      }
-    }
-    function resetTimer() {
-      if (timerInterval) {
+      } else {
         clearInterval(timerInterval);
-        timerInterval = null;
+        isTimerRunning = false;
+        if (startBtn) startBtn.textContent = 'Reanudar';
       }
+    };
+
+    window.resetTimer = function() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
       timerSeconds = 25 * 60;
       updateTimerDisplay();
-      const btn = document.getElementById('startTimerBtn');
-      if (btn) btn.textContent = 'Iniciar';
+      const startBtn = document.getElementById('startTimerBtn');
+      if (startBtn) startBtn.textContent = 'Iniciar';
+    };
+
+    function updateTimerDisplay() {
+      const display = document.getElementById('timerDisplay');
+      if (!display) return;
+      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+      const secs = String(timerSeconds % 60).padStart(2, '0');
+      display.textContent = `${mins}:${secs}`;
     }
 
-    // AI & Búsqueda
-    function handleAiSubmit(e) {
-      e.preventDefault();
-      const input = document.getElementById('aiInputPrompt');
-      if (!input || !input.value.trim()) return;
-      const chat = document.getElementById('aiChatBox');
-      if (chat) {
-        const userMsg = input.value.trim();
-        chat.innerHTML += `<div class="p-3 rounded-xl bg-purple-500/20 text-xs text-white"><strong>Tú:</strong> ${userMsg}</div>`;
-        input.value = '';
-        setTimeout(() => {
-          chat.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs text-white"><strong>BOLTON AI:</strong> He procesado tu consulta sobre "${userMsg}".</div>`;
-          chat.scrollTop = chat.scrollHeight;
-        }, 600);
-        chat.scrollTop = chat.scrollHeight;
-      }
-    }
-
-    function sendQuickAiQuery() {
+    window.sendQuickAiQuery = function() {
       const input = document.getElementById('dashAiQuery');
       if (input && input.value.trim()) {
+        const query = input.value.trim();
+        input.value = '';
         switchView('ai');
-        const aiInput = document.getElementById('aiInputPrompt');
-        if (aiInput) {
-          aiInput.value = input.value;
-          input.value = '';
-        }
+        appendAiMessage(query, 'user');
+        simulateAiReply(query);
       }
-    }
+    };
 
-    function createNewNote() {
-      showToast('Nueva nota creada');
-    }
-
-    function executeResearchSearch() {
-      const query = document.getElementById('researchQueryInput');
-      const results = document.getElementById('researchResults');
-      if (query && query.value.trim() && results) {
-        results.innerHTML = `<p class="font-bold text-emerald-300">Resumen de investigación para "${query.value}":</p><p class="mt-1">Generando síntesis académica y fuentes bibliográficas...</p>`;
+    window.handleAiSubmit = function(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('aiInputPrompt');
+      if (input && input.value.trim()) {
+        const query = input.value.trim();
+        input.value = '';
+        appendAiMessage(query, 'user');
+        simulateAiReply(query);
       }
-    }
+    };
 
-    function toggleAmbientSound() {
-      const btn = document.getElementById('soundToggleBtn');
-      if (btn) {
-        if (btn.classList.contains('bg-pink-500')) {
-          btn.classList.remove('bg-pink-500');
-          btn.classList.add('bg-emerald-500');
-          btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i> Pausar';
-          showToast('Reproduciendo sonido de ambiente Lofi');
-        } else {
-          btn.classList.remove('bg-emerald-500');
-          btn.classList.add('bg-pink-500');
-          btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Reproducir';
-          showToast('Sonido pausado');
-        }
+    function appendAiMessage(text, sender) {
+      const box = document.getElementById('aiChatBox');
+      if (!box) return;
+      const msg = document.createElement('div');
+      if (sender === 'user') {
+        msg.className = 'p-3 rounded-xl bg-purple-600/40 border border-purple-400/30 text-xs text-white ml-auto max-w-[80%] font-medium';
+      } else {
+        msg.className = 'p-3 rounded-xl bg-white/10 border border-white/15 text-xs text-white max-w-[85%]';
       }
+      msg.textContent = text;
+      box.appendChild(msg);
+      box.scrollTop = box.scrollHeight;
     }
 
-    function cerrarSesion() {
-      localStorage.removeItem('bolton_user_profile');
-      showToast('Sesión cerrada');
+    function simulateAiReply(query) {
       setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1000);
+        appendAiMessage(`Análisis sobre "${query}": Basado en tu plan de estudios de BOLTON, he registrado esta consulta en tus apuntes académicos. ¿Deseas generar un resumen o ficha de memoria?`, 'ai');
+      }, 800);
     }
 
-    // Cargar fondo al inicio
-    document.addEventListener('DOMContentLoaded', () => {
-      applyBackground(currentBg, false);
-    });
-  </script>
+    window.executeResearchSearch = function() {
+      const input = document.getElementById('researchQueryInput');
+      const resBox = document.getElementById('researchResults');
+      if (input && input.value.trim() && resBox) {
+        resBox.innerHTML = `<div class="space-y-2">
+          <p class="font-bold text-emerald-300">Resultados de investigación para: "${input.value}"</p>
+          <p class="text-white/80">1. Conceptos clave y definiciones académicas unificadas.</p>
+          <p class="text-white/80">2. Referencias recomendadas en la Biblioteca Bolton.</p>
+        </div>`;
+        showToast('Búsqueda de investigación completada');
+      }
+    };
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Leer el caché del navegador
-      const userDataString = localStorage.getItem('bolton_user_profile');
-      
-      if (userDataString) {
-        const userData = JSON.parse(userDataString);
-        
-        // Actualizar nombre y usuario en la barra lateral
-        const nameEl = document.getElementById('sidebarUserName');
-        const handleEl = document.getElementById('sidebarUserHandle');
-        
-        if (nameEl) nameEl.textContent = `${userData.nombre} ${userData.apellido}`;
-        if (handleEl) handleEl.textContent = `@${userData.nombre.toLowerCase().replace(/\s+/g, '')}`;
-        
-        // Actualizar estadísticas (ej: materias)
-        const materiasEl = document.getElementById('dashMateriasCount');
-        if (materiasEl && userData.materias) {
-          materiasEl.textContent = userData.materias;
+    window.createNewNote = function() {
+      const grid = document.getElementById('notesGrid');
+      if (!grid) return;
+      const note = document.createElement('div');
+      note.className = 'glass-panel p-4 rounded-2xl space-y-2 glass-card-hover relative group';
+      note.innerHTML = `
+        <span class="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 text-[9px] font-extrabold uppercase">General</span>
+        <h3 class="font-bold text-sm text-white">Nueva Nota de Estudio</h3>
+        <p class="text-xs text-white/70">Haz clic para escribir tus apuntes y resúmenes aquí...</p>
+      `;
+      grid.prepend(note);
+      showToast('Nota creada');
+    };
+
+    window.switchProfileTab = function(tabName) {
+      document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.profile-tab-btn').forEach(b => {
+        b.classList.remove('bg-white/20', 'border-white/30', 'text-white');
+        b.classList.add('text-white/70');
+      });
+
+      const activeTab = document.getElementById(`profile-tab-${tabName}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white/20', 'border-white/30', 'text-white');
+        activeBtn.classList.remove('text-white/70');
+      }
+    };
+
+    window.copyStudentCode = function() {
+      const codeBlock = document.getElementById('studentCodeBlock');
+      if (codeBlock) {
+        navigator.clipboard.writeText(codeBlock.innerText);
+        showToast('Código copiado al portapapeles');
+      }
+    };
+
+    window.copyShareLink = function() {
+      const input = document.getElementById('profileShareLink');
+      if (input) {
+        navigator.clipboard.writeText(input.value);
+        showToast('Enlace de perfil copiado');
+      }
+    };
+
+    window.shareSocial = function(platform) {
+      const url = encodeURIComponent(document.getElementById('profileShareLink')?.value || window.location.href);
+      if (platform === 'whatsapp') {
+        window.open(`https://api.whatsapp.com/send?text=Mi%20Perfil%20Bolton:%20${url}`, '_blank');
+      } else if (platform === 'telegram') {
+        window.open(`https://t.me/share/url?url=${url}&text=Mi%20Perfil%20Bolton`, '_blank');
+      }
+    };
+
+    window.handleProgressToggleChange = function(cb) {
+      const opts = document.getElementById('progressDetailOptions');
+      if (opts) {
+        if (cb.checked) {
+          opts.classList.remove('opacity-40', 'pointer-events-none');
+        } else {
+          opts.classList.add('opacity-40', 'pointer-events-none');
         }
+      }
+    };
+
+    const bgGallery = [
+      { name: 'Predeterminado', url: '2040762329295531.jpg' },
+      { name: 'Naturaleza Verde', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80' },
+      { name: 'Cielo Estrellado', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=1200&auto=format&fit=crop&q=80' },
+      { name: 'Estudio Neón', url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80' },
+      { name: 'Montañas Místicas', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&auto=format&fit=crop&q=80' },
+      { name: 'Minimalista Oscuro', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80' }
+    ];
+
+    window.openBgModal = function() {
+      const modal = document.getElementById('bgModal');
+      if (!modal) return;
+      renderBgGrid();
+      modal.classList.remove('hidden');
+    };
+
+    window.closeBgModal = function() {
+      const modal = document.getElementById('bgModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    function renderBgGrid() {
+      const grid = document.getElementById('bgGrid');
+      if (!grid) return;
+
+      // Keep upload item
+      const uploadBtnHTML = grid.firstElementChild ? grid.firstElementChild.outerHTML : '';
+      grid.innerHTML = uploadBtnHTML;
+
+      bgGallery.forEach(bg => {
+        const card = document.createElement('div');
+        card.className = 'cursor-pointer aspect-[4/3] sm:aspect-square rounded-2xl overflow-hidden border-2 border-white/20 hover:border-emerald-400 relative group transition-all shadow-md';
+        card.onclick = () => selectBg(bg.url);
+        card.innerHTML = `
+          <img src="${bg.url}" alt="${bg.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
+            <span class="text-[10px] font-bold text-white truncate">${bg.name}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      const countText = document.getElementById('bgCountText');
+      if (countText) countText.textContent = `${bgGallery.length} Fondos Disponibles`;
+    }
+
+    window.selectBg = function(url) {
+      const bgContainer = document.getElementById('page-background');
+      const preview = document.getElementById('currentBgPreview');
+      if (bgContainer) bgContainer.style.backgroundImage = `url('${url}')`;
+      if (preview) preview.style.backgroundImage = `url('${url}')`;
+      localStorage.setItem('bolton_bg_url', url);
+      showToast('Fondo de pantalla actualizado');
+      closeBgModal();
+    };
+
+    window.handleCustomBgUpload = function(e) {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          if (evt.target?.result) {
+            selectBg(evt.target.result);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    let isAudioPlaying = false;
+    let audioElem = null;
+
+    window.toggleAmbientSound = function() {
+      const btn = document.getElementById('soundToggleBtn');
+      if (!audioElem) {
+        audioElem = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3');
+        audioElem.loop = true;
+      }
+
+      if (!isAudioPlaying) {
+        audioElem.play().then(() => {
+          isAudioPlaying = true;
+          if (btn) btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i> Pausar Lofi';
+          showToast('Música Lofi iniciada');
+        }).catch(() => {
+          showToast('Presiona de nuevo para reproducir');
+        });
+      } else {
+        audioElem.pause();
+        isAudioPlaying = false;
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+        showToast('Música pausada');
+      }
+    };
+
+    window.cerrarSesion = async function() {
+      localStorage.removeItem('bolton_user_profile');
+      if (window.supabase) {
+        try {
+          const client = window.supabase.createClient('https://wyseqehqidydqdjsicxl.supabase.co', 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_');
+          await client.auth.signOut();
+        } catch(e){}
+      }
+      showToast('Cerrando sesión...');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    };
+
+    // Restore background on boot
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedBg = localStorage.getItem('bolton_bg_url');
+      if (savedBg) {
+        const bgContainer = document.getElementById('page-background');
+        const preview = document.getElementById('currentBgPreview');
+        if (bgContainer) bgContainer.style.backgroundImage = `url('${savedBg}')`;
+        if (preview) preview.style.backgroundImage = `url('${savedBg}')`;
       }
     });
   </script>
