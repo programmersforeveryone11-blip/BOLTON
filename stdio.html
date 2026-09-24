@@ -1139,12 +1139,33 @@
     };
 
     const baseImages = [
-      '2040762329295531.jpg',
       '1044272232359838310.jpg',
       '1092685928366698116.jpg',
       'Moon Knight.jpg',
       '423056958750369372.jpg',
-      'Doctor Doom.jpg'
+      'Doctor Doom.jpg',
+      '833588212269481424.jpg',
+      '666743919873121533.jpg',
+      '1110207745670214163.jpg',
+      'gcfc.png',
+      '683984262201953413.jpg',
+      'Cute Fantasy Background Design.jpg',
+      'Whimsy Laptop Wallpapers — Layreen Blog.jpg',
+      '605312006214405708.jpg',
+      '9499849210726543.jpg',
+      '2040762329295531.jpg',
+      '774126623487459838.jpg',
+      'Dan Norris - Spider-Man (2000).jpg',
+      '728527677237033005.jpg',
+      '810155420512887209.jpg',
+      '834643743489443392.jpg',
+      '753649318944871325.jpg',
+      'ׂ╰┈➤desktop wallpaper.jpg',
+      'dream big_.jpg',
+      'Robert Downey Jr_ + Rainbow.jpg',
+      '𝐬𝐩𝐢𝐝𝐞𝐫𝐦𝐚𝐧 𝐰𝐚𝐥𝐥𝐩𝐚𝐩𝐞𝐫.jpg',
+      '884042601875716419.jpg',
+      '994521530217328866.jpg'
     ];
 
     const DEFAULT_BG = '2040762329295531.jpg';
@@ -1344,6 +1365,19 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       applyBackground(currentBg, false);
+      
+      const grid = document.getElementById('bgGrid');
+      const countText = document.getElementById('bgCountText');
+      if (grid) {
+        baseImages.forEach(img => {
+          const div = document.createElement('div');
+          div.className = 'cursor-pointer aspect-[4/3] sm:aspect-square rounded-2xl border-2 border-transparent hover:border-emerald-300 bg-cover bg-center transition-all shadow-md hover:scale-105 hover:shadow-xl';
+          div.style.backgroundImage = `url('${img}')`;
+          div.onclick = () => { applyBackground(img); showToast('Fondo aplicado'); };
+          grid.appendChild(div);
+        });
+        if (countText) countText.textContent = `${baseImages.length} fondos disponibles`;
+      }
     });
   </script>
 
