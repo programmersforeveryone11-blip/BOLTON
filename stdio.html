@@ -3,20 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOLTON - Lugar de Trabajo</title>
+  <title>BOLTON</title>
   <link rel="icon" type="image/png" href="Logo B Casa Bolton(1) 1.png">
-  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Supabase JS CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -142,7 +136,7 @@
         <!-- LISTA DE NAVEGACION IZQUIERDA -->
         <div class="flex-1 flex flex-col justify-evenly py-1.5 space-y-0.5 overflow-y-auto">
           
-          <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+          <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all bg-white/20 text-white font-bold border-white/30">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-regular fa-chart-bar text-xs"></i>
             </div>
@@ -191,6 +185,7 @@
             <span class="truncate">Horario de clases y materias</span>
           </button>
 
+          <!-- PROYECTOS Y TRABAJOS -->
           <button onclick="switchView('proyectos')" id="nav-proyectos" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-diagram-project text-xs"></i>
@@ -198,6 +193,7 @@
             <span class="truncate">Proyectos y Trabajos</span>
           </button>
 
+          <!-- BIBLIOTECA Y RECURSOS -->
           <button onclick="switchView('biblioteca')" id="nav-biblioteca" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-book-bookmark text-xs"></i>
@@ -205,6 +201,7 @@
             <span class="truncate">Biblioteca y Recursos</span>
           </button>
 
+          <!-- FINANZAS ESTUDIANTILES -->
           <button onclick="switchView('finanzas')" id="nav-finanzas" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
               <i class="fa-solid fa-wallet text-xs"></i>
@@ -251,11 +248,13 @@
             <span class="truncate">Ajustes</span>
           </button>
 
-          <a href="info.html" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors text-left">
+          <!-- ENLACE DIRECTO A INFO.HTML -->
+          <a href="info.html" onclick="try { if(window.location.protocol === 'blob:' || window.location.href.startsWith('blob:')){ event.preventDefault(); if(window.showToast) window.showToast('Navegación a info.html'); } } catch(e){}" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors text-left">
             <i class="fa-regular fa-circle-question text-white/60 group-hover:text-white text-xs w-4 text-center flex-shrink-0"></i>
             <span class="truncate">Más sobre BOLTON</span>
           </a>
 
+          <!-- BOTÓN PARA CERRAR SESIÓN -->
           <button onclick="cerrarSesion()" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-rose-300 hover:text-rose-100 hover:bg-rose-500/20 transition-colors text-left">
             <i class="fa-solid fa-right-from-bracket text-rose-300 text-xs w-4 text-center flex-shrink-0"></i>
             <span class="truncate">Cerrar Sesión</span>
@@ -265,12 +264,12 @@
           <div onclick="switchView('perfil')" id="nav-perfil" class="nav-btn mt-1 p-1.5 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all cursor-pointer flex items-center justify-between group shadow-md">
             <div class="flex items-center gap-2 min-w-0">
               <div class="relative flex-shrink-0">
-                <img id="sidebarAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-white/50 shadow-sm">
+                <img id="sidebarAvatarImg" src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-white/50 shadow-sm">
                 <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-400 border border-emerald-950 rounded-full"></span>
               </div>
               <div class="flex flex-col min-w-0">
-                <span id="sidebarName" class="text-xs font-bold text-white truncate leading-tight">Cargando...</span>
-                <span id="sidebarHandle" class="text-[9px] text-white/70 truncate leading-tight">@usuario</span>
+                <span id="sidebarUserName" class="text-xs font-bold text-white truncate leading-tight">Cargando...</span>
+                <span id="sidebarUserHandle" class="text-[9px] text-white/70 truncate leading-tight">@usuario</span>
               </div>
             </div>
             <div class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-white/30 flex items-center justify-center text-white/80 text-[9px] transition-colors flex-shrink-0 ml-1">
@@ -350,7 +349,7 @@
 
           <div class="relative">
             <button onclick="switchView('perfil')" class="w-9 h-9 rounded-full glass-panel p-0.5 flex items-center justify-center hover:scale-105 transition-transform border border-white/40 shadow-lg" title="Perfil">
-              <img id="topAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Perfil" class="w-full h-full rounded-full object-cover">
+              <img id="topAvatarImg" src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200" alt="Perfil" class="w-full h-full rounded-full object-cover">
             </button>
           </div>
 
@@ -601,9 +600,7 @@
             </button>
           </div>
 
-          <!-- Tablero de Trabajo Kanban -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Por Hacer -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
@@ -620,7 +617,6 @@
               </div>
             </div>
 
-            <!-- En Proceso -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
@@ -637,7 +633,6 @@
               </div>
             </div>
 
-            <!-- Entregado -->
             <div class="glass-panel p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center pb-2 border-b border-white/15">
                 <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-2">
@@ -653,7 +648,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 
@@ -889,8 +883,8 @@
               <div class="p-5 sm:p-6 pt-0 relative flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16">
                 <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
                   <div class="relative group">
-                    <img id="profileMainAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar Principal" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-slate-900/80 shadow-2xl">
-                    <button onclick="showToast('Carga de imagen habilitada en Ajustes')" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110">
+                    <img id="profileMainAvatar" src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200" alt="Avatar Principal" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-slate-900/80 shadow-2xl">
+                    <button onclick="showToast('Actualiza tus datos en la sección inferior')" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110">
                       <i class="fa-solid fa-camera"></i>
                     </button>
                   </div>
@@ -929,8 +923,8 @@
                         <i class="fa-solid fa-cake-candles"></i>
                       </div>
                       <div>
-                        <h4 class="text-xs font-bold text-white">Edad</h4>
-                        <p id="profileAge" class="text-[10px] text-white/70">--</p>
+                        <h4 class="text-xs font-bold text-white">Edad y Año</h4>
+                        <p id="profileAge" class="text-[10px] text-white/70">-- años</p>
                       </div>
                     </div>
 
@@ -950,7 +944,7 @@
                       </div>
                       <div>
                         <h4 class="text-xs font-bold text-white">Materias Inscritas</h4>
-                        <p id="profileSubjects" class="text-[10px] text-white/70">8 materias</p>
+                        <p id="profileSubjects" class="text-[10px] text-white/70">--</p>
                       </div>
                     </div>
 
@@ -982,63 +976,38 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="space-y-1">
                     <label class="text-[11px] font-semibold text-white/80">Nombre Completo</label>
-                    <input type="text" id="inputProfileName" placeholder="Tu Nombre" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                    <input type="text" id="inputProfileName" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
                   </div>
 
                   <div class="space-y-1">
                     <label class="text-[11px] font-semibold text-white/80">Nombre de Usuario</label>
-                    <input type="text" id="inputProfileHandle" placeholder="@usuario" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
-                  </div>
-
-                  <div class="space-y-1">
-                    <label class="text-[11px] font-semibold text-white/80">Edad</label>
-                    <input type="number" id="inputProfileAge" placeholder="Ej: 16" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
-                  </div>
-
-                  <div class="space-y-1">
-                    <label class="text-[11px] font-semibold text-white/80">Grado Académico</label>
-                    <input type="text" id="inputProfileGrade" placeholder="Ej: 4to Año / 1er Semestre" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
-                  </div>
-
-                  <div class="space-y-1">
-                    <label class="text-[11px] font-semibold text-white/80">Materias Cursando</label>
-                    <input type="number" id="inputProfileSubjects" placeholder="Ej: 8" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
-                  </div>
-
-                  <div class="space-y-1">
-                    <label class="text-[11px] font-semibold text-white/80">Teléfono</label>
-                    <input type="tel" id="inputProfilePhone" placeholder="+58 412..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
-                  </div>
-
-                  <div class="space-y-1 sm:col-span-2">
-                    <label class="text-[11px] font-semibold text-white/80">¿Qué quieres estudiar de grande? (Sueño / Meta)</label>
-                    <input type="text" id="inputProfileDream" placeholder="Ej: Ingeniería en Sistemas, Medicina..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                    <input type="text" id="inputProfileHandle" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
                   </div>
 
                   <div class="space-y-1 sm:col-span-2">
                     <label class="text-[11px] font-semibold text-white/80">Título / Carrera Estudiantil</label>
-                    <input type="text" id="inputProfileRole" placeholder="Estudiante de Ingeniería de Software & IA" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+                    <input type="text" id="inputProfileRole" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
                   </div>
 
                   <div class="space-y-1 sm:col-span-2">
                     <label class="text-[11px] font-semibold text-white/80">Biografía Académica</label>
-                    <textarea id="inputProfileBio" rows="3" class="glass-input w-full p-3 rounded-xl text-xs" placeholder="Describe tu perfil académico...">Apasionado por el aprendizaje continuo y el desarrollo en BOLTON Studio.</textarea>
+                    <textarea id="inputProfileBio" rows="3" class="glass-input w-full p-3 rounded-xl text-xs" placeholder="Describe tu meta académica..."></textarea>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- TAB 2: CUENTA Y CÓDIGO -->
+          <!-- TAB 2: CUENTA -->
           <div id="profile-tab-cuenta" class="profile-tab-content hidden space-y-5">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
                 <div class="flex items-center justify-between border-b border-white/15 pb-3">
                   <div>
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                      <i class="fa-solid fa-code text-amber-300"></i> Código de Credenciales de Estudiante
+                      <i class="fa-solid fa-code text-amber-300"></i> Credenciales de Estudiante
                     </h3>
-                    <p class="text-[11px] text-white/70">Utiliza este snippet en formato JSON para sincronizar tu cuenta con el ecosistema BOLTON</p>
+                    <p class="text-[11px] text-white/70">Ecosistema BOLTON Studio</p>
                   </div>
 
                   <button onclick="copyStudentCode()" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md">
@@ -1049,20 +1018,11 @@
                 <div class="relative group">
                   <pre class="glass-code-block p-4 rounded-2xl text-xs text-emerald-300 overflow-x-auto leading-relaxed border border-white/20 shadow-inner" id="studentCodeBlock"><code>{
   <span class="text-purple-300">"estudiante"</span>: {
-    <span class="text-purple-300">"id"</span>: <span class="text-amber-200">"STU-2026-BOLTON-8829"</span>,
-    <span class="text-purple-300">"usuario"</span>: <span class="text-amber-200">"@usuario"</span>,
-    <span class="text-purple-300">"codigo_verificacion"</span>: <span class="text-amber-200">"BLT-994A-69DA-EB80"</span>,
-    <span class="text-purple-300">"nivel_academico"</span>: <span class="text-amber-200">"Avanzado"</span>,
-    <span class="text-purple-300">"racha_dias"</span>: <span class="text-sky-300">12</span>,
-    <span class="text-purple-300">"materias_activas"</span>: [<span class="text-amber-200">"Cálculo"</span>, <span class="text-amber-200">"Química"</span>, <span class="text-amber-200">"Física"</span>]
+    <span class="text-purple-300">"estado"</span>: <span class="text-amber-200">"Sincronizado"</span>,
+    <span class="text-purple-300">"nivel"</span>: <span class="text-amber-200">"BOLTON Studio Active"</span>
   }
 }</code></pre>
-                  <span class="absolute top-2 right-2 text-[9px] font-mono text-white/40 uppercase">JSON / UTF-8</span>
-                </div>
-
-                <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-400/20 text-xs text-amber-200 flex items-start gap-2.5">
-                  <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5 flex-shrink-0"></i>
-                  <span>No compartas tu token o código de acceso privado con desconocidos. Tu código otorga acceso a sincronización de tus cuadernos académicos.</span>
+                  <span class="absolute top-2 right-2 text-[9px] font-mono text-white/40 uppercase">JSON</span>
                 </div>
               </div>
 
@@ -1075,43 +1035,11 @@
                   <div class="space-y-2">
                     <label class="text-[10px] text-white/70 font-medium">Enlace público directo</label>
                     <div class="flex gap-2">
-                      <input type="text" readonly id="profileShareLink" value="https://bolton.study/u/estudiante" class="glass-input flex-1 px-3 py-1.5 rounded-xl text-xs font-mono text-white/80">
+                      <input type="text" readonly id="profileShareLink" value="https://bolton.study/workspace" class="glass-input flex-1 px-3 py-1.5 rounded-xl text-xs font-mono text-white/80">
                       <button onclick="copyShareLink()" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs">
                         <i class="fa-solid fa-copy"></i>
                       </button>
                     </div>
-                  </div>
-
-                  <div class="grid grid-cols-2 gap-2 pt-1">
-                    <button onclick="shareSocial('whatsapp')" class="p-2.5 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 border border-emerald-500/30 text-xs font-bold flex items-center justify-center gap-2">
-                      <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
-                    </button>
-                    <button onclick="shareSocial('telegram')" class="p-2.5 rounded-xl bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 border border-sky-500/30 text-xs font-bold flex items-center justify-center gap-2">
-                      <i class="fa-brands fa-telegram text-sm"></i> Telegram
-                    </button>
-                  </div>
-                </div>
-
-                <div class="glass-panel p-5 rounded-3xl space-y-3">
-                  <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-shield-halved text-rose-300"></i> Seguridad de la Cuenta
-                  </h3>
-
-                  <div class="space-y-2 text-xs">
-                    <button onclick="showToast('Solicitud de cambio de contraseña enviada')" class="w-full text-left p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white flex justify-between items-center">
-                      <span>Cambiar Contraseña</span>
-                      <i class="fa-solid fa-chevron-right text-[10px] text-white/50"></i>
-                    </button>
-
-                    <button onclick="showToast('Autenticación en 2 Pasos activada')" class="w-full text-left p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white flex justify-between items-center">
-                      <span>Autenticación de 2 Factores (2FA)</span>
-                      <span class="text-[9px] bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full font-bold">Activo</span>
-                    </button>
-
-                    <button onclick="cerrarSesion()" class="w-full text-left p-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-200 flex justify-between items-center font-semibold">
-                      <span>Cerrar Sesión Activa</span>
-                      <i class="fa-solid fa-right-from-bracket text-xs text-rose-300"></i>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -1129,71 +1057,8 @@
                     </div>
                     <div>
                       <h3 class="text-base font-extrabold text-white">Compartir mi progreso estudiantil</h3>
-                      <p class="text-xs text-white/70">Permite que tutores, profesores y compañeros de estudio vean tus estadísticas de tiempo de estudio, tareas completadas y rachas activas.</p>
+                      <p class="text-xs text-white/70">Visibilidad pública de tus metas y estadísticas.</p>
                     </div>
-                  </div>
-
-                  <label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
-                    <input type="checkbox" id="toggleShareProgress" checked onchange="handleProgressToggleChange(this)" class="sr-only peer">
-                    <div class="w-12 h-6 bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                  </label>
-                </div>
-
-                <div id="progressDetailOptions" class="pt-3 border-t border-white/15 space-y-3 transition-all">
-                  <span class="text-[11px] font-bold text-emerald-300 uppercase tracking-wider block">Datos visibles en el perfil público:</span>
-                  
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
-                      <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded">
-                      <span class="text-white/90">Racha de días consecutivos</span>
-                    </label>
-
-                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
-                      <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded">
-                      <span class="text-white/90">Horas acumuladas Pomodoro</span>
-                    </label>
-
-                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
-                      <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded">
-                      <span class="text-white/90">Materias y cuadernos activos</span>
-                    </label>
-
-                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15">
-                      <input type="checkbox" class="w-4 h-4 accent-emerald-400 rounded">
-                      <span class="text-white/90">Calificaciones de tareas</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
-                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-white/15 pb-3">
-                  <i class="fa-solid fa-bell text-indigo-300"></i> Notificaciones y Privacidad Generales
-                </h3>
-
-                <div class="space-y-3 text-xs">
-                  <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
-                    <div>
-                      <h4 class="font-bold text-white">Recordatorios de Exámenes</h4>
-                      <p class="text-[10px] text-white/60">Recibe notificaciones 24 horas antes de cada entrega</p>
-                    </div>
-                    <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded cursor-pointer">
-                  </div>
-
-                  <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
-                    <div>
-                      <h4 class="font-bold text-white">Mostrar Estado "En Línea"</h4>
-                      <p class="text-[10px] text-white/60">Tus compañeros podrán ver cuando estás estudiando</p>
-                    </div>
-                    <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded cursor-pointer">
-                  </div>
-
-                  <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
-                    <div>
-                      <h4 class="font-bold text-white">Sonidos de la Interfaz</h4>
-                      <p class="text-[10px] text-white/60">Efectos sonoros al completar temporizadores de estudio</p>
-                    </div>
-                    <input type="checkbox" checked class="w-4 h-4 accent-emerald-400 rounded cursor-pointer">
                   </div>
                 </div>
               </div>
@@ -1209,7 +1074,7 @@
 
   <!-- MODAL: NUEVO FONDO -->
   <div id="bgModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md hidden transition-opacity duration-300">
-    <div class="glass-panel w-full max-w-4xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-200">
+    <div class="glass-panel w-full max-w-4xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative">
       
       <div class="p-4 sm:p-5 border-b border-white/20 flex items-center justify-between flex-shrink-0 bg-black/20">
         <div class="flex items-center gap-2.5">
@@ -1234,7 +1099,6 @@
               <i class="fa-solid fa-plus text-lg font-black"></i>
             </div>
             <span class="text-[11px] font-bold text-white group-hover:text-emerald-200 transition-colors">Subir fondo</span>
-            <span class="text-[9px] text-white/50">Haz clic para buscar foto</span>
             <input type="file" id="customBgFileInput" accept="image/*" class="hidden" onchange="handleCustomBgUpload(event)">
           </label>
         </div>
@@ -1253,190 +1117,432 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
- <!-- SCRIPT MAESTRO ULTRA-ROBUSTO PARA CARGA DE PERFIL -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  (() => {
-    const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
-    const supabaseKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
-    const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
-
-    function pintarPerfil(data) {
-      if (!data) return;
-
-      const nombre = data.nombre || data.first_name || data.full_name || 'Estudiante';
-      const apellido = data.apellido || data.last_name || 'Bolton';
-      const nombreCompleto = `${nombre} ${apellido}`.trim();
-
-      const rawUser = data.nombre_usuario || data.username || (data.email ? data.email.split('@')[0] : 'lulu');
-      const handle = rawUser.startsWith('@') ? rawUser : `@${rawUser}`;
-
-      const setTex = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      };
-
-      // Textos generales
-      setTex('sidebarName', nombreCompleto);
-      setTex('sidebarHandle', handle);
-      setTex('profileNameDisplay', nombreCompleto);
-      setTex('profileHandleDisplay', handle);
-
-      // Datos Académicos
-      const edadVal = data.edad;
-      setTex('profileAge', edadVal ? `${edadVal} años` : '--');
-
-      const gradoVal = data.grado;
-      setTex('profileGrade', gradoVal || '--');
-
-      const materiasVal = data.materias;
-      setTex('profileSubjects', materiasVal ? `${materiasVal} materias inscritas` : '0 materias');
-      setTex('dashMateriasCount', materiasVal || '0');
-
-      const telefonoVal = data.telefono;
-      setTex('profilePhone', telefonoVal ? telefonoVal : '--');
-
-      const suenoVal = data.carrera_futuro || data.sueno_estudio || data.dreamJob;
-      setTex('profileDream', suenoVal ? `"${suenoVal}"` : '"--"');
-
-      // Rellenar inputs del formulario de edición
-      const setInp = (id, val) => {
-        const el = document.getElementById(id);
-        if (el && val !== undefined && val !== null && val !== '') el.value = val;
-      };
-
-      setInp('inputProfileName', nombreCompleto);
-      setInp('inputProfileHandle', handle);
-      setInp('inputProfileAge', edadVal || '');
-      setInp('inputProfileGrade', gradoVal || '');
-      setInp('inputProfileSubjects', materiasVal || '');
-      setInp('inputProfilePhone', telefonoVal || '');
-      setInp('inputProfileDream', suenoVal || '');
-
-      // Avatares
-      const avatarUrl = data.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreCompleto)}&background=10b981&color=fff&bold=true`;
-      ['sidebarAvatarImg', 'topAvatarImg', 'profileMainAvatar'].forEach(id => {
-        const img = document.getElementById(id);
-        if (img) img.src = avatarUrl;
-      });
-    }
-
-    async function cargarPerfil() {
-      // 1. Cargar inmediatamente desde LocalStorage para que la interfaz no se quede en blanco
-      let perfilLocal = {};
-      try {
-        const raw = localStorage.getItem('bolton_user_profile');
-        if (raw) perfilLocal = JSON.parse(raw) || {};
-      } catch (e) {}
-
-      // Si no hay nada en caché local, establecer valores por defecto para @lulu
-      if (!perfilLocal.nombre_usuario && !perfilLocal.nombre) {
-        perfilLocal = {
-          nombre: "Lulu",
-          apellido: "Bolton",
-          nombre_usuario: "lulu"
-        };
-      }
-
-      pintarPerfil(perfilLocal);
-
-      // 2. Intentar sincronizar con Supabase si está disponible
-      if (supabase) {
-        try {
-          let dbProfile = null;
-          const { data: { session } } = await supabase.auth.getSession();
-          
-          if (session && session.user) {
-            // Buscar por ID de sesión
-            const res = await supabase.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
-            dbProfile = res.data;
-          }
-
-          // Si no hay sesión o no encontró por ID, buscar por nombre de usuario o email local
-          if (!dbProfile) {
-            const usernameBusqueda = perfilLocal.nombre_usuario?.replace('@', '');
-            if (usernameBusqueda) {
-              const resUser = await supabase.from('profiles').select('*').eq('nombre_usuario', usernameBusqueda).maybeSingle();
-              if (resUser.data) dbProfile = resUser.data;
-            }
-          }
-
-          if (dbProfile) {
-            perfilLocal = { ...perfilLocal, ...dbProfile };
-            localStorage.setItem('bolton_user_profile', JSON.stringify(perfilLocal));
-            pintarPerfil(perfilLocal);
-          }
-        } catch (err) {
-          console.warn("Aviso al consultar Supabase:", err);
-        }
-      }
-    }
-
-    window.savePublicProfile = async function() {
-      const nameInput = document.getElementById('inputProfileName')?.value || '';
-      const handleInput = document.getElementById('inputProfileHandle')?.value || '';
-      const ageInput = document.getElementById('inputProfileAge')?.value || '';
-      const gradeInput = document.getElementById('inputProfileGrade')?.value || '';
-      const subjectsInput = document.getElementById('inputProfileSubjects')?.value || '';
-      const phoneInput = document.getElementById('inputProfilePhone')?.value || '';
-      const dreamInput = document.getElementById('inputProfileDream')?.value || '';
-
-      let actual = {};
-      try {
-        actual = JSON.parse(localStorage.getItem('bolton_user_profile')) || {};
-      } catch(e){}
-
-      const partesNombre = nameInput.trim().split(' ');
-      const nombre = partesNombre[0] || actual.nombre || 'Lulu';
-      const apellido = partesNombre.slice(1).join(' ') || actual.apellido || '';
-
-      const perfilActualizado = {
-        ...actual,
-        nombre: nombre,
-        apellido: apellido,
-        nombre_usuario: handleInput.replace(/^@/, ''),
-        edad: ageInput,
-        grado: gradeInput,
-        materias: subjectsInput,
-        telefono: phoneInput,
-        carrera_futuro: dreamInput
-      };
-
-      localStorage.setItem('bolton_user_profile', JSON.stringify(perfilActualizado));
-      pintarPerfil(perfilActualizado);
-
-      if (supabase) {
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const userId = session?.user?.id;
-
-          if (userId) {
-            await supabase.from('profiles').upsert({
-              id: userId,
-              nombre: nombre,
-              apellido: apellido,
-              nombre_usuario: perfilActualizado.nombre_usuario,
-              edad: ageInput ? parseInt(ageInput, 10) : null,
-              grado: gradeInput,
-              materias: subjectsInput,
-              telefono: phoneInput ? parseInt(phoneInput, 10) : null,
-              carrera_futuro: dreamInput
-            });
-          }
-        } catch(e) {
-          console.warn("Aviso al guardar en Supabase:", e);
-        }
-      }
-
-      if (window.showToast) window.showToast('Perfil actualizado con éxito');
+  <!-- JAVASCRIPT LOGIC DE LA INTERFAZ UI -->
+  <script>
+    const viewIcons = {
+      dashboard: 'fa-chart-pie text-emerald-300',
+      notas: 'fa-note-sticky text-amber-300',
+      calendario: 'fa-calendar-days text-sky-300',
+      tiempo: 'fa-clock text-rose-300',
+      cuadernos: 'fa-bookmark text-teal-300',
+      tareas: 'fa-list-check text-indigo-300',
+      horario: 'fa-graduation-cap text-purple-300',
+      proyectos: 'fa-diagram-project text-pink-300',
+      biblioteca: 'fa-book-bookmark text-yellow-300',
+      finanzas: 'fa-wallet text-emerald-400',
+      ai: 'fa-wand-magic-sparkles text-purple-400',
+      investigacion: 'fa-magnifying-glass text-blue-300',
+      cursos: 'fa-code text-indigo-300',
+      entretenimiento: 'fa-gamepad text-rose-400',
+      ajustes: 'fa-sliders text-slate-300',
+      perfil: 'fa-user text-emerald-300'
     };
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', cargarPerfil);
-    } else {
-      cargarPerfil();
+    const baseImages = [
+      '2040762329295531.jpg',
+      '1044272232359838310.jpg',
+      '1092685928366698116.jpg',
+      'Moon Knight.jpg',
+      '423056958750369372.jpg',
+      'Doctor Doom.jpg'
+    ];
+
+    const DEFAULT_BG = '2040762329295531.jpg';
+    let currentBg = localStorage.getItem('bolton_bg') || DEFAULT_BG;
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'glass-panel px-4 py-2.5 rounded-2xl text-xs font-semibold text-white shadow-2xl flex items-center gap-2 border border-white/30 animate-in fade-in slide-in-from-bottom-2 pointer-events-auto';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
-  })();
+
+    function applyBackground(bgUrl, save = true) {
+      currentBg = bgUrl;
+      const bgElement = document.getElementById('page-background');
+      const bgPreview = document.getElementById('currentBgPreview');
+
+      if (bgElement) bgElement.style.backgroundImage = `url('${bgUrl}')`;
+      if (bgPreview) bgPreview.style.backgroundImage = `url('${bgUrl}')`;
+
+      if (save) localStorage.setItem('bolton_bg', bgUrl);
+    }
+
+    function openBgModal() {
+      const modal = document.getElementById('bgModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeBgModal() {
+      const modal = document.getElementById('bgModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleCustomBgUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        applyBackground(e.target.result);
+        showToast('Fondo actualizado');
+        closeBgModal();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function switchView(viewId) {
+      const views = document.querySelectorAll('.content-view');
+      views.forEach(v => v.classList.add('hidden'));
+
+      const target = document.getElementById('view-' + viewId);
+      if (target) target.classList.remove('hidden');
+
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => {
+        btn.classList.remove('bg-white/20', 'text-white', 'font-bold', 'border-white/30');
+      });
+
+      const activeBtn = document.getElementById('nav-' + viewId);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white/20', 'text-white', 'font-bold', 'border-white/30');
+      }
+
+      const iconElem = document.getElementById('viewHeaderIcon');
+      const titleElem = document.getElementById('viewHeaderTitle');
+      if (iconElem && viewIcons[viewId]) {
+        iconElem.className = 'fa-solid ' + viewIcons[viewId];
+      }
+      if (titleElem) {
+        titleElem.textContent = viewId.charAt(0).toUpperCase() + viewId.slice(1);
+      }
+
+      if (window.innerWidth < 768) {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (overlay) overlay.classList.add('hidden');
+      }
+    }
+
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobileOverlay');
+      if (sidebar) sidebar.classList.toggle('-translate-x-full');
+      if (overlay) overlay.classList.toggle('hidden');
+    }
+
+    function toggleNotificationsMenu() {
+      const dropdown = document.getElementById('notifDropdown');
+      if (dropdown) dropdown.classList.toggle('hidden');
+    }
+
+    function clearNotifications() {
+      const list = document.getElementById('notifList');
+      const badge = document.getElementById('notifBadge');
+      if (list) list.innerHTML = '<p class="text-[10px] text-white/50 text-center py-2">Sin notificaciones pendientes</p>';
+      if (badge) badge.classList.add('hidden');
+      showToast('Notificaciones limpiadas');
+    }
+
+    function switchProfileTab(tabName) {
+      const tabs = document.querySelectorAll('.profile-tab-content');
+      tabs.forEach(t => t.classList.add('hidden'));
+
+      const selectedTab = document.getElementById('profile-tab-' + tabName);
+      if (selectedTab) selectedTab.classList.remove('hidden');
+
+      const buttons = document.querySelectorAll('.profile-tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-white/20', 'border-white/30', 'text-white', 'font-bold');
+        btn.classList.add('text-white/70', 'font-medium');
+      });
+
+      const activeBtn = document.getElementById('tab-btn-' + tabName);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white/20', 'border-white/30', 'text-white', 'font-bold');
+        activeBtn.classList.remove('text-white/70', 'font-medium');
+      }
+    }
+
+    let timerInterval = null;
+    let timerSeconds = 1500;
+
+    function toggleTimer() {
+      const btn = document.getElementById('startTimerBtn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        if (btn) btn.textContent = 'Iniciar';
+      } else {
+        if (btn) btn.textContent = 'Pausar';
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+            const secs = String(timerSeconds % 60).padStart(2, '0');
+            const display = document.getElementById('timerDisplay');
+            if (display) display.textContent = `${mins}:${secs}`;
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            showToast('¡Tiempo Pomodoro completado!');
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timerSeconds = 1500;
+      const display = document.getElementById('timerDisplay');
+      const btn = document.getElementById('startTimerBtn');
+      if (display) display.textContent = '25:00';
+      if (btn) btn.textContent = 'Iniciar';
+    }
+
+    function createNewNote() {
+      showToast('Nueva nota creada');
+    }
+
+    function sendQuickAiQuery() {
+      const input = document.getElementById('dashAiQuery');
+      if (input && input.value.trim()) {
+        switchView('ai');
+        showToast('Consulta enviada a BOLTON AI');
+        input.value = '';
+      }
+    }
+
+    function handleAiSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('aiInputPrompt');
+      const chatBox = document.getElementById('aiChatBox');
+      if (input && input.value.trim() && chatBox) {
+        const query = input.value.trim();
+        chatBox.innerHTML += `<div class="p-3 rounded-xl bg-purple-500/20 text-xs text-white font-semibold ml-auto max-w-[80%]">${query}</div>`;
+        input.value = '';
+        setTimeout(() => {
+          chatBox.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs text-white">He procesado tu consulta. Recuerda revisar la sección de notas para organizar tus ideas.</div>`;
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 600);
+      }
+    }
+
+    function copyStudentCode() {
+      showToast('Código copiado al portapapeles');
+    }
+
+    function copyShareLink() {
+      showToast('Enlace copiado al portapapeles');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyBackground(currentBg, false);
+    });
+  </script>
+
+   <!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FIREBASE (compat) + LÓGICA DE SESIÓN Y PERFIL              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  'use strict';
+  console.log('🚀 Stdio cargado');
+
+  /* ============================================================
+     CONFIG FIREBASE
+  ============================================================ */
+  const firebaseConfig = {
+    apiKey: "AIzaSyCaKSIs2jw652l2cfh6grrGVscjNGmrVjE",
+    authDomain: "bolton-df3fc.firebaseapp.com",
+    projectId: "bolton-df3fc",
+    storageBucket: "bolton-df3fc.firebasestorage.app",
+    messagingSenderId: "1051557089587",
+    appId: "1:1051557089587:web:c82fc1741f1e608d7aae46",
+    measurementId: "G-ZDG83T82HP"
+  };
+
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db   = firebase.firestore();
+
+  /* ============================================================
+     HELPERS
+  ============================================================ */
+  function buildAvatarUrl(name){
+    const safe = encodeURIComponent(name || 'Usuario');
+    return 'https://ui-avatars.com/api/?name=' + safe + '&background=10b981&color=fff&bold=true&size=200';
+  }
+  function setText(id, val){ const el = document.getElementById(id); if (el) el.textContent = val || '--'; }
+  function setImg(id, val){ const el = document.getElementById(id); if (el && val) el.src = val; }
+  function setInput(id, val){ const el = document.getElementById(id); if (el && val !== undefined) el.value = val; }
+  function pick(){
+    for (var i = 0; i < arguments.length; i++){
+      var v = arguments[i];
+      if (v !== undefined && v !== null && String(v).trim() !== '' && String(v) !== 'undefined') return v;
+    }
+    return '';
+  }
+  function loadCache(){
+    try { return JSON.parse(localStorage.getItem('bolton_user_profile') || '{}'); }
+    catch(e){ return {}; }
+  }
+  function saveCache(p){
+    try { localStorage.setItem('bolton_user_profile', JSON.stringify(p)); } catch(e){}
+  }
+
+  /* ============================================================
+     PINTAR PERFIL
+  ============================================================ */
+  function paintProfile(p){
+    if (!p) return;
+    const m = Object.assign({}, loadCache(), p);
+    console.log('🎨 Pintando perfil:', m);
+
+    const fullName = pick(m.nombre_completo, m.full_name,
+      [m.nombre, m.apellido].filter(Boolean).join(' '),
+      m.name, m.displayName,
+      m.email ? m.email.split('@')[0] : 'Usuario');
+    const email = pick(m.email, m.correo);
+    const rawHandle = pick(m.nombre_usuario, m.username, email);
+    const handle = rawHandle ? (String(rawHandle).charAt(0) === '@' ? rawHandle : '@' + String(rawHandle).split('@')[0]) : '@usuario';
+    const role = pick(m.rol, m.role, m.grado, m.carrera, 'Estudiante de BOLTON Studio');
+    const avatar = pick(m.avatar_url, m.avatar, m.photoURL, buildAvatarUrl(fullName));
+
+    setText('sidebarUserName', fullName);
+    setText('sidebarUserHandle', handle);
+    setImg('sidebarAvatarImg', avatar);
+    setImg('topAvatarImg', avatar);
+
+    setText('profileNameDisplay', fullName);
+    setText('profileHandleDisplay', handle);
+    setText('profileRoleDisplay', role);
+    setImg('profileMainAvatar', avatar);
+
+    setText('profileAge', m.edad ? (m.edad + ' años' + (m.anio_nacimiento ? ' (Nacido en ' + m.anio_nacimiento + ')' : '')) : '-- años');
+    setText('profileGrade', pick(m.grado, m.carrera, '--'));
+    setText('profileSubjects', m.materias ? (m.materias + ' materias inscritas') : '--');
+    setText('profilePhone', pick(m.telefono, m.phone, '--'));
+    setText('profileDream', (m.sueno_estudio || m.dreamJob) ? ('"' + pick(m.sueno_estudio, m.dreamJob) + '"') : '"--"');
+
+    if (m.materias) setText('dashMateriasCount', String(m.materias));
+
+    setInput('inputProfileName', fullName);
+    setInput('inputProfileHandle', handle);
+    setInput('inputProfileRole', role);
+    setInput('inputProfileBio', m.bio || '');
+  }
+  window.paintProfile = paintProfile;
+
+  /* ============================================================
+     CERRAR SESIÓN
+  ============================================================ */
+  window.cerrarSesion = function(){
+    auth.signOut().then(function(){
+      try { localStorage.removeItem('bolton_user_profile'); } catch(e){}
+      window.location.href = 'index.html';
+    }).catch(function(err){
+      console.error('Error al cerrar sesión:', err);
+      window.location.href = 'index.html';
+    });
+  };
+
+  /* ============================================================
+     GUARDAR PERFIL PÚBLICO
+  ============================================================ */
+  window.savePublicProfile = function(){
+    const user = auth.currentUser;
+    if (!user) return;
+    const name = document.getElementById('inputProfileName');
+    const handle = document.getElementById('inputProfileHandle');
+    const role = document.getElementById('inputProfileRole');
+    const bio = document.getElementById('inputProfileBio');
+
+    const updates = {
+      nombre_completo: name ? name.value.trim() : '',
+      nombre_usuario: handle ? handle.value.trim().replace(/^@/, '') : '',
+      rol: role ? role.value.trim() : '',
+      bio: bio ? bio.value.trim() : ''
+    };
+
+    setText('profileNameDisplay', updates.nombre_completo);
+    setText('sidebarUserName', updates.nombre_completo);
+    setText('profileHandleDisplay', '@' + updates.nombre_usuario);
+    setText('sidebarUserHandle', '@' + updates.nombre_usuario);
+    setText('profileRoleDisplay', updates.rol);
+
+    const c = loadCache();
+    Object.assign(c, updates);
+    saveCache(c);
+
+    db.collection('users').doc(user.uid).update(updates)
+      .then(function(){ if (window.showToast) window.showToast('Perfil actualizado'); })
+      .catch(function(err){
+        console.error(err);
+        if (window.showToast) window.showToast('Error al guardar: ' + err.code);
+      });
+  };
+
+ /* ============================================================
+   OBSERVADOR DE SESIÓN + DETECCIÓN DE USUARIO ELIMINADO
+============================================================ */
+auth.onAuthStateChanged(function(user){
+  if (!user) {
+    console.log('🚪 Sin sesión → redirigiendo a index.html');
+    window.location.href = 'index.html';
+    return;
+  }
+
+  console.log('👤 Sesión activa:', user.email);
+
+  // 1. Pintado inmediato
+  const cached = loadCache();
+  const immediate = {
+    uid: user.uid,
+    email: user.email,
+    nombre_completo: user.displayName || cached.nombre_completo || (user.email ? user.email.split('@')[0] : 'Usuario'),
+    avatar_url: user.photoURL || cached.avatar_url || buildAvatarUrl(user.displayName || user.email)
+  };
+  paintProfile(Object.assign({}, cached, immediate));
+
+  // 2. Cargar de Firestore
+  db.collection('users').doc(user.uid).get()
+    .then(function(snap){
+      if (!snap.exists) {
+        // 🚨 USUARIO ELIMINADO DE FIRESTORE
+        console.warn('🚨 Usuario sin documento en Firestore → cerrando sesión');
+        if (window.showToast) {
+          window.showToast('Tu cuenta fue eliminada. Contacta al administrador.');
+        }
+        setTimeout(function(){
+          auth.signOut().finally(function(){
+            try { localStorage.removeItem('bolton_user_profile'); } catch(e){}
+            window.location.href = 'index.html';
+          });
+        }, 2000);
+        return;
+      }
+
+      const data = snap.data();
+      const merged = Object.assign({}, immediate, data, { uid: user.uid, email: user.email || data.email });
+      saveCache(merged);
+      paintProfile(merged);
+      console.log('🎉 Perfil cargado de Firestore:', merged);
+    })
+    .catch(function(err){
+      console.warn('⚠️ Firestore error:', err);
+      paintProfile(cached);
+    });
+});
 </script>
 </body>
 </html>
