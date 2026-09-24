@@ -1045,107 +1045,90 @@
     startQuoteRotation();
     
     /* ============================================================
-   REGISTRO — VERSIÓN ROBUSTA
-============================================================ */
-const signupForm = document.getElementById('signupForm');
-if (signupForm) {
-  signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // 1) Validar edad vs año
-    const age = parseInt(document.getElementById('signupAge').value, 10);
-    const birthYear = parseInt(document.getElementById('signupBirthYear').value, 10);
-    const currentYear = new Date().getFullYear();
-    if (Math.abs((currentYear - birthYear) - age) > 1) {
-      const errEl = document.getElementById('ageYearError');
-      if (errEl) errEl.style.display = 'block';
-      return;
-    }
-    const errEl = document.getElementById('ageYearError');
-    if (errEl) errEl.style.display = 'none';
-
-    // 2) Leer TODOS los campos
-    const nombre = document.getElementById('signupName').value.trim();
-    const apellido = document.getElementById('signupLastname').value.trim();
-    const grado = document.getElementById('signupGrade').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const materias = parseInt(document.getElementById('signupSubjects').value, 10);
-    const telefono = document.getElementById('signupPhone').value.trim();
-    const dreamJob = document.getElementById('signupDreamJob').value.trim();
-    const avatarFile = document.getElementById('signupAvatarFile')?.files[0];
-
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Creando...';
-
-    try {
-      // 3) Crear usuario en Auth
-      const cred = await auth.createUserWithEmailAndPassword(email, password);
-      const user = cred.user;
-      console.log('✅ Usuario Auth creado:', user.uid);
-
-      // 4) Avatar (foto subida o auto-generado)
-      let avatarUrl = buildAvatarUrl(`${nombre} ${apellido}`);
-      if (avatarFile) {
+       REGISTRO
+    ============================================================ */
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+    
+        const age = parseInt(document.getElementById('signupAge').value, 10);
+        const birthYear = parseInt(document.getElementById('signupBirthYear').value, 10);
+        const currentYear = new Date().getFullYear();
+    
+        if (Math.abs((currentYear - birthYear) - age) > 1) {
+          const errEl = document.getElementById('ageYearError');
+          if (errEl) errEl.style.display = 'block';
+          return;
+        }
+        const errEl = document.getElementById('ageYearError');
+        if (errEl) errEl.style.display = 'none';
+    
+        const nombre = document.getElementById('signupName').value.trim();
+        const apellido = document.getElementById('signupLastname').value.trim();
+        const grado = document.getElementById('signupGrade').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const materias = parseInt(document.getElementById('signupSubjects').value, 10);
+        const telefono = document.getElementById('signupPhone').value.trim();
+        const dreamJob = document.getElementById('signupDreamJob').value.trim();
+        const avatarFile = document.getElementById('signupAvatarFile')?.files[0];
+    
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Creando...';
+    
         try {
-          avatarUrl = await new Promise((resolve) => {
-            const r = new FileReader();
-            r.onload = (ev) => resolve(ev.target.result);
-            r.onerror = () => resolve(buildAvatarUrl(`${nombre} ${apellido}`));
-            r.readAsDataURL(avatarFile);
-          });
-        } catch(e) { console.warn('Avatar fallback:', e); }
-      }
-
-      // 5) Update Auth profile (displayName + photoURL)
-      try {
-        await user.updateProfile({
-          displayName: `${nombre} ${apellido}`.trim(),
-          photoURL: avatarUrl
-        });
-      } catch(e) { console.warn('updateProfile falló:', e); }
-
-      // 6) Guardar TODO el perfil en Firestore
-      const profileData = {
-        nombre: nombre,
-        apellido: apellido,
-        nombre_completo: `${nombre} ${apellido}`.trim(),
-        nombre_usuario: email.split('@')[0],
-        edad: age,
-        anio_nacimiento: birthYear,
-        grado: grado,
-        email: email,
-        materias: materias,
-        telefono: telefono,
-        sueno_estudio: dreamJob,
-        avatar_url: avatarUrl,
-        rol: 'Estudiante de BOLTON Studio',
-        creado: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      console.log('💾 Guardando en Firestore...', profileData);
-      await db.collection('users').doc(user.uid).set(profileData);
-      console.log('✅ Perfil guardado en Firestore');
-
-      // 7) Cache local
-      saveProfileCache(Object.assign({}, profileData, { uid: user.uid }));
-
-      showNotification('¡Cuenta creada con éxito!', 'success');
-      setTimeout(() => { window.location.href = 'stdio.html'; }, 900);
-    } catch (error) {
-      console.error('❌ Error en registro:', error);
-      let msg = 'Error al registrar: ' + (error.message || error.code);
-      if (error.code === 'auth/email-already-in-use') msg = 'Ese correo ya está registrado';
-      else if (error.code === 'auth/weak-password') msg = 'Contraseña muy débil (mín. 6)';
-      else if (error.code === 'auth/invalid-email') msg = 'Correo inválido';
-      else if (error.code === 'permission-denied') msg = 'Firestore bloqueó la escritura. Revisa las reglas.';
-      showNotification(msg, 'error');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Registrarse';
+          const cred = await auth.createUserWithEmailAndPassword(email, password);
+          const user = cred.user;
+    
+          let avatarUrl = buildAvatarUrl(`${nombre} ${apellido}`);
+          if (avatarFile) {
+            avatarUrl = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (ev) => resolve(ev.target.result);
+              reader.onerror = () => resolve(buildAvatarUrl(`${nombre} ${apellido}`));
+              reader.readAsDataURL(avatarFile);
+            });
+          }
+    
+          try {
+            await user.updateProfile({
+              displayName: `${nombre} ${apellido}`.trim(),
+              photoURL: avatarUrl
+            });
+          } catch(err) { console.warn(err); }
+    
+          const profileData = {
+            nombre, apellido,
+            nombre_completo: `${nombre} ${apellido}`.trim(),
+            nombre_usuario: email.split('@')[0],
+            edad: age,
+            anio_nacimiento: birthYear,
+            grado, email, materias, telefono,
+            sueno_estudio: dreamJob,
+            avatar_url: avatarUrl,
+            rol: 'Estudiante de BOLTON Studio',
+            creado: firebase.firestore.FieldValue.serverTimestamp()
+          };
+    
+          await db.collection('users').doc(user.uid).set(profileData);
+          saveProfileCache({ ...profileData, uid: user.uid });
+    
+          showNotification("¡Cuenta creada con éxito!", "success");
+          setTimeout(() => { window.location.href = 'stdio.html'; }, 800);
+        } catch (error) {
+          console.error(error);
+          let msg = "Error al registrar: " + error.message;
+          if (error.code === 'auth/email-already-in-use') msg = "Ese correo ya está registrado";
+          if (error.code === 'auth/weak-password') msg = "La contraseña es muy débil (mín. 6)";
+          if (error.code === 'auth/invalid-email') msg = "Correo inválido";
+          showNotification(msg, "error");
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Registrarse';
+        }
+      });
     }
-  });
-}
     
     /* ============================================================
        LOGIN
