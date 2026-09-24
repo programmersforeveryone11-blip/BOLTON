@@ -7,7 +7,9 @@
   <meta name="description" content="Un espacio para estudiar, organizarte y avanzar con constancia.">
   <title>BOLTON</title>
   <link rel="icon" type="image/png" href="Logo B Casa Bolton(1) 1.png">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <style>
     :root { 
@@ -537,7 +539,7 @@
 
           <div class="form-group">
             <label data-i18n="avatarLabel">Foto de Perfil (Subir imagen)</label>
-            <input type="file" accept="image/*" class="file-input">
+            <input type="file" accept="image/*" id="signupAvatarFile" class="file-input">
           </div>
 
           <button type="submit" class="modal-submit-btn" data-i18n="signupSubmit">Registrarse</button>
@@ -567,743 +569,763 @@
   </main>
 
   <script>
-    (() => {
-      // 1. Configuración de Supabase
-      const supabaseUrl = 'https://wyseqehqidydqdjsicxl.supabase.co';
-      const supabaseAnonKey = 'sb_publishable_cjb0Xtk3w-3vruC0-HeRog__0r__IJ_';
-      const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-      let pendingOtpEmail = '';
-
-      function showContinueSessionPrompt(session) {
-        const email = (session && session.user && session.user.email) ? session.user.email : 'esta cuenta';
-        const container = document.getElementById('notification-container');
-        if (!container) return;
-
-        const existing = document.querySelector('[data-bolton-session-prompt="true"]');
-        if (existing) existing.remove();
-
-        const toast = document.createElement('div');
-        toast.setAttribute('data-bolton-session-prompt', 'true');
-        toast.className = 'notification-toast success';
-        toast.innerHTML = `
-          <div class="notification-toast-left" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="notification-icon">✅</span>
-              <span class="notification-message">Tienes una cuenta iniciada con ${email}. ¿Quieres continuar?</span>
-            </div>
-            <div style="display:flex; gap:8px; margin-top:2px;">
-              <button type="button" data-session-action="continue" style="padding:8px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.12); color:#fff; font-weight:700; cursor:pointer;">Sí</button>
-              <button type="button" data-session-action="stay" style="padding:8px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); color:#fff; font-weight:700; cursor:pointer;">No</button>
-            </div>
-          </div>
-          <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
-        `;
-
-        toast.querySelector('[data-session-action="continue"]').addEventListener('click', () => {
-          window.location.href = 'stdio.html';
-        });
-
-        toast.querySelector('[data-session-action="stay"]').addEventListener('click', () => {
-          toast.classList.remove('show');
-          setTimeout(() => toast.remove(), 300);
-        });
-
-        toast.querySelector('.toast-close-btn').addEventListener('click', () => {
-          toast.classList.remove('show');
-          setTimeout(() => toast.remove(), 300);
-        });
-
-        container.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.add('show'));
-      }
-
-      // 2. Control de estado de sesión
-      supabase.auth.onAuthStateChange(async (event, session) => {
-        if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-          const user = session.user;
-          const createdAt = new Date(user.created_at).getTime();
-          const lastSignIn = new Date(user.last_sign_in_at).getTime();
-          const isNewUser = Math.abs(lastSignIn - createdAt) < 5000;
-          const isGoogle = user.app_metadata.provider === 'google';
-
-          if (isGoogle && isNewUser) {
-            await supabase.auth.signOut();
-            showNotification('Este correo de Google no está registrado. Crea una cuenta primero.', 'error');
-          } else {
-            showContinueSessionPrompt(session);
-          }
-        }
+    /* ============================================================
+       CONFIGURACIÓN DE FIREBASE
+    ============================================================ */
+    const firebaseConfig = {
+      apiKey: "AIzaSyCaKSIs2jw652l2cfh6grrGVscjNGmrVjE",
+      authDomain: "bolton-df3fc.firebaseapp.com",
+      projectId: "bolton-df3fc",
+      storageBucket: "bolton-df3fc.firebasestorage.app",
+      messagingSenderId: "1051557089587",
+      appId: "1:1051557089587:web:c82fc1741f1e608d7aae46",
+      measurementId: "G-ZDG83T82HP"
+    };
+    
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    
+    /* Persistencia: mantiene la sesión al cerrar navegador */
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    
+    /* ============================================================
+       HELPERS
+    ============================================================ */
+    function buildAvatarUrl(name) {
+      const safe = encodeURIComponent(name || 'Usuario');
+      return `https://ui-avatars.com/api/?name=${safe}&background=10b981&color=fff&bold=true&size=200`;
+    }
+    
+    function saveProfileCache(data) {
+      try { localStorage.setItem('bolton_user_profile', JSON.stringify(data)); } catch(e){}
+    }
+    
+    /* ============================================================
+       NOTIFICACIONES FLOTANTES
+    ============================================================ */
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notification-container');
+      if (!container) return;
+    
+      const toast = document.createElement('div');
+      toast.className = `notification-toast ${type}`;
+      let icon = 'ℹ️';
+      if (type === 'error') icon = '❌';
+      if (type === 'success') icon = '✅';
+    
+      toast.innerHTML = `
+        <div class="notification-toast-left">
+          <span class="notification-icon">${icon}</span>
+          <span class="notification-message">${message}</span>
+        </div>
+        <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
+      `;
+    
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+    
+      const timeoutId = setTimeout(() => closeToast(toast), 6000);
+      toast.querySelector('.toast-close-btn').addEventListener('click', () => {
+        clearTimeout(timeoutId);
+        closeToast(toast);
       });
-
-      window.addEventListener('DOMContentLoaded', async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          const user = session.user;
-          const createdAt = new Date(user.created_at).getTime();
-          const lastSignIn = new Date(user.last_sign_in_at).getTime();
-          const isNewUser = Math.abs(lastSignIn - createdAt) < 5000;
-          const isGoogle = user.app_metadata.provider === 'google';
-          if (!(isGoogle && isNewUser)) {
-            showContinueSessionPrompt(session);
-          }
-        }
-      });
-
-      // 3. Sistema de Notificaciones Flotantes (Toast)
-      function showNotification(message, type = 'info') {
-        const container = document.getElementById('notification-container');
-        if (!container) return;
-
-        const toast = document.createElement('div');
-        toast.className = `notification-toast ${type}`;
-        
-        let icon = 'ℹ️';
-        if (type === 'error') icon = '❌';
-        if (type === 'success') icon = '✅';
-
-        toast.innerHTML = `
-          <div class="notification-toast-left">
-            <span class="notification-icon">${icon}</span>
-            <span class="notification-message">${message}</span>
-          </div>
-          <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
-        `;
-        
-        container.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.add('show'));
-
-        const timeoutId = setTimeout(() => closeToast(toast), 6000);
-        toast.querySelector('.toast-close-btn').addEventListener('click', () => {
-          clearTimeout(timeoutId);
-          closeToast(toast);
-        });
+    }
+    
+    function closeToast(toast) {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 400);
+    }
+    
+    /* ============================================================
+       DICCIONARIO MULTILENGUAJE
+    ============================================================ */
+    const translations = {
+      es: {
+        knowMore: "conoce mas del proyecto",
+        availableWork: "Disponible para ayudarte",
+        cardTitle: "Organización · Estudio",
+        cardDesc: "Bolton es tu herramienta de confianza para estudiar y mantener en orden tus trabajos y pasar con la nota máxima todas las materias.",
+        weHelp: "Te ayudamos a crecer.",
+        studioName: "conoce más de luizabeth's.studios",
+        mail1: "Hay ofertas en todos los servicios de luizabeth's.studios.",
+        mail2: "Te recomiendo ver Game of Thrones esta noche.",
+        mail3: "Nojoda chico, me bajaron a nivel 5 en Cashea.",
+        mail4: "Mañana hay examen, lleva la chuleta.",
+        login: "Inicia sesión",
+        signup: "Crear cuenta",
+        loginTitle: "Inicia Sesión en Bolton",
+        signupTitle: "Crea tu cuenta en Bolton",
+        emailLabel: "Correo Electrónico",
+        passLabel: "Contraseña",
+        forgotPassword: "¿Olvidaste tu contraseña?",
+        loginSubmit: "Entrar",
+        continueGoogle: "Continuar con Google",
+        nameLabel: "Nombre",
+        lastnameLabel: "Apellido",
+        ageLabel: "Edad",
+        birthYearLabel: "Año de Nacimiento",
+        gradeLabel: "Grado o Año Cursando",
+        subjectsLabel: "Materias Cursando (Máx. 20)",
+        phoneLabel: "Teléfono",
+        dreamJobLabel: "¿Qué quieres estudiar de grande?",
+        avatarLabel: "Foto de Perfil (Subir imagen)",
+        signupSubmit: "Registrarse",
+        ageYearErrorMsg: "La edad y el año de nacimiento no coinciden. ¡Verifícalos!",
+        otpTitle: "Verificar Código OTP",
+        otpSubtitle: "Ingresa el código de 6 dígitos enviado a tu correo electrónico:",
+        otpLabel: "Código de Verificación (OTP)",
+        otpSubmit: "Verificar Código",
+        resetTitle: "Recuperar Contraseña",
+        resetSubtitle: "Ingresa tu correo para recibir un enlace de restauración:",
+        resetSubmit: "Enviar Enlace",
+        quotes: [
+          'Progreso,\nno perfección',
+          'Empieza, aunque sea\npoco a poco',
+          'Haz hoy lo que tu\nfuturo agradecerá',
+          'La constancia vence\nal talento',
+          'Los grandes logros\nson pequeños hábitos'
+        ]
+      },
+      en: {
+        knowMore: "learn more about the project",
+        availableWork: "Available to help you",
+        cardTitle: "Organization · Study",
+        cardDesc: "Bolton is your trusted tool to study, keep your assignments organized, and pass all your subjects with top grades.",
+        weHelp: "We help you grow.",
+        studioName: "learn more about luizabeth's.studios",
+        mail1: "There are special offers across all luizabeth's.studios services.",
+        mail2: "I recommend watching Game of Thrones tonight.",
+        mail3: "Man, they dropped me to level 5 on Cashea.",
+        mail4: "Tomorrow there's an exam, bring your cheat sheet.",
+        login: "Log in",
+        signup: "Sign up",
+        loginTitle: "Log in to Bolton",
+        signupTitle: "Create your Bolton account",
+        emailLabel: "Email Address",
+        passLabel: "Password",
+        forgotPassword: "Forgot your password?",
+        loginSubmit: "Log in",
+        continueGoogle: "Continue with Google",
+        nameLabel: "First Name",
+        lastnameLabel: "Last Name",
+        ageLabel: "Age",
+        birthYearLabel: "Birth Year",
+        gradeLabel: "Grade or Year",
+        subjectsLabel: "Subjects (Max. 20)",
+        phoneLabel: "Phone Number",
+        dreamJobLabel: "What do you want to study?",
+        avatarLabel: "Profile Picture",
+        signupSubmit: "Sign up",
+        ageYearErrorMsg: "Age and birth year do not match. Please check them!",
+        otpTitle: "Verify OTP Code",
+        otpSubtitle: "Enter the 6-digit code sent to your email address:",
+        otpLabel: "Verification Code (OTP)",
+        otpSubmit: "Verify Code",
+        resetTitle: "Reset Password",
+        resetSubtitle: "Enter your email address to receive a restoration link:",
+        resetSubmit: "Send Link",
+        quotes: [
+          'Progress,\nnot perfection',
+          'Start, even if\njust step by step',
+          'Do today what your\nfuture will thank you for',
+          'Consistency beats\ntalent',
+          'Great achievements\nare small habits'
+        ]
+      },
+      ru: {
+        knowMore: "узнать больше о проекте",
+        availableWork: "Готов помочь вам",
+        cardTitle: "Организация · Учеба",
+        cardDesc: "Bolton — ваш надежный инструмент для учебы, порядка в заданиях и получения высших оценок по всем предметам.",
+        weHelp: "Мы помогаем вам расти.",
+        studioName: "узнать больше о luizabeth's.studios",
+        mail1: "Действуют скидки на все услуги luizabeth's.studios.",
+        mail2: "Рекомендую посмотреть Игру Престолов сегодня вечером.",
+        mail3: "Блин, меня понизили до 5 уровня в Cashea.",
+        mail4: "Завтра экзамен, бери шпаргалку.",
+        login: "Войти",
+        signup: "Регистрация",
+        loginTitle: "Вход в Bolton",
+        signupTitle: "Создать аккаунт Bolton",
+        emailLabel: "Электронная почта",
+        passLabel: "Пароль",
+        forgotPassword: "Забыли пароль?",
+        loginSubmit: "Войти",
+        continueGoogle: "Продолжить с Google",
+        nameLabel: "Имя",
+        lastnameLabel: "Фамилия",
+        ageLabel: "Возраст",
+        birthYearLabel: "Год рождения",
+        gradeLabel: "Класс или Курс",
+        subjectsLabel: "Предметы (Макс. 20)",
+        phoneLabel: "Телефон",
+        dreamJobLabel: "Кем хочешь стать?",
+        avatarLabel: "Фото профиля",
+        signupSubmit: "Зарегистрироваться",
+        ageYearErrorMsg: "Возраст и год рождения не совпадают!",
+        otpTitle: "Проверить OTP-код",
+        otpSubtitle: "Введите 6-значный код, отправленный на вашу почту:",
+        otpLabel: "Код подтверждения (OTP)",
+        otpSubmit: "Проверить код",
+        resetTitle: "Восстановление пароля",
+        resetSubtitle: "Введите ваш email для получения ссылки:",
+        resetSubmit: "Отправить ссылку",
+        quotes: [
+          'Прогресс,\nне совершенство',
+          'Начни, даже если\nпонемногу',
+          'Сделай сегодня то,\nза что будущее поблагодарит',
+          'Постоянство побеждает\nталант',
+          'Великие достижения —\nэто маленькие привычки'
+        ]
+      },
+      it: {
+        knowMore: "scopri di più sul progetto",
+        availableWork: "Disponibile ad aiutarti",
+        cardTitle: "Organizzazione · Studio",
+        cardDesc: "Bolton è il tuo strumento di fiducia per studiare, tenere in ordine i tuoi compiti e passare con il massimo tutti gli esami.",
+        weHelp: "Ti aiutiamo a crescere.",
+        studioName: "scopri di più su luizabeth's.studios",
+        mail1: "Ci sono offerte su tutti i servizi di luizabeth's.studios.",
+        mail2: "Ti consiglio di guardare Game of Thrones stasera.",
+        mail3: "Accidenti, mi hanno abbassato al livello 5 su Cashea.",
+        mail4: "Domani c'è l'esame, porta il bigliettino.",
+        login: "Accedi",
+        signup: "Registrati",
+        loginTitle: "Accedi a Bolton",
+        signupTitle: "Crea il tuo account Bolton",
+        emailLabel: "Indirizzo Email",
+        passLabel: "Password",
+        forgotPassword: "Hai dimenticato la password?",
+        loginSubmit: "Accedi",
+        continueGoogle: "Continua con Google",
+        nameLabel: "Nome",
+        lastnameLabel: "Cognome",
+        ageLabel: "Età",
+        birthYearLabel: "Anno di Nascita",
+        gradeLabel: "Anno o Classe",
+        subjectsLabel: "Materie (Max. 20)",
+        phoneLabel: "Telefono",
+        dreamJobLabel: "Cosa vuoi studiare da grande?",
+        avatarLabel: "Foto Profilo",
+        signupSubmit: "Registrati",
+        ageYearErrorMsg: "L'età e l'anno di nascita non coincidono!",
+        otpTitle: "Verifica Codice OTP",
+        otpSubtitle: "Inserisci il codice a 6 cifre inviato alla tua email:",
+        otpLabel: "Codice di Verifica (OTP)",
+        otpSubmit: "Verifica Codice",
+        resetTitle: "Recupera Password",
+        resetSubtitle: "Inserisci la tua email per ricevere un link di ripristino:",
+        resetSubmit: "Invia Link",
+        quotes: [
+          'Progresso,\nnon perfezione',
+          'Inizia, anche se\npoco alla volta',
+          'Fai oggi ciò che il tuo\nfuturo ringrazierà',
+          'La costanza batte\nil talento',
+          'I grandi traguardi\nsono piccoli abitudini'
+        ]
+      },
+      de: {
+        knowMore: "mehr über das projekt erfahren",
+        availableWork: "Bereit zu helfen",
+        cardTitle: "Organisation · Lernen",
+        cardDesc: "Bolton ist dein vertrauenswürdiges Tool zum Lernen, um deine Aufgaben zu ordnen und alle Fächer mit Bestnoten zu bestehen.",
+        weHelp: "Wir helfen dir zu wachsen.",
+        studioName: "mehr über luizabeth's.studios",
+        mail1: "Es gibt Angebote für alle Dienstleistungen von luizabeth's.studios.",
+        mail2: "Ich empfehle dir, heute Abend Game of Thrones zu schauen.",
+        mail3: "Mensch, sie haben mich bei Cashea auf Level 5 herabgestuft.",
+        mail4: "Morgen ist Prüfung, nimm den Spickzettel mit.",
+        login: "Anmelden",
+        signup: "Registrieren",
+        loginTitle: "Bei Bolton anmelden",
+        signupTitle: "Bolton Konto erstellen",
+        emailLabel: "E-Mail-Adresse",
+        passLabel: "Passwort",
+        forgotPassword: "Passwort vergessen?",
+        loginSubmit: "Anmelden",
+        continueGoogle: "Mit Google fortfahren",
+        nameLabel: "Vorname",
+        lastnameLabel: "Nachname",
+        ageLabel: "Alter",
+        birthYearLabel: "Geburtsjahr",
+        gradeLabel: "Klasse oder Stufe",
+        subjectsLabel: "Fächer (Max. 20)",
+        phoneLabel: "Telefonnummer",
+        dreamJobLabel: "Was möchtest du werden?",
+        avatarLabel: "Profilbild",
+        signupSubmit: "Registrieren",
+        ageYearErrorMsg: "Alter und Geburtsjahr stimmen nicht überein!",
+        otpTitle: "OTP-Code bestätigen",
+        otpSubtitle: "Gib den 6-stelligen Code ein, der an deine E-Mail gesendet wurde:",
+        otpLabel: "Bestätigungscode (OTP)",
+        otpSubmit: "Code bestätigen",
+        resetTitle: "Passwort zurücksetzen",
+        resetSubtitle: "Gib deine E-Mail ein, um einen Link zu erhalten:",
+        resetSubmit: "Link senden",
+        quotes: [
+          'Fortschritt,\nkeine Perfektion',
+          'Fange an, auch wenn\nes nur Schritt für Schritt ist',
+          'Tue heute, wofür deine\nZukunft dir danken wird',
+          'Beständigkeit besiegt\nTalent',
+          'Große Erfolge sind\nkleine Gewohnheiten'
+        ]
+      },
+      val: {
+        knowMore: "prūmia gīmigon",
+        availableWork: "Hēdrissio brōzi",
+        cardTitle: "Gēdyn · Rȳbā",
+        cardDesc: "Bolton issa sȳz bōsa brōzi rȳbā ñuha seka mōrio sytī, tubī sytī ñuha kili.",
+        weHelp: "Skorī sȳz brōzi.",
+        studioName: "luizabeth's.studios pōja",
+        mail1: "Luizabeth's.studios kīdrīse brōzi seka mōrio.",
+        mail2: "Game of Thrones tubī seka gīmigon.",
+        mail3: "Cashea vāji level 5 tubī.",
+        mail4: "Ānogar brōzi ista, sȳz brōzi.",
+        login: "Kīdrīsi",
+        signup: "Bōsa kīdrīsi",
+        loginTitle: "Bolton Kīdrīsi",
+        signupTitle: "Bolton Bōsa Kīdrīsi",
+        emailLabel: "Ēmail ȳdar",
+        passLabel: "Bōsa ȳdar",
+        forgotPassword: "Bōsa kīdrīsi?",
+        loginSubmit: "Kīdrīsi",
+        continueGoogle: "Google sytī",
+        nameLabel: "Nom",
+        lastnameLabel: "Kōl",
+        ageLabel: "Zȳh",
+        birthYearLabel: "Zȳh Mōrio",
+        gradeLabel: "Grad",
+        subjectsLabel: "Mator (Max. 20)",
+        phoneLabel: "Kȳdar",
+        dreamJobLabel: "Mōrio brōzi?",
+        avatarLabel: "Prorīsa",
+        signupSubmit: "Bōsa Kīdrīsi",
+        ageYearErrorMsg: "Zȳh seka mōrio kīdrīsi!",
+        otpTitle: "OTP Kīdrīsi",
+        otpSubtitle: "6-digit OTP kīdrīsi:",
+        otpLabel: "OTP Kīdrīsi",
+        otpSubmit: "OTP Kīdrīsi",
+        resetTitle: "Bōsa Kīdrīsi",
+        resetSubtitle: "Ēmail kīdrīsi:",
+        resetSubmit: "Kīdrīsi",
+        quotes: [
+          'Skorī,\nkiris',
+          'Kīdrīsi,\nsyrio',
+          'Ānogar\nkīdrīsi',
+          'Sȳz brōzi\ntalent',
+          'Kiliris\nsȳz'
+        ]
       }
-
-      function closeToast(toast) {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-      }
-
-      // 4. Diccionario Multilenguaje
-      const translations = {
-        es: {
-          knowMore: "conoce mas del proyecto",
-          availableWork: "Disponible para ayudarte",
-          cardTitle: "Organización · Estudio",
-          cardDesc: "Bolton es tu herramienta de confiza para estudiar y mantener en orden tus trabajos y pasar con la nota maxima toda las materias.",
-          weHelp: "Te ayudamos a crecer.",
-          studioName: "conoce más de luizabeth's.studios",
-          mail1: "Hay ofertas en todos los servicios de luizabeth's.studios.",
-          mail2: "Te recomiendo ver Game of Thrones esta noche.",
-          mail3: "Nojoda chico, me bajaron a nivel 5 en Cashea.",
-          mail4: "Mañana hay examen, lleva la chuleta.",
-          login: "Inicia sesión",
-          signup: "Crear cuenta",
-          loginTitle: "Inicia Sesión en Bolton",
-          signupTitle: "Crea tu cuenta en Bolton",
-          emailLabel: "Correo Electrónico",
-          passLabel: "Contraseña",
-          forgotPassword: "¿Olvidaste tu contraseña?",
-          loginSubmit: "Entrar",
-          continueGoogle: "Continuar con Google",
-          nameLabel: "Nombre",
-          lastnameLabel: "Apellido",
-          ageLabel: "Edad",
-          birthYearLabel: "Año de Nacimiento",
-          gradeLabel: "Grado o Año Cursando",
-          subjectsLabel: "Materias Cursando (Máx. 20)",
-          phoneLabel: "Teléfono",
-          dreamJobLabel: "¿Qué quieres estudiar de grande?",
-          avatarLabel: "Foto de Perfil (Subir imagen)",
-          signupSubmit: "Registrarse",
-          ageYearErrorMsg: "La edad y el año de nacimiento no coinciden. ¡Verifícalos!",
-          otpTitle: "Verificar Código OTP",
-          otpSubtitle: "Ingresa el código de 6 dígitos enviado a tu correo electrónico:",
-          otpLabel: "Código de Verificación (OTP)",
-          otpSubmit: "Verificar Código",
-          resetTitle: "Recuperar Contraseña",
-          resetSubtitle: "Ingresa tu correo para recibir un enlace de restauración:",
-          resetSubmit: "Enviar Enlace",
-          quotes: [
-            'Progreso,\nno perfección',
-            'Empieza, aunque sea\npoco a poco',
-            'Haz hoy lo que tu\nfuturo agradecerá',
-            'La constancia vence\nal talento',
-            'Los grandes logros\nson pequeños hábitos'
-          ]
-        },
-        en: {
-          knowMore: "learn more about the project",
-          availableWork: "Available to help you",
-          cardTitle: "Organization · Study",
-          cardDesc: "Bolton is your trusted tool to study, keep your assignments organized, and pass all your subjects with top grades.",
-          weHelp: "We help you grow.",
-          studioName: "learn more about luizabeth's.studios",
-          mail1: "There are special offers across all luizabeth's.studios services.",
-          mail2: "I recommend watching Game of Thrones tonight.",
-          mail3: "Man, they dropped me to level 5 on Cashea.",
-          mail4: "Tomorrow there's an exam, bring your cheat sheet.",
-          login: "Log in",
-          signup: "Sign up",
-          loginTitle: "Log in to Bolton",
-          signupTitle: "Create your Bolton account",
-          emailLabel: "Email Address",
-          passLabel: "Password",
-          forgotPassword: "Forgot your password?",
-          loginSubmit: "Log in",
-          continueGoogle: "Continue with Google",
-          nameLabel: "First Name",
-          lastnameLabel: "Last Name",
-          ageLabel: "Age",
-          birthYearLabel: "Birth Year",
-          gradeLabel: "Grade or Year",
-          subjectsLabel: "Subjects (Max. 20)",
-          phoneLabel: "Phone Number",
-          dreamJobLabel: "What do you want to study?",
-          avatarLabel: "Profile Picture",
-          signupSubmit: "Sign up",
-          ageYearErrorMsg: "Age and birth year do not match. Please check them!",
-          otpTitle: "Verify OTP Code",
-          otpSubtitle: "Enter the 6-digit code sent to your email address:",
-          otpLabel: "Verification Code (OTP)",
-          otpSubmit: "Verify Code",
-          resetTitle: "Reset Password",
-          resetSubtitle: "Enter your email address to receive a restoration link:",
-          resetSubmit: "Send Link",
-          quotes: [
-            'Progress,\nnot perfection',
-            'Start, even if\njust step by step',
-            'Do today what your\nfuture will thank you for',
-            'Consistency beats\ntalent',
-            'Great achievements\nare small habits'
-          ]
-        },
-        ru: {
-          knowMore: "узнать больше о проекте",
-          availableWork: "Готов помочь вам",
-          cardTitle: "Организация · Учеба",
-          cardDesc: "Bolton — ваш надежный инструмент для учебы, порядка в заданиях и получения высших оценок по всем предметам.",
-          weHelp: "Мы помогаем вам расти.",
-          studioName: "узнать больше о luizabeth's.studios",
-          mail1: "Действуют скидки на все услуги luizabeth's.studios.",
-          mail2: "Рекомендую посмотреть Игру Престолов сегодня вечером.",
-          mail3: "Блин, меня понизили до 5 уровня в Cashea.",
-          mail4: "Завтра экзамен, бери шпаргалку.",
-          login: "Войти",
-          signup: "Регистрация",
-          loginTitle: "Вход в Bolton",
-          signupTitle: "Создать аккаунт Bolton",
-          emailLabel: "Электронная почта",
-          passLabel: "Пароль",
-          forgotPassword: "Забыли пароль?",
-          loginSubmit: "Войти",
-          continueGoogle: "Продолжить с Google",
-          nameLabel: "Имя",
-          lastnameLabel: "Фамилия",
-          ageLabel: "Возраст",
-          birthYearLabel: "Год рождения",
-          gradeLabel: "Класс или Курс",
-          subjectsLabel: "Предметы (Макс. 20)",
-          phoneLabel: "Телефон",
-          dreamJobLabel: "Кем хочешь стать?",
-          avatarLabel: "Фото профиля",
-          signupSubmit: "Зарегистрироваться",
-          ageYearErrorMsg: "Возраст и год рождения не совпадают!",
-          otpTitle: "Проверить OTP-код",
-          otpSubtitle: "Введите 6-значный код, отправленный на вашу почту:",
-          otpLabel: "Код подтверждения (OTP)",
-          otpSubmit: "Проверить код",
-          resetTitle: "Восстановление пароля",
-          resetSubtitle: "Введите ваш email для получения ссылки:",
-          resetSubmit: "Отправить ссылку",
-          quotes: [
-            'Прогресс,\nне совершенство',
-            'Начни, даже если\nпонемногу',
-            'Сделай сегодня то,\nза что будущее поблагодарит',
-            'Постоянство побеждает\nталант',
-            'Великие достижения —\nэто маленькие привычки'
-          ]
-        },
-        it: {
-          knowMore: "scopri di più sul progetto",
-          availableWork: "Disponibile ad aiutarti",
-          cardTitle: "Organizzazione · Studio",
-          cardDesc: "Bolton è il tuo strumento di fiducia per studiare, tenere in ordine i tuoi compiti e passare con il massimo tutti gli esami.",
-          weHelp: "Ti aiutiamo a crescere.",
-          studioName: "scopri di più su luizabeth's.studios",
-          mail1: "Ci sono offerte su tutti i servizi di luizabeth's.studios.",
-          mail2: "Ti consiglio di guardare Game of Thrones stasera.",
-          mail3: "Accidenti, mi hanno abbassato al livello 5 su Cashea.",
-          mail4: "Domani c'è l'esame, porta il bigliettino.",
-          login: "Accedi",
-          signup: "Registrati",
-          loginTitle: "Accedi a Bolton",
-          signupTitle: "Crea il tuo account Bolton",
-          emailLabel: "Indirizzo Email",
-          passLabel: "Password",
-          forgotPassword: "Hai dimenticato la password?",
-          loginSubmit: "Accedi",
-          continueGoogle: "Continua con Google",
-          nameLabel: "Nome",
-          lastnameLabel: "Cognome",
-          ageLabel: "Età",
-          birthYearLabel: "Anno di Nascita",
-          gradeLabel: "Anno o Classe",
-          subjectsLabel: "Materie (Max. 20)",
-          phoneLabel: "Telefono",
-          dreamJobLabel: "Cosa vuoi studiare da grande?",
-          avatarLabel: "Foto Profilo",
-          signupSubmit: "Registrati",
-          ageYearErrorMsg: "L'età e l'anno di nascita non coincidono!",
-          otpTitle: "Verifica Codice OTP",
-          otpSubtitle: "Inserisci il codice a 6 cifre inviato alla tua email:",
-          otpLabel: "Codice di Verifica (OTP)",
-          otpSubmit: "Verifica Codice",
-          resetTitle: "Recupera Password",
-          resetSubtitle: "Inserisci la tua email per ricevere un link di ripristino:",
-          resetSubmit: "Invia Link",
-          quotes: [
-            'Progresso,\nnon perfezione',
-            'Inizia, anche se\npoco alla volta',
-            'Fai oggi ciò che il tuo\nfuturo ringrazierà',
-            'La costanza batte\nil talento',
-            'I grandi traguardi\nsono piccoli abitudini'
-          ]
-        },
-        de: {
-          knowMore: "mehr über das projekt erfahren",
-          availableWork: "Bereit zu helfen",
-          cardTitle: "Organisation · Lernen",
-          cardDesc: "Bolton ist dein vertrauenswürdiges Tool zum Lernen, um deine Aufgaben zu ordnen und alle Fächer mit Bestnoten zu bestehen.",
-          weHelp: "Wir helfen dir zu wachsen.",
-          studioName: "mehr über luizabeth's.studios",
-          mail1: "Es gibt Angebote für alle Dienstleistungen von luizabeth's.studios.",
-          mail2: "Ich empfehle dir, heute Abend Game of Thrones zu schauen.",
-          mail3: "Mensch, sie haben mich bei Cashea auf Level 5 herabgestuft.",
-          mail4: "Morgen ist Prüfung, nimm den Spickzettel mit.",
-          login: "Anmelden",
-          signup: "Registrieren",
-          loginTitle: "Bei Bolton anmelden",
-          signupTitle: "Bolton Konto erstellen",
-          emailLabel: "E-Mail-Adresse",
-          passLabel: "Passwort",
-          forgotPassword: "Passwort vergessen?",
-          loginSubmit: "Anmelden",
-          continueGoogle: "Mit Google fortfahren",
-          nameLabel: "Vorname",
-          lastnameLabel: "Nachname",
-          ageLabel: "Alter",
-          birthYearLabel: "Geburtsjahr",
-          gradeLabel: "Klasse oder Stufe",
-          subjectsLabel: "Fächer (Max. 20)",
-          phoneLabel: "Telefonnummer",
-          dreamJobLabel: "Was möchtest du werden?",
-          avatarLabel: "Profilbild",
-          signupSubmit: "Registrieren",
-          ageYearErrorMsg: "Alter und Geburtsjahr stimmen nicht überein!",
-          otpTitle: "OTP-Code bestätigen",
-          otpSubtitle: "Gib den 6-stelligen Code ein, der an deine E-Mail gesendet wurde:",
-          otpLabel: "Bestätigungscode (OTP)",
-          otpSubmit: "Code bestätigen",
-          resetTitle: "Passwort zurücksetzen",
-          resetSubtitle: "Gib deine E-Mail ein, um einen Link zu erhalten:",
-          resetSubmit: "Link senden",
-          quotes: [
-            'Fortschritt,\nkeine Perfektion',
-            'Fange an, auch wenn\nes nur Schritt für Schritt ist',
-            'Tue heute, wofür deine\nZukunft dir danken wird',
-            'Beständigkeit besiegt\nTalent',
-            'Große Erfolge sind\nkleine Gewohnheiten'
-          ]
-        },
-        val: {
-          knowMore: "prūmia gīmigon",
-          availableWork: "Hēdrissio brōzi",
-          cardTitle: "Gēdyn · Rȳbā",
-          cardDesc: "Bolton issa sȳz bōsa brōzi rȳbā ñuha seka mōrio sytī, tubī sytī ñuha kili.",
-          weHelp: "Skorī sȳz brōzi.",
-          studioName: "luizabeth's.studios pōja",
-          mail1: "Luizabeth's.studios kīdrīse brōzi seka mōrio.",
-          mail2: "Game of Thrones tubī seka gīmigon.",
-          mail3: "Cashea vāji level 5 tubī.",
-          mail4: "Ānogar brōzi ista, sȳz brōzi.",
-          login: "Kīdrīsi",
-          signup: "Bōsa kīdrīsi",
-          loginTitle: "Bolton Kīdrīsi",
-          signupTitle: "Bolton Bōsa Kīdrīsi",
-          emailLabel: "Ēmail ȳdar",
-          passLabel: "Bōsa ȳdar",
-          forgotPassword: "Bōsa kīdrīsi?",
-          loginSubmit: "Kīdrīsi",
-          continueGoogle: "Google sytī",
-          nameLabel: "Nom",
-          lastnameLabel: "Kōl",
-          ageLabel: "Zȳh",
-          birthYearLabel: "Zȳh Mōrio",
-          gradeLabel: "Grad",
-          subjectsLabel: "Mator (Max. 20)",
-          phoneLabel: "Kȳdar",
-          dreamJobLabel: "Mōrio brōzi?",
-          avatarLabel: "Prorīsa",
-          signupSubmit: "Bōsa Kīdrīsi",
-          ageYearErrorMsg: "Zȳh seka mōrio kīdrīsi!",
-          otpTitle: "OTP Kīdrīsi",
-          otpSubtitle: "6-digit OTP kīdrīsi:",
-          otpLabel: "OTP Kīdrīsi",
-          otpSubmit: "OTP Kīdrīsi",
-          resetTitle: "Bōsa Kīdrīsi",
-          resetSubtitle: "Ēmail kīdrīsi:",
-          resetSubmit: "Kīdrīsi",
-          quotes: [
-            'Skorī,\nkiris',
-            'Kīdrīsi,\nsyrio',
-            'Ānogar\nkīdrīsi',
-            'Sȳz brōzi\ntalent',
-            'Kiliris\nsȳz'
-          ]
-        }
-      };
-
-      let currentLangCode = 'es';
-      const quoteEl = document.getElementById('quote');
-      let index = 0;
-      let quoteInterval;
-
-      // Rotación de Frases
-      function startQuoteRotation() {
-        if (quoteInterval) clearInterval(quoteInterval);
-        quoteInterval = window.setInterval(() => {
-          const quotes = translations[currentLangCode].quotes;
-          index = (index + 1) % quotes.length;
-          if (quoteEl) {
-            quoteEl.innerHTML = quotes[index].replace(/\n/g, '<br>');
-            quoteEl.style.animation = 'none';
-            void quoteEl.offsetWidth;
-            quoteEl.style.animation = 'quoteIn .9s ease both';
-          }
-        }, 4500);
-      }
-
-      // Cambio de Idioma
-      function setLanguage(lang) {
-        currentLangCode = lang;
-        const data = translations[lang];
-        if (!data) return;
-
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-          const key = el.getAttribute('data-i18n');
-          if (data[key]) {
-            el.textContent = data[key];
-          }
-        });
-
-        const langLabels = {
-          es: "ES 🇪🇸", en: "EN 🇬🇧", ru: "RU 🇷🇺", it: "IT 🇮🇹", de: "DE 🇩🇪", val: "VAL 🐉"
-        };
-        const labelEl = document.getElementById('currentLangLabel');
-        if (labelEl) labelEl.textContent = langLabels[lang];
-
-        document.querySelectorAll('.lang-option').forEach(opt => {
-          if (opt.getAttribute('data-lang') === lang) {
-            opt.classList.add('active');
-          } else {
-            opt.classList.remove('active');
-          }
-        });
-
+    };
+    
+    let currentLangCode = 'es';
+    const quoteEl = document.getElementById('quote');
+    let index = 0;
+    let quoteInterval;
+    
+    function startQuoteRotation() {
+      if (quoteInterval) clearInterval(quoteInterval);
+      quoteInterval = window.setInterval(() => {
+        const quotes = translations[currentLangCode].quotes;
+        index = (index + 1) % quotes.length;
         if (quoteEl) {
-          quoteEl.innerHTML = data.quotes[0].replace(/\n/g, '<br>');
+          quoteEl.innerHTML = quotes[index].replace(/\n/g, '<br>');
+          quoteEl.style.animation = 'none';
+          void quoteEl.offsetWidth;
+          quoteEl.style.animation = 'quoteIn .9s ease both';
         }
-        startQuoteRotation();
-      }
-
-      const langDropdown = document.getElementById('langDropdown');
-      const langBtn = document.getElementById('langBtn');
-
-      if (langBtn) {
-        langBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          langDropdown.classList.toggle('open');
-        });
-      }
-
-      document.addEventListener('click', () => {
+      }, 4500);
+    }
+    
+    function setLanguage(lang) {
+      currentLangCode = lang;
+      const data = translations[lang];
+      if (!data) return;
+    
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key]) el.textContent = data[key];
+      });
+    
+      const langLabels = { es: "ES 🇪🇸", en: "EN 🇬🇧", ru: "RU 🇷🇺", it: "IT 🇮🇹", de: "DE 🇩🇪", val: "VAL 🐉" };
+      const labelEl = document.getElementById('currentLangLabel');
+      if (labelEl) labelEl.textContent = langLabels[lang];
+    
+      document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.classList.toggle('active', opt.getAttribute('data-lang') === lang);
+      });
+    
+      if (quoteEl) quoteEl.innerHTML = data.quotes[0].replace(/\n/g, '<br>');
+      startQuoteRotation();
+    }
+    
+    const langDropdown = document.getElementById('langDropdown');
+    const langBtn = document.getElementById('langBtn');
+    if (langBtn) {
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langDropdown.classList.toggle('open');
+      });
+    }
+    document.addEventListener('click', () => {
+      if (langDropdown) langDropdown.classList.remove('open');
+    });
+    document.querySelectorAll('.lang-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        const lang = e.currentTarget.getAttribute('data-lang');
+        setLanguage(lang);
         if (langDropdown) langDropdown.classList.remove('open');
       });
-
-      document.querySelectorAll('.lang-option').forEach(opt => {
-        opt.addEventListener('click', (e) => {
-          const lang = e.currentTarget.getAttribute('data-lang');
-          setLanguage(lang);
-          if (langDropdown) langDropdown.classList.remove('open');
+    });
+    
+    /* GMAIL DECK */
+    const gmailDeck = document.querySelector('.gmail-deck');
+    if (gmailDeck) {
+      const gmailCards = [...gmailDeck.querySelectorAll('.gmail-card')];
+      const paintGmailDeck = () => gmailCards.forEach((card, position) => {
+        card.style.transform = `translateY(${position * -12}px) scale(${1 - position * 0.04})`;
+        card.style.opacity = 1 - (position * 0.15);
+        card.style.zIndex = String(gmailCards.length - position);
+        card.style.pointerEvents = position === 0 ? 'auto' : 'none';
+      });
+      gmailCards.forEach((card) => {
+        const dismissBtn = card.querySelector('.gmail-dismiss');
+        if (dismissBtn) dismissBtn.addEventListener('click', () => {
+          gmailCards.push(gmailCards.shift());
+          paintGmailDeck();
         });
       });
+      paintGmailDeck();
+    }
+    
+    /* MODALES */
+    const overlay = document.getElementById('boltonModalOverlay');
+    const loginModal = document.getElementById('loginModal');
+    const signupModal = document.getElementById('signupModal');
+    const otpModal = document.getElementById('otpModal');
+    const resetPasswordModal = document.getElementById('resetPasswordModal');
+    
+    function closeModal() {
+      [overlay, loginModal, signupModal, otpModal, resetPasswordModal].forEach(el => {
+        if (el) el.classList.remove('active');
+      });
+    }
+    
+    const openLoginBtn = document.getElementById('openLoginBtn');
+    if (openLoginBtn) openLoginBtn.addEventListener('click', () => {
+      closeModal();
+      overlay.classList.add('active');
+      loginModal.classList.add('active');
+    });
+    
+    const openSignupBtn = document.getElementById('openSignupBtn');
+    if (openSignupBtn) openSignupBtn.addEventListener('click', () => {
+      closeModal();
+      overlay.classList.add('active');
+      signupModal.classList.add('active');
+    });
+    
+    const openResetBtn = document.getElementById('openResetBtn');
+    if (openResetBtn) openResetBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+      overlay.classList.add('active');
+      resetPasswordModal.classList.add('active');
+    });
+    
+    if (overlay) overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal();
+    });
+    document.querySelectorAll('.modal-close-btn').forEach(btn => {
+      btn.addEventListener('click', closeModal);
+    });
+    
+    startQuoteRotation();
+    
+    /* ============================================================
+   REGISTRO — VERSIÓN ROBUSTA
+============================================================ */
+const signupForm = document.getElementById('signupForm');
+if (signupForm) {
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      // Animación de la baraja de mensajes Gmail
-      const gmailDeck = document.querySelector('.gmail-deck');
-      if (gmailDeck) {
-        const gmailCards = [...gmailDeck.querySelectorAll('.gmail-card')];
-        const paintGmailDeck = () => gmailCards.forEach((card, position) => {
-          const yOffset = position * -12; 
-          const scale = 1 - (position * 0.04); 
-          card.style.transform = `translateY(${yOffset}px) scale(${scale})`;
-          card.style.opacity = 1 - (position * 0.15); 
-          card.style.zIndex = String(gmailCards.length - position);
-          card.style.pointerEvents = position === 0 ? 'auto' : 'none'; 
+    // 1) Validar edad vs año
+    const age = parseInt(document.getElementById('signupAge').value, 10);
+    const birthYear = parseInt(document.getElementById('signupBirthYear').value, 10);
+    const currentYear = new Date().getFullYear();
+    if (Math.abs((currentYear - birthYear) - age) > 1) {
+      const errEl = document.getElementById('ageYearError');
+      if (errEl) errEl.style.display = 'block';
+      return;
+    }
+    const errEl = document.getElementById('ageYearError');
+    if (errEl) errEl.style.display = 'none';
+
+    // 2) Leer TODOS los campos
+    const nombre = document.getElementById('signupName').value.trim();
+    const apellido = document.getElementById('signupLastname').value.trim();
+    const grado = document.getElementById('signupGrade').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const materias = parseInt(document.getElementById('signupSubjects').value, 10);
+    const telefono = document.getElementById('signupPhone').value.trim();
+    const dreamJob = document.getElementById('signupDreamJob').value.trim();
+    const avatarFile = document.getElementById('signupAvatarFile')?.files[0];
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creando...';
+
+    try {
+      // 3) Crear usuario en Auth
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      const user = cred.user;
+      console.log('✅ Usuario Auth creado:', user.uid);
+
+      // 4) Avatar (foto subida o auto-generado)
+      let avatarUrl = buildAvatarUrl(`${nombre} ${apellido}`);
+      if (avatarFile) {
+        try {
+          avatarUrl = await new Promise((resolve) => {
+            const r = new FileReader();
+            r.onload = (ev) => resolve(ev.target.result);
+            r.onerror = () => resolve(buildAvatarUrl(`${nombre} ${apellido}`));
+            r.readAsDataURL(avatarFile);
+          });
+        } catch(e) { console.warn('Avatar fallback:', e); }
+      }
+
+      // 5) Update Auth profile (displayName + photoURL)
+      try {
+        await user.updateProfile({
+          displayName: `${nombre} ${apellido}`.trim(),
+          photoURL: avatarUrl
         });
-        
-        gmailCards.forEach((card) => {
-          const dismissBtn = card.querySelector('.gmail-dismiss');
-          if (dismissBtn) {
-            dismissBtn.addEventListener('click', () => {
-              gmailCards.push(gmailCards.shift()); 
-              paintGmailDeck();
+      } catch(e) { console.warn('updateProfile falló:', e); }
+
+      // 6) Guardar TODO el perfil en Firestore
+      const profileData = {
+        nombre: nombre,
+        apellido: apellido,
+        nombre_completo: `${nombre} ${apellido}`.trim(),
+        nombre_usuario: email.split('@')[0],
+        edad: age,
+        anio_nacimiento: birthYear,
+        grado: grado,
+        email: email,
+        materias: materias,
+        telefono: telefono,
+        sueno_estudio: dreamJob,
+        avatar_url: avatarUrl,
+        rol: 'Estudiante de BOLTON Studio',
+        creado: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      console.log('💾 Guardando en Firestore...', profileData);
+      await db.collection('users').doc(user.uid).set(profileData);
+      console.log('✅ Perfil guardado en Firestore');
+
+      // 7) Cache local
+      saveProfileCache(Object.assign({}, profileData, { uid: user.uid }));
+
+      showNotification('¡Cuenta creada con éxito!', 'success');
+      setTimeout(() => { window.location.href = 'stdio.html'; }, 900);
+    } catch (error) {
+      console.error('❌ Error en registro:', error);
+      let msg = 'Error al registrar: ' + (error.message || error.code);
+      if (error.code === 'auth/email-already-in-use') msg = 'Ese correo ya está registrado';
+      else if (error.code === 'auth/weak-password') msg = 'Contraseña muy débil (mín. 6)';
+      else if (error.code === 'auth/invalid-email') msg = 'Correo inválido';
+      else if (error.code === 'permission-denied') msg = 'Firestore bloqueó la escritura. Revisa las reglas.';
+      showNotification(msg, 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Registrarse';
+    }
+  });
+}
+    
+    /* ============================================================
+       LOGIN
+    ============================================================ */
+    const loginForm = document.getElementById('realLoginForm');
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('authLoginEmail').value.trim();
+        const password = document.getElementById('authLoginPassword').value;
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Entrando...';
+    
+        try {
+          const cred = await auth.signInWithEmailAndPassword(email, password);
+          const user = cred.user;
+    
+          try {
+            const docSnap = await db.collection('users').doc(user.uid).get();
+            if (docSnap.exists) {
+              saveProfileCache({ ...docSnap.data(), uid: user.uid, email: user.email });
+            } else {
+              saveProfileCache({
+                uid: user.uid, email: user.email,
+                nombre_completo: user.displayName || email.split('@')[0],
+                avatar_url: user.photoURL || buildAvatarUrl(user.displayName || email)
+              });
+            }
+          } catch(e) {
+            saveProfileCache({
+              uid: user.uid, email: user.email,
+              nombre_completo: user.displayName || email.split('@')[0],
+              avatar_url: user.photoURL || buildAvatarUrl(user.displayName || email)
             });
           }
-        });
-        paintGmailDeck();
-      }
-
-      // Control de Modales
-      const overlay = document.getElementById('boltonModalOverlay');
-      const loginModal = document.getElementById('loginModal');
-      const signupModal = document.getElementById('signupModal');
-      const otpModal = document.getElementById('otpModal');
-      const resetPasswordModal = document.getElementById('resetPasswordModal');
-
-      function closeModal() {
-        if (overlay) overlay.classList.remove('active');
-        if (loginModal) loginModal.classList.remove('active');
-        if (signupModal) signupModal.classList.remove('active');
-        if (otpModal) otpModal.classList.remove('active');
-        if (resetPasswordModal) resetPasswordModal.classList.remove('active');
-      }
-
-      const openLoginBtn = document.getElementById('openLoginBtn');
-      if (openLoginBtn) {
-        openLoginBtn.addEventListener('click', () => {
-          closeModal();
-          overlay.classList.add('active');
-          loginModal.classList.add('active');
-        });
-      }
-
-      const openSignupBtn = document.getElementById('openSignupBtn');
-      if (openSignupBtn) {
-        openSignupBtn.addEventListener('click', () => {
-          closeModal();
-          overlay.classList.add('active');
-          signupModal.classList.add('active');
-        });
-      }
-
-      const openResetBtn = document.getElementById('openResetBtn');
-      if (openResetBtn) {
-        openResetBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          closeModal();
-          overlay.classList.add('active');
-          resetPasswordModal.classList.add('active');
-        });
-      }
-
-      if (overlay) {
-        overlay.addEventListener('click', (e) => {
-          if (e.target === overlay) closeModal();
-        });
-      }
-
-      document.querySelectorAll('.modal-close-btn').forEach(btn => {
-        btn.addEventListener('click', closeModal);
-      });
-
-      startQuoteRotation();
-
-      // ==========================================
-      // RECUPERACIÓN DE CONTRASEÑA
-      // ==========================================
-      async function recuperarContrasena(email) {
-        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/reset-password.html'
-        });
-
-        if (error) {
-          showNotification("Error al enviar el correo: " + error.message, "error");
-        } else {
-          showNotification("Se ha enviado un enlace a tu correo para restablecer la contraseña", "success");
-          closeModal();
+    
+          showNotification("¡Bienvenido!", "success");
+          setTimeout(() => { window.location.href = 'stdio.html'; }, 500);
+        } catch (error) {
+          console.error(error);
+          let msg = "Correo o contraseña incorrectos";
+          if (error.code === 'auth/too-many-requests') msg = "Demasiados intentos, espera un poco";
+          showNotification(msg, "error");
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Entrar';
         }
-      }
-
-      const resetPasswordForm = document.getElementById('resetPasswordForm');
-      if (resetPasswordForm) {
-        resetPasswordForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const email = document.getElementById('resetEmail').value.trim();
-          recuperarContrasena(email);
-        });
-      }
-
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: REGISTRO
-      // ==========================================
-      const signupForm = document.getElementById('signupForm');
-      if (signupForm) {
-        signupForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const age = parseInt(document.getElementById('signupAge').value, 10);
-          const birthYear = parseInt(document.getElementById('signupBirthYear').value, 10);
-          const currentYear = new Date().getFullYear();
-          
-          if (Math.abs((currentYear - birthYear) - age) > 1) {
-            const errEl = document.getElementById('ageYearError');
-            if (errEl) errEl.style.display = 'block';
-            return;
-          }
-          const errEl = document.getElementById('ageYearError');
-          if (errEl) errEl.style.display = 'none';
-
-          const email = document.getElementById('signupEmail').value.trim();
-          const password = document.getElementById('signupPassword').value;
-
-          const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password
-          });
-
-          if (error) {
-            showNotification("Error al registrar: " + error.message, "error");
+      });
+    }
+    
+    /* ============================================================
+       LOGIN CON GOOGLE
+    ============================================================ */
+    const googleBtn = document.getElementById('loginGoogleBtn');
+    if (googleBtn) {
+      googleBtn.addEventListener('click', async () => {
+        try {
+          const result = await auth.signInWithPopup(googleProvider);
+          const user = result.user;
+    
+          const docSnap = await db.collection('users').doc(user.uid).get();
+          if (!docSnap.exists) {
+            const profileData = {
+              nombre_completo: user.displayName || user.email.split('@')[0],
+              nombre_usuario: user.email.split('@')[0],
+              email: user.email,
+              avatar_url: user.photoURL || buildAvatarUrl(user.displayName || user.email),
+              rol: 'Estudiante de BOLTON Studio',
+              creado: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection('users').doc(user.uid).set(profileData);
+            saveProfileCache({ ...profileData, uid: user.uid });
           } else {
-            showNotification("Cuenta creada con éxito", "success");
-            
-            // Agrega esto justo cuando el registro sea exitoso o inicien sesión exitosamente:
-            localStorage.setItem('bolton_user_profile', JSON.stringify({
-              nombre: document.getElementById('signupName') ? document.getElementById('signupName').value : '',
-              apellido: document.getElementById('signupLastname') ? document.getElementById('signupLastname').value : '',
-              edad: document.getElementById('signupAge') ? document.getElementById('signupAge').value : '',
-              grado: document.getElementById('signupGrade') ? document.getElementById('signupGrade').value : '',
-              materias: document.getElementById('signupSubjects') ? document.getElementById('signupSubjects').value : '',
-              telefono: document.getElementById('signupPhone') ? document.getElementById('signupPhone').value : '',
-              dreamJob: document.getElementById('signupDreamJob') ? document.getElementById('signupDreamJob').value : '',
-              email: document.getElementById('signupEmail') ? document.getElementById('signupEmail').value : ''
-            }));
-
-            if (data.user) {
-              await supabase.from('profiles').insert([{
-                id: data.user.id,
-                nombre: document.getElementById('signupName').value,
-                apellido: document.getElementById('signupLastname').value,
-                edad: age,
-                anio_nacimiento: birthYear,
-                grado: document.getElementById('signupGrade').value,
-                email: email,
-                materias: parseInt(document.getElementById('signupSubjects').value, 10),
-                telefono: document.getElementById('signupPhone').value,
-                sueno_estudio: document.getElementById('signupDreamJob').value
-              }]);
-            }
-            
-            window.location.href = "stdio.html";
+            saveProfileCache({ ...docSnap.data(), uid: user.uid, email: user.email });
           }
-        });
-      }
-
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: VERIFICACIÓN CÓDIGO OTP
-      // ==========================================
-      const otpForm = document.getElementById('otpForm');
-      if (otpForm) {
-        otpForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const codigoIngresado = document.getElementById('otpCodeInput').value.trim();
-          const email = pendingOtpEmail || document.getElementById('signupEmail').value.trim();
-
-          const { data: session, error: verifyError } = await supabase.auth.verifyOtp({
-            email: email,
-            token: codigoIngresado,
-            type: 'signup'
-          });
-
-          if (verifyError) {
-            showNotification("Error al verificar código: " + verifyError.message, "error");
+    
+          showNotification("¡Sesión iniciada con Google!", "success");
+          setTimeout(() => { window.location.href = 'stdio.html'; }, 500);
+        } catch (error) {
+          console.error(error);
+          if (error.code === 'auth/popup-closed-by-user') return;
+          if (error.code === 'auth/operation-not-supported-in-this-environment') {
+            showNotification("Google requiere abrir con http://localhost, no file://", "error");
           } else {
-            showNotification("¡Código verificado con éxito! Redirigiendo...", "success");
-            window.location.href = 'stdio.html';
+            showNotification("Error con Google: " + error.code, "error");
           }
-        });
-      }
+        }
+      });
+    }
+    
+    /* ============================================================
+       RECUPERAR CONTRASEÑA
+    ============================================================ */
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
+    if (resetPasswordForm) {
+      resetPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('resetEmail').value.trim();
+        try {
+          await auth.sendPasswordResetEmail(email);
+          showNotification("Enlace enviado a tu correo", "success");
+          closeModal();
+        } catch (error) {
+          console.error(error);
+          showNotification("Error: " + error.message, "error");
+        }
+      });
+    }
+    
+    /* ============================================================
+       OBSERVADOR: si ya hay sesión, redirige a stdio.html
+    ============================================================ */
+   /* ============================================================
+   OBSERVADOR: si hay sesión, mostrar notificación (no redirigir)
+============================================================ */
+auth.onAuthStateChanged((user) => {
+  if (!user) return;
 
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: INICIO DE SESIÓN
-      // ==========================================
-      const loginForm = document.getElementById('realLoginForm');
-      if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const email = document.getElementById('authLoginEmail').value.trim();
-          const password = document.getElementById('authLoginPassword').value;
+  console.log('👤 Sesión activa detectada:', user.email);
 
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
+  // Guardar cache mínimo por si el usuario dice "Sí"
+  const cached = (() => {
+    try { return JSON.parse(localStorage.getItem('bolton_user_profile') || '{}'); }
+    catch { return {}; }
+  })();
+  if (!cached.uid || cached.uid !== user.uid) {
+    saveProfileCache({
+      uid: user.uid,
+      email: user.email,
+      nombre_completo: user.displayName || (user.email ? user.email.split('@')[0] : 'Usuario'),
+      avatar_url: user.photoURL || buildAvatarUrl(user.displayName || user.email)
+    });
+  }
 
-          if (error) {
-            showNotification("Correo o contraseña incorrectos", "error");
-          } else {
-            // 1. Obtener los datos del perfil desde la base de datos
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', data.user.id)
-              .single();
+  // Mostrar notificación con botones
+  showSessionPrompt(user);
+});
 
-            // 2. Guardar en el almacenamiento local (caché)
-            if (profile) {
-              localStorage.setItem('bolton_user_profile', JSON.stringify({
-                nombre: profile.nombre,
-                apellido: profile.apellido,
-                edad: profile.edad,
-                grado: profile.grado,
-                materias: profile.materias,
-                telefono: profile.telefono,
-                dreamJob: profile.sueno_estudio,
-                email: profile.email
-              }));
-            }
-            
-            // 3. Redirigir al área de trabajo
-            window.location.href = "stdio.html";
-          }
-        });
-      }
+function showSessionPrompt(user) {
+  const container = document.getElementById('notification-container');
+  if (!container) return;
 
-      // ==========================================
-      // INTEGRACIÓN SUPABASE: LOGIN CON GOOGLE
-      // ==========================================
-      const googleBtn = document.getElementById('loginGoogleBtn');
-      if (googleBtn) {
-        googleBtn.addEventListener('click', async () => {
-          const redirectUrl = window.location.origin.includes('http')
-            ? window.location.origin + '/stdio.html'
-            : 'stdio.html';
+  // Evitar duplicados
+  const existing = document.querySelector('[data-bolton-session-prompt="true"]');
+  if (existing) existing.remove();
 
-          const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-              redirectTo: redirectUrl,
-            },
-          });
+  const email = user.email || 'esta cuenta';
 
-          if (error) {
-            showNotification("Error con Google: " + error.message, "error");
-          }
-        });
-      }
+  const toast = document.createElement('div');
+  toast.setAttribute('data-bolton-session-prompt', 'true');
+  toast.className = 'notification-toast success';
+  toast.innerHTML = `
+    <div class="notification-toast-left" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="notification-icon">✅</span>
+        <span class="notification-message">Tienes una cuenta iniciada con <strong>${email}</strong>. ¿Quieres continuar?</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:2px;">
+        <button type="button" data-session-action="continue" style="padding:8px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.12); color:#fff; font-weight:700; cursor:pointer;">Sí</button>
+        <button type="button" data-session-action="stay" style="padding:8px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); color:#fff; font-weight:700; cursor:pointer;">No</button>
+      </div>
+    </div>
+    <button class="toast-close-btn" aria-label="Cerrar">&times;</button>
+  `;
 
-    })();
-  </script>
+  toast.querySelector('[data-session-action="continue"]').addEventListener('click', () => {
+    window.location.href = 'stdio.html';
+  });
+
+  const dismiss = () => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  };
+
+  toast.querySelector('[data-session-action="stay"]').addEventListener('click', dismiss);
+  toast.querySelector('.toast-close-btn').addEventListener('click', dismiss);
+
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+}
+    </script>
 </body>
 </html>
