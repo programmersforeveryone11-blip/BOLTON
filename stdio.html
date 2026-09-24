@@ -1539,10 +1539,12 @@ auth.onAuthStateChanged(function(user){
       console.log('🎉 Perfil cargado de Firestore:', merged);
     })
     .catch(function(err){
-      console.warn('⚠️ Firestore error:', err);
-      paintProfile(cached);
-    });
+        console.warn('⚠️ Firestore error:', err);
+        paintProfile(cached);
+      });
 });
+
+})();   // ← ✅ ESTA LÍNEA FALTABA. Cierra el (function(){ del inicio
 </script>
 </body>
 </html>
