@@ -1384,6 +1384,10 @@
       const navBtns = document.querySelectorAll('.nav-btn');
       navBtns.forEach(btn => {
         btn.classList.remove('bg-white/20', 'text-white', 'font-bold', 'border-white/30');
+
+      if (window.BOLTON && window.BOLTON.views && window.BOLTON.views[viewId]) {
+         try { window.BOLTON.views[viewId](); } catch(e){ console.warn('init ' + viewId, e); }
+}
       });
 
       const activeBtn = document.getElementById('nav-' + viewId);
@@ -1547,13 +1551,16 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- Módulos de BOLTON -->
+<script src="core.js"></script>
+<script src="notas.js"></script>
 <script>
 (function(){
   'use strict';
-  console.log('🚀 BOLTON Workspace Cargar...');
+  console.log('🚀 BOLTON Workspace cargado');
 
   /* ============================================================
-     CONFIG FIREBASE
+     1. CONFIG E INICIALIZACIÓN DE FIREBASE
   ============================================================ */
   const firebaseConfig = {
     apiKey: "AIzaSyCaKSIs2jw652l2cfh6grrGVscjNGmrVjE",
@@ -1568,11 +1575,12 @@
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db   = firebase.firestore();
+window.__BOLTON_FIREBASE__ = { firebase, auth, db };
 
   let currentUser = null;
 
   /* ============================================================
-     HELPERS
+     2. HELPERS
   ============================================================ */
   function buildAvatarUrl(name){
     const safe = encodeURIComponent(name || 'Usuario');
@@ -1582,7 +1590,6 @@
   function setImg(id, val){ const el = document.getElementById(id); if (el && val) el.src = val; }
   function setInput(id, val){ const el = document.getElementById(id); if (el && val !== undefined) el.value = val; }
   function getValue(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-
   function pick(){
     for (var i = 0; i < arguments.length; i++){
       var v = arguments[i];
@@ -1599,216 +1606,292 @@
   }
 
   /* ============================================================
-     PINTAR PERFIL
+     3. PINTAR PERFIL EN LA UI
   ============================================================ */
   function paintProfile(p){
     if (!p) return;
     const m = Object.assign({}, loadCache(), p);
     console.log('🎨 Pintando perfil:', m);
 
-    const fullName = pick(m.nombre_completo, m.full_name,
+    const fullName = pick(
+      m.nombre_completo,
       [m.nombre, m.apellido].filter(Boolean).join(' '),
-      m.displayName, m.email, 'Usuario BOLTON');
+      m.displayName,
+      m.email ? m.email.split('@')[0] : 'Usuario BOLTON'
+    );
+    const email = pick(m.email, m.correo);
+    const rawHandle = pick(m.nombre_usuario, m.handle, m.username, email);
+    const handle = rawHandle
+      ? (String(rawHandle).charAt(0) === '@' ? rawHandle : '@' + String(rawHandle).split('@')[0])
+      : '@usuario';
+    const role = pick(m.rol, m.role, m.carrera, m.titulo_carrera, 'Estudiante de BOLTON Studio');
+    const avatar = pick(m.avatar_url, m.avatar, m.photoURL, buildAvatarUrl(fullName));
+    const edad = m.edad ? `${m.edad} años${m.anio_nacimiento ? ' (Nacido en ' + m.anio_nacimiento + ')' : ''}` : '-- años';
+    const grado = pick(m.grado, m.carrera, '--');
+    const materias = m.materias ? `${m.materias} materias inscritas` : '--';
+    const telefono = pick(m.telefono, m.phone, '--');
+    const meta = pick(m.sueno_estudio, m.dreamJob, m.sueno, m.meta, '');
+    const bio = pick(m.bio, m.biografia, '');
 
-    const handle = pick(m.handle, m.nombre_usuario, m.username, 'usuario');
-    const role = pick(m.role, m.titulo_carrera, m.carrera, 'Estudiante de BOLTON');
-    const bio = pick(m.bio, m.biografia, 'Sin biografía especificada.');
-    const avatar = pick(m.photoURL, m.avatar_url, m.avatar, buildAvatarUrl(fullName));
-    const age = pick(m.edad, m.age, '--');
-    const grade = pick(m.grado, m.grade, '--');
-    const subjects = pick(m.materias, m.subjects, '--');
-    const phone = pick(m.telefono, m.phone, '--');
-    const dream = pick(m.sueno, m.dream, m.meta, 'Sin meta especificada.');
-
-    // Actualizar elementos en UI (Sidebar, Top Bar, Perfil View)
+    // Sidebar
     setText('sidebarUserName', fullName);
-    setText('sidebarUserHandle', handle.startsWith('@') ? handle : '@' + handle);
+    setText('sidebarUserHandle', handle);
     setImg('sidebarAvatarImg', avatar);
     setImg('topAvatarImg', avatar);
 
+    // Cabecera perfil
     setText('profileNameDisplay', fullName);
-    setText('profileHandleDisplay', handle.startsWith('@') ? handle : '@' + handle);
+    setText('profileHandleDisplay', handle);
     setText('profileRoleDisplay', role);
     setImg('profileMainAvatar', avatar);
 
-    setText('profileAge', age + (age !== '--' && !String(age).includes('años') ? ' años' : ''));
-    setText('profileGrade', grade);
-    setText('profileSubjects', subjects);
-    setText('profilePhone', phone);
-    setText('profileDream', `"${dream}"`);
+    // Datos académicos
+    setText('profileAge', edad);
+    setText('profileGrade', grado);
+    setText('profileSubjects', materias);
+    setText('profilePhone', telefono);
+    setText('profileDream', meta ? `"${meta}"` : '"--"');
 
-    // Inputs en la vista Perfil
+    if (m.materias) setText('dashMateriasCount', String(m.materias));
+
+    // Inputs vista perfil
     setInput('inputProfileName', fullName);
-    setInput('inputProfileHandle', handle.replace(/^@/, ''));
+    setInput('inputProfileHandle', handle);
     setInput('inputProfileRole', role);
     setInput('inputProfileBio', bio);
 
-    // Precompletar el modal de Editar Perfil en Ajustes
+    // Modal editar (ajustes)
     setInput('editModalName', fullName);
     setInput('editModalHandle', handle.replace(/^@/, ''));
     setInput('editModalRole', role);
     setInput('editModalBio', bio);
-    setInput('editModalAge', age);
-    setInput('editModalGrade', grade);
-    setInput('editModalSubjects', subjects);
-    setInput('editModalPhone', phone);
-    setInput('editModalDream', dream);
+    setInput('editModalAge', m.edad || '');
+    setInput('editModalGrade', m.grado || '');
+    setInput('editModalSubjects', m.materias || '');
+    setInput('editModalPhone', m.telefono || '');
+    setInput('editModalDream', meta);
     setInput('editModalAvatar', avatar);
+
+    saveCache(m);
   }
 
   /* ============================================================
-     GUARDAR PERFIL EN FIREBASE
+     4. AVISO VISUAL GRANDE
   ============================================================ */
-  window.saveProfileToFirebase = function(dataToSave) {
-    saveCache(dataToSave);
-    paintProfile(dataToSave);
+  function mostrarAviso(msg){
+    const div = document.createElement('div');
+    div.style.cssText = `
+      position:fixed;inset:0;z-index:99999;
+      background:rgba(0,0,0,.85);backdrop-filter:blur(10px);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-family:Inter,system-ui,sans-serif;
+      padding:20px;text-align:center;
+    `;
+    div.innerHTML = `
+      <div style="max-width:420px">
+        <div style="width:70px;height:70px;border-radius:50%;background:rgba(239,68,68,.2);
+                    border:2px solid #ef4444;margin:0 auto 20px;
+                    display:grid;place-items:center;font-size:32px">⚠️</div>
+        <h2 style="font-size:20px;font-weight:800;margin:0 0 12px">Cuenta no válida</h2>
+        <p style="font-size:14px;opacity:.8;margin:0 0 8px">${msg}</p>
+        <p style="font-size:12px;opacity:.5;margin:0">Redirigiendo al inicio de sesión...</p>
+      </div>
+    `;
+    document.body.appendChild(div);
+  }
 
-    if (!currentUser) {
-      if (window.showToast) window.showToast('Datos guardados localmente');
+  /* ============================================================
+     5. EXPULSAR: limpiar todo y volver a index.html
+  ============================================================ */
+  async function limpiarYExpulsar(){
+    try { await auth.signOut(); } catch(e){ console.warn(e); }
+    try {
+      localStorage.removeItem('bolton_user_profile');
+      localStorage.removeItem('bolton_bg');
+    } catch(e){}
+    window.location.href = 'index.html';
+  }
+
+  /* ============================================================
+     6. VALIDAR USUARIO + PINTAR
+  ============================================================ */
+  async function validarYProcesar(user){
+    console.log('👤 Sesión activa:', user.email);
+
+    // Pintado rápido con cache
+    const cached = loadCache();
+    if (Object.keys(cached).length > 0) {
+      setText('sidebarUserName', cached.nombre_completo || 'Cargando...');
+      setText('sidebarUserHandle', cached.nombre_usuario ? '@' + cached.nombre_usuario : '@usuario');
+      if (cached.avatar_url) setImg('sidebarAvatarImg', cached.avatar_url);
+    }
+
+    try {
+      const snap = await db.collection('users').doc(user.uid).get();
+
+      if (!snap.exists) {
+        console.warn('🚨 Usuario NO existe en Firestore → expulsando');
+        mostrarAviso('Tu cuenta fue eliminada. Contacta al administrador.');
+        await new Promise(r => setTimeout(r, 2500));
+        await limpiarYExpulsar();
+        return;
+      }
+
+      const data = snap.data();
+      const merged = Object.assign({}, cached, data, { uid: user.uid, email: user.email || data.email });
+      saveCache(merged);
+      paintProfile(merged);
+      console.log('🎉 Perfil cargado desde Firestore:', merged);
+
+    } catch(e) {
+      console.warn('⚠️ Error de red al validar. Usando cache:', e);
+      if (Object.keys(cached).length > 0) paintProfile(cached);
+    }
+  }
+
+  /* ============================================================
+     7. OBSERVADOR DE SESIÓN CON ESPERA
+  ============================================================ */
+  let esperando = false;
+
+  auth.onAuthStateChanged(function(user){
+    if (!user) {
+      if (esperando) return;
+      esperando = true;
+
+      console.log('⏳ Esperando a que Firebase restaure la sesión...');
+      let intentos = 0;
+      const maxIntentos = 6;
+
+      const checker = setInterval(function(){
+        intentos++;
+        const u = auth.currentUser;
+        if (u) {
+          clearInterval(checker);
+          esperando = false;
+          currentUser = u;
+          console.log('✅ Sesión restaurada:', u.email);
+          validarYProcesar(u);
+        } else if (intentos >= maxIntentos) {
+          clearInterval(checker);
+          esperando = false;
+          console.log('🚪 Sin sesión → index.html');
+          limpiarYExpulsar();
+        }
+      }, 400);
       return;
     }
 
-    db.collection('users').doc(currentUser.uid).set(dataToSave, { merge: true })
-      .then(() => {
-        if (window.showToast) window.showToast('¡Perfil actualizado en Firebase exitosamente!');
-      })
-      .catch(err => {
-        console.error('Error al guardar en Firebase:', err);
-        if (window.showToast) window.showToast('Error en Firebase: ' + err.message);
-      });
+    esperando = false;
+    currentUser = user;
+    validarYProcesar(user);
+  });
+
+  /* ============================================================
+     8. CERRAR SESIÓN
+  ============================================================ */
+  window.cerrarSesion = function(){
+    auth.signOut().then(function(){
+      try { localStorage.removeItem('bolton_user_profile'); } catch(e){}
+      window.location.href = 'index.html';
+    }).catch(function(){
+      try { localStorage.removeItem('bolton_user_profile'); } catch(e){}
+      window.location.href = 'index.html';
+    });
   };
 
   /* ============================================================
-     CERRAR SESIÓN (REDIRECT A INFO.HTML)
+     9. BORRAR CUENTA
   ============================================================ */
-  window.cerrarSesion = function() {
-    if (typeof firebase !== 'undefined' && firebase.auth) {
-      firebase.auth().signOut().then(() => {
-        localStorage.removeItem('bolton_user_profile');
-        window.location.href = 'info.html';
-      }).catch((err) => {
-        console.error("Error al cerrar sesión:", err);
-        window.location.href = 'info.html';
-      });
-    } else {
-      localStorage.removeItem('bolton_user_profile');
-      window.location.href = 'info.html';
+  window.borrarCuenta = function(){
+    if (!confirm('¿Estás seguro? Esta acción eliminará tu cuenta permanentemente.')) return;
+    const user = auth.currentUser;
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
     }
-  };
-
-  /* ============================================================
-     BORRAR CUENTA
-  ============================================================ */
-  window.borrarCuenta = function() {
-    const confirmacion = confirm("¿Estás seguro de que deseas eliminar permanentemente tu cuenta? Esta acción borrará tus datos y no se puede deshacer.");
-    if (!confirmacion) return;
-
-    if (currentUser) {
-      db.collection('users').doc(currentUser.uid).delete().catch(e => console.error("Error al borrar documento:", e));
-      currentUser.delete().then(() => {
-        localStorage.removeItem('bolton_user_profile');
-        if (window.showToast) window.showToast('Cuenta eliminada con éxito');
-        setTimeout(() => {
-          window.location.href = 'info.html';
-        }, 800);
-      }).catch(err => {
-        console.error("Error al borrar cuenta de Firebase Auth:", err);
-        alert("Por razones de seguridad debes haber iniciado sesión recientemente para eliminar la cuenta. Intenta cerrar e iniciar sesión de nuevo.");
+    // Borrar documento Firestore
+    db.collection('users').doc(user.uid).delete()
+      .catch(e => console.warn('Error borrando documento:', e))
+      .finally(() => {
+        // Borrar usuario de Auth
+        user.delete().then(() => {
+          try { localStorage.removeItem('bolton_user_profile'); } catch(e){}
+          window.location.href = 'index.html';
+        }).catch(err => {
+          console.error('Error al borrar usuario Auth:', err);
+          alert('Por seguridad debes cerrar sesión y volver a entrar antes de borrar la cuenta. Intenta de nuevo.');
+        });
       });
-    } else {
-      localStorage.removeItem('bolton_user_profile');
-      if (window.showToast) window.showToast('Datos de cuenta local eliminados');
-      setTimeout(() => {
-        window.location.href = 'info.html';
-      }, 800);
-    }
   };
 
   /* ============================================================
-     MODAL EDITAR PERFIL (DESDE AJUSTES)
+     10. MODAL EDITAR PERFIL
   ============================================================ */
-  window.openEditProfileModal = function() {
+  window.openEditProfileModal = function(){
     const modal = document.getElementById('editProfileModal');
     if (modal) modal.classList.remove('hidden');
   };
-
-  window.closeEditProfileModal = function() {
+  window.closeEditProfileModal = function(){
     const modal = document.getElementById('editProfileModal');
     if (modal) modal.classList.add('hidden');
   };
 
-  window.saveEditProfileModal = function() {
-    const data = {
-      nombre_completo: getValue('editModalName'),
-      handle: getValue('editModalHandle'),
-      role: getValue('editModalRole'),
-      bio: getValue('editModalBio'),
-      edad: getValue('editModalAge'),
-      grado: getValue('editModalGrade'),
-      materias: getValue('editModalSubjects'),
-      telefono: getValue('editModalPhone'),
-      sueno: getValue('editModalDream'),
-      photoURL: getValue('editModalAvatar')
-    };
-    saveProfileToFirebase(data);
-    closeEditProfileModal();
+  window.handleSaveProfileFromAjustes = function(event){
+    if (event) event.preventDefault();
+    window.saveEditProfileModal();
   };
 
-  window.savePublicProfile = function() {
-    const data = {
+  window.saveEditProfileModal = async function(){
+    if (!currentUser) {
+      if (window.showToast) window.showToast('Sin sesión activa');
+      return;
+    }
+    const updates = {
+      nombre_completo: getValue('editModalName'),
+      nombre_usuario: getValue('editModalHandle').replace(/^@/, ''),
+      rol: getValue('editModalRole'),
+      bio: getValue('editModalBio'),
+      edad: parseInt(getValue('editModalAge'), 10) || null,
+      grado: getValue('editModalGrade'),
+      materias: parseInt(getValue('editModalSubjects'), 10) || null,
+      telefono: getValue('editModalPhone'),
+      sueno_estudio: getValue('editModalDream'),
+      avatar_url: getValue('editModalAvatar')
+    };
+
+    try {
+      await db.collection('users').doc(currentUser.uid).set(updates, { merge: true });
+      const merged = Object.assign({}, loadCache(), updates, { uid: currentUser.uid, email: currentUser.email });
+      saveCache(merged);
+      paintProfile(merged);
+      if (window.showToast) window.showToast('Perfil actualizado');
+      window.closeEditProfileModal();
+    } catch(e) {
+      console.error('Error al guardar:', e);
+      if (window.showToast) window.showToast('Error al guardar: ' + e.code);
+    }
+  };
+
+  window.savePublicProfile = async function(){
+    if (!currentUser) return;
+    const updates = {
       nombre_completo: getValue('inputProfileName'),
-      handle: getValue('inputProfileHandle'),
-      role: getValue('inputProfileRole'),
+      nombre_usuario: getValue('inputProfileHandle').replace(/^@/, ''),
+      rol: getValue('inputProfileRole'),
       bio: getValue('inputProfileBio')
     };
-    saveProfileToFirebase(data);
-  };
-
-  window.executeResearchSearch = function() {
-    const q = getValue('researchQueryInput');
-    const res = document.getElementById('researchResults');
-    if (!q) return;
-    if (res) {
-      res.innerHTML = `<div class="p-3 text-emerald-300 font-semibold"><i class="fa-solid fa-spinner animate-spin"></i> Investigando sobre "${q}"...</div>`;
-      setTimeout(() => {
-        res.innerHTML = `<p class="text-white font-bold mb-1">Resumen de Investigación: ${q}</p><p>Resultados recopilados para tu estudio. Puedes incluir este extracto en tus notas de BOLTON.</p>`;
-      }, 1200);
+    try {
+      await db.collection('users').doc(currentUser.uid).set(updates, { merge: true });
+      const merged = Object.assign({}, loadCache(), updates);
+      saveCache(merged);
+      paintProfile(merged);
+      if (window.showToast) window.showToast('Perfil actualizado');
+    } catch(e) {
+      console.error(e);
+      if (window.showToast) window.showToast('Error al guardar');
     }
   };
-
-  let isPlayingSound = false;
-  window.toggleAmbientSound = function() {
-    const btn = document.getElementById('soundToggleBtn');
-    isPlayingSound = !isPlayingSound;
-    if (btn) {
-      btn.innerHTML = isPlayingSound ? '<i class="fa-solid fa-pause mr-1"></i> Pausar' : '<i class="fa-solid fa-play mr-1"></i> Reproducir';
-    }
-    if (window.showToast) window.showToast(isPlayingSound ? 'Sonido ambiente activado' : 'Sonido ambiente pausado');
-  };
-
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      currentUser = user;
-      db.collection('users').doc(user.uid).get().then(doc => {
-        if (doc.exists) {
-          paintProfile(doc.data());
-        } else {
-          const initialData = {
-            displayName: user.displayName || 'Estudiante BOLTON',
-            email: user.email,
-            photoURL: user.photoURL || buildAvatarUrl(user.displayName)
-          };
-          paintProfile(initialData);
-        }
-      }).catch(err => {
-        console.error('Error al cargar perfil de Firebase:', err);
-        paintProfile(loadCache());
-      });
-    } else {
-      currentUser = null;
-      paintProfile(loadCache());
-    }
-  });
 
 })();
 </script>
