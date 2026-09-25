@@ -249,7 +249,7 @@
           </button>
 
           <!-- ENLACE DIRECTO A INFO.HTML -->
-          <a href="info.html" onclick="try { if(window.location.protocol === 'blob:' || window.location.href.startsWith('blob:')){ event.preventDefault(); if(window.showToast) window.showToast('Navegación a info.html'); } } catch(e){}" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors text-left">
+          <a href="info.html" class="w-full flex items-center gap-2.5 px-2 py-1 rounded-xl text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors text-left">
             <i class="fa-regular fa-circle-question text-white/60 group-hover:text-white text-xs w-4 text-center flex-shrink-0"></i>
             <span class="truncate">Más sobre BOLTON</span>
           </a>
@@ -805,6 +805,42 @@
           <h2 class="text-xl font-black text-white uppercase tracking-wider">Ajustes</h2>
           
           <div class="max-w-md space-y-3">
+            <!-- EDITAR PERFIL DESDE AJUSTES -->
+            <div onclick="openEditProfileModal()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-white/30 group relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-user-pen text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm text-white group-hover:text-emerald-200 transition-colors">Editar Perfil</h3>
+                    <p class="text-xs text-white/70">Modifica tus datos personales y académicos en Firebase</p>
+                  </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-white/10 group-hover:bg-white/30 flex items-center justify-center text-white text-xs transition-all">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- BORRAR CUENTA DESDE AJUSTES -->
+            <div onclick="borrarCuenta()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-rose-500/40 group relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center shadow-lg border border-rose-500/30">
+                    <i class="fa-solid fa-user-xmark text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm text-rose-200 group-hover:text-rose-100 transition-colors">Borrar Cuenta</h3>
+                    <p class="text-xs text-white/70">Eliminar permanentemente tu cuenta y datos</p>
+                  </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-rose-500/20 group-hover:bg-rose-500/40 flex items-center justify-center text-rose-200 text-xs transition-all">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </div>
+              </div>
+            </div>
+
             <div onclick="openBgModal()" class="glass-panel p-5 rounded-3xl space-y-3 glass-card-hover cursor-pointer border border-white/30 group relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -884,7 +920,7 @@
                 <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
                   <div class="relative group">
                     <img id="profileMainAvatar" src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200" alt="Avatar Principal" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-slate-900/80 shadow-2xl">
-                    <button onclick="showToast('Actualiza tus datos en la sección inferior')" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110">
+                    <button onclick="openEditProfileModal()" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110" title="Cambiar foto">
                       <i class="fa-solid fa-camera"></i>
                     </button>
                   </div>
@@ -899,12 +935,16 @@
                   </div>
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap justify-center">
                   <button onclick="switchProfileTab('cuenta')" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs transition-all border border-white/20 flex items-center gap-1.5">
                     <i class="fa-solid fa-share-nodes"></i> Compartir
                   </button>
                   <button onclick="savePublicProfile()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs transition-all shadow-lg flex items-center gap-1.5">
                     <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                  </button>
+                  <!-- BOTÓN PARA BORRAR CUENTA AL LADO DE LA CONFIGURACIÓN -->
+                  <button onclick="borrarCuenta()" class="px-4 py-2 rounded-xl bg-rose-600/80 hover:bg-rose-600 text-white font-extrabold text-xs transition-all shadow-lg flex items-center gap-1.5 border border-rose-400/30">
+                    <i class="fa-solid fa-user-slash"></i> Borrar Cuenta
                   </button>
                 </div>
               </div>
@@ -1072,6 +1112,92 @@
 
   </div>
 
+  <!-- ================= MODAL: EDITAR PERFIL COMPLETO (DESDE AJUSTES) ================= -->
+  <div id="editProfileModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300">
+    <div class="glass-panel w-full max-w-2xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative">
+      
+      <div class="p-4 sm:p-5 border-b border-white/20 flex items-center justify-between flex-shrink-0 bg-black/20">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-300 border border-emerald-400/30">
+            <i class="fa-solid fa-user-pen text-sm"></i>
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-white">Editar Perfil Completo</h2>
+            <p class="text-[11px] text-white/70">Sincroniza tus datos personales en Firebase</p>
+          </div>
+        </div>
+
+        <button onclick="closeEditProfileModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white/80 hover:text-white transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-white/90">Nombre Completo</label>
+            <input type="text" id="editModalName" placeholder="Tu nombre..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-white/90">Nombre de Usuario (@)</label>
+            <input type="text" id="editModalHandle" placeholder="usuario" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1 sm:col-span-2">
+            <label class="text-[11px] font-semibold text-white/90">Título / Carrera Estudiantil</label>
+            <input type="text" id="editModalRole" placeholder="Ej: Estudiante de Ingeniería" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1 sm:col-span-2">
+            <label class="text-[11px] font-semibold text-white/90">Biografía Académica</label>
+            <textarea id="editModalBio" rows="2" placeholder="Describe tu meta o sobre ti..." class="glass-input w-full p-3 rounded-xl text-xs"></textarea>
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-white/90">Edad</label>
+            <input type="text" id="editModalAge" placeholder="Ej: 19" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-white/90">Grado Académico</label>
+            <input type="text" id="editModalGrade" placeholder="Ej: 3er Semestre" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-white/90">Materias Inscritas</label>
+            <input type="text" id="editModalSubjects" placeholder="Ej: Cálculo, Física, Química" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-white/90">Teléfono de Contacto</label>
+            <input type="text" id="editModalPhone" placeholder="+123456789" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1 sm:col-span-2">
+            <label class="text-[11px] font-semibold text-white/90">Meta / Sueño Personal</label>
+            <input type="text" id="editModalDream" placeholder="Ej: Graduarme con honores" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+
+          <div class="space-y-1 sm:col-span-2">
+            <label class="text-[11px] font-semibold text-white/90">URL Foto de Perfil (Opcional)</label>
+            <input type="text" id="editModalAvatar" placeholder="https://..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3.5 border-t border-white/15 flex items-center justify-end gap-2 bg-black/20 flex-shrink-0">
+        <button onclick="closeEditProfileModal()" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-medium text-xs transition-colors">
+          Cancelar
+        </button>
+        <button onclick="saveEditProfileModal()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-all shadow-lg flex items-center gap-1.5">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar en Firebase
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- MODAL: NUEVO FONDO -->
   <div id="bgModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md hidden transition-opacity duration-300">
     <div class="glass-panel w-full max-w-4xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative">
@@ -1165,7 +1291,41 @@
       'Robert Downey Jr_ + Rainbow.jpg',
       '𝐬𝐩𝐢𝐝𝐞𝐫𝐦𝐚𝐧 𝐰𝐚𝐥𝐥𝐩𝐚𝐩𝐞𝐫.jpg',
       '884042601875716419.jpg',
-      '994521530217328866.jpg'
+      '994521530217328866.jpg',
+      '16395986141433260.jpg',
+      'jhj.png',
+      '484137028718258231.jpg',
+      'color_cherry.jpg',
+      'Cat Wallpapers Backrooms #1.jpg',
+      'color_cherry.jpg',
+      'Wallpapers.jpg',
+      '634163191283442035.jpg',
+      '54 Beautifully Offensive Desktop Wallpapers.jpg',
+      '12455336471773883.gif',
+      '494833077786055499.jpg',
+      '211174977272346.jpg',
+      'My Little Pony_ Friendship is Magic Ponies Desktop….jpg',
+      'Invincible graffiti (sure_).jpg',
+      'arctic monkeys ipad wallpaper 505 - Google Search.jpg',
+      '_｡･ﾟﾟ･༺ᱬ༻·･ﾟﾟ･｡.jpg',
+      '🪐 Tame IMPALA - Borderline.jpg',
+      '310044755576931083.jpg',
+      'Game of Thrones.jpg',
+      '820077413445622848.jpg',
+      '1084804629020480485.jpg',
+      '910149405966734060.jpg',
+      'bandera de Venezuela, Venezuela lace flag.jpg',
+      '882213014514999216.jpg',
+      '🂡 ʳˡʸᶜʳᵘˢʰ.jpg',
+      '991636411725968791.jpg',
+      'house targaryen tapestry hotd got.jpg',
+      '1144758799051798885.jpg',
+      'House Targaryen Wallpaper (ASOIAF), Magma Productions.jpg',
+      '40462096656185068.jpg',
+      'These GIFs Of Joseph-Gordon Levitt Will Definitely Make You Smile.gif',
+      '4503668374134806.gif',
+      '18225573488787021.gif',
+      'android LED.gif'
     ];
 
     const DEFAULT_BG = '2040762329295531.jpg';
@@ -1390,7 +1550,7 @@
 <script>
 (function(){
   'use strict';
-  console.log('🚀 Stdio cargado');
+  console.log('🚀 BOLTON Workspace Cargar...');
 
   /* ============================================================
      CONFIG FIREBASE
@@ -1409,6 +1569,8 @@
   const auth = firebase.auth();
   const db   = firebase.firestore();
 
+  let currentUser = null;
+
   /* ============================================================
      HELPERS
   ============================================================ */
@@ -1419,6 +1581,8 @@
   function setText(id, val){ const el = document.getElementById(id); if (el) el.textContent = val || '--'; }
   function setImg(id, val){ const el = document.getElementById(id); if (el && val) el.src = val; }
   function setInput(id, val){ const el = document.getElementById(id); if (el && val !== undefined) el.value = val; }
+  function getValue(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
   function pick(){
     for (var i = 0; i < arguments.length; i++){
       var v = arguments[i];
@@ -1444,141 +1608,209 @@
 
     const fullName = pick(m.nombre_completo, m.full_name,
       [m.nombre, m.apellido].filter(Boolean).join(' '),
-      m.name, m.displayName,
-      m.email ? m.email.split('@')[0] : 'Usuario');
-    const email = pick(m.email, m.correo);
-    const rawHandle = pick(m.nombre_usuario, m.username, email);
-    const handle = rawHandle ? (String(rawHandle).charAt(0) === '@' ? rawHandle : '@' + String(rawHandle).split('@')[0]) : '@usuario';
-    const role = pick(m.rol, m.role, m.grado, m.carrera, 'Estudiante de BOLTON Studio');
-    const avatar = pick(m.avatar_url, m.avatar, m.photoURL, buildAvatarUrl(fullName));
+      m.displayName, m.email, 'Usuario BOLTON');
 
+    const handle = pick(m.handle, m.nombre_usuario, m.username, 'usuario');
+    const role = pick(m.role, m.titulo_carrera, m.carrera, 'Estudiante de BOLTON');
+    const bio = pick(m.bio, m.biografia, 'Sin biografía especificada.');
+    const avatar = pick(m.photoURL, m.avatar_url, m.avatar, buildAvatarUrl(fullName));
+    const age = pick(m.edad, m.age, '--');
+    const grade = pick(m.grado, m.grade, '--');
+    const subjects = pick(m.materias, m.subjects, '--');
+    const phone = pick(m.telefono, m.phone, '--');
+    const dream = pick(m.sueno, m.dream, m.meta, 'Sin meta especificada.');
+
+    // Actualizar elementos en UI (Sidebar, Top Bar, Perfil View)
     setText('sidebarUserName', fullName);
-    setText('sidebarUserHandle', handle);
+    setText('sidebarUserHandle', handle.startsWith('@') ? handle : '@' + handle);
     setImg('sidebarAvatarImg', avatar);
     setImg('topAvatarImg', avatar);
 
     setText('profileNameDisplay', fullName);
-    setText('profileHandleDisplay', handle);
+    setText('profileHandleDisplay', handle.startsWith('@') ? handle : '@' + handle);
     setText('profileRoleDisplay', role);
     setImg('profileMainAvatar', avatar);
 
-    setText('profileAge', m.edad ? (m.edad + ' años' + (m.anio_nacimiento ? ' (Nacido en ' + m.anio_nacimiento + ')' : '')) : '-- años');
-    setText('profileGrade', pick(m.grado, m.carrera, '--'));
-    setText('profileSubjects', m.materias ? (m.materias + ' materias inscritas') : '--');
-    setText('profilePhone', pick(m.telefono, m.phone, '--'));
-    setText('profileDream', (m.sueno_estudio || m.dreamJob) ? ('"' + pick(m.sueno_estudio, m.dreamJob) + '"') : '"--"');
+    setText('profileAge', age + (age !== '--' && !String(age).includes('años') ? ' años' : ''));
+    setText('profileGrade', grade);
+    setText('profileSubjects', subjects);
+    setText('profilePhone', phone);
+    setText('profileDream', `"${dream}"`);
 
-    if (m.materias) setText('dashMateriasCount', String(m.materias));
-
+    // Inputs en la vista Perfil
     setInput('inputProfileName', fullName);
-    setInput('inputProfileHandle', handle);
+    setInput('inputProfileHandle', handle.replace(/^@/, ''));
     setInput('inputProfileRole', role);
-    setInput('inputProfileBio', m.bio || '');
+    setInput('inputProfileBio', bio);
+
+    // Precompletar el modal de Editar Perfil en Ajustes
+    setInput('editModalName', fullName);
+    setInput('editModalHandle', handle.replace(/^@/, ''));
+    setInput('editModalRole', role);
+    setInput('editModalBio', bio);
+    setInput('editModalAge', age);
+    setInput('editModalGrade', grade);
+    setInput('editModalSubjects', subjects);
+    setInput('editModalPhone', phone);
+    setInput('editModalDream', dream);
+    setInput('editModalAvatar', avatar);
   }
-  window.paintProfile = paintProfile;
 
   /* ============================================================
-     CERRAR SESIÓN
+     GUARDAR PERFIL EN FIREBASE
   ============================================================ */
-  window.cerrarSesion = function(){
-    auth.signOut().then(function(){
-      try { localStorage.removeItem('bolton_user_profile'); } catch(e){}
-      window.location.href = 'index.html';
-    }).catch(function(err){
-      console.error('Error al cerrar sesión:', err);
-      window.location.href = 'index.html';
-    });
+  window.saveProfileToFirebase = function(dataToSave) {
+    saveCache(dataToSave);
+    paintProfile(dataToSave);
+
+    if (!currentUser) {
+      if (window.showToast) window.showToast('Datos guardados localmente');
+      return;
+    }
+
+    db.collection('users').doc(currentUser.uid).set(dataToSave, { merge: true })
+      .then(() => {
+        if (window.showToast) window.showToast('¡Perfil actualizado en Firebase exitosamente!');
+      })
+      .catch(err => {
+        console.error('Error al guardar en Firebase:', err);
+        if (window.showToast) window.showToast('Error en Firebase: ' + err.message);
+      });
   };
 
   /* ============================================================
-     GUARDAR PERFIL PÚBLICO
+     CERRAR SESIÓN (REDIRECT A INFO.HTML)
   ============================================================ */
-  window.savePublicProfile = function(){
-    const user = auth.currentUser;
-    if (!user) return;
-    const name = document.getElementById('inputProfileName');
-    const handle = document.getElementById('inputProfileHandle');
-    const role = document.getElementById('inputProfileRole');
-    const bio = document.getElementById('inputProfileBio');
+  window.cerrarSesion = function() {
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().signOut().then(() => {
+        localStorage.removeItem('bolton_user_profile');
+        window.location.href = 'info.html';
+      }).catch((err) => {
+        console.error("Error al cerrar sesión:", err);
+        window.location.href = 'info.html';
+      });
+    } else {
+      localStorage.removeItem('bolton_user_profile');
+      window.location.href = 'info.html';
+    }
+  };
 
-    const updates = {
-      nombre_completo: name ? name.value.trim() : '',
-      nombre_usuario: handle ? handle.value.trim().replace(/^@/, '') : '',
-      rol: role ? role.value.trim() : '',
-      bio: bio ? bio.value.trim() : ''
+  /* ============================================================
+     BORRAR CUENTA
+  ============================================================ */
+  window.borrarCuenta = function() {
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar permanentemente tu cuenta? Esta acción borrará tus datos y no se puede deshacer.");
+    if (!confirmacion) return;
+
+    if (currentUser) {
+      db.collection('users').doc(currentUser.uid).delete().catch(e => console.error("Error al borrar documento:", e));
+      currentUser.delete().then(() => {
+        localStorage.removeItem('bolton_user_profile');
+        if (window.showToast) window.showToast('Cuenta eliminada con éxito');
+        setTimeout(() => {
+          window.location.href = 'info.html';
+        }, 800);
+      }).catch(err => {
+        console.error("Error al borrar cuenta de Firebase Auth:", err);
+        alert("Por razones de seguridad debes haber iniciado sesión recientemente para eliminar la cuenta. Intenta cerrar e iniciar sesión de nuevo.");
+      });
+    } else {
+      localStorage.removeItem('bolton_user_profile');
+      if (window.showToast) window.showToast('Datos de cuenta local eliminados');
+      setTimeout(() => {
+        window.location.href = 'info.html';
+      }, 800);
+    }
+  };
+
+  /* ============================================================
+     MODAL EDITAR PERFIL (DESDE AJUSTES)
+  ============================================================ */
+  window.openEditProfileModal = function() {
+    const modal = document.getElementById('editProfileModal');
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  window.closeEditProfileModal = function() {
+    const modal = document.getElementById('editProfileModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.saveEditProfileModal = function() {
+    const data = {
+      nombre_completo: getValue('editModalName'),
+      handle: getValue('editModalHandle'),
+      role: getValue('editModalRole'),
+      bio: getValue('editModalBio'),
+      edad: getValue('editModalAge'),
+      grado: getValue('editModalGrade'),
+      materias: getValue('editModalSubjects'),
+      telefono: getValue('editModalPhone'),
+      sueno: getValue('editModalDream'),
+      photoURL: getValue('editModalAvatar')
     };
-
-    setText('profileNameDisplay', updates.nombre_completo);
-    setText('sidebarUserName', updates.nombre_completo);
-    setText('profileHandleDisplay', '@' + updates.nombre_usuario);
-    setText('sidebarUserHandle', '@' + updates.nombre_usuario);
-    setText('profileRoleDisplay', updates.rol);
-
-    const c = loadCache();
-    Object.assign(c, updates);
-    saveCache(c);
-
-    db.collection('users').doc(user.uid).update(updates)
-      .then(function(){ if (window.showToast) window.showToast('Perfil actualizado'); })
-      .catch(function(err){
-        console.error(err);
-        if (window.showToast) window.showToast('Error al guardar: ' + err.code);
-      });
+    saveProfileToFirebase(data);
+    closeEditProfileModal();
   };
 
- /* ============================================================
-   OBSERVADOR DE SESIÓN + DETECCIÓN DE USUARIO ELIMINADO
-============================================================ */
-auth.onAuthStateChanged(function(user){
-  if (!user) {
-    console.log('🚪 Sin sesión → redirigiendo a index.html');
-    window.location.href = 'index.html';
-    return;
-  }
-
-  console.log('👤 Sesión activa:', user.email);
-
-  // 1. Pintado inmediato
-  const cached = loadCache();
-  const immediate = {
-    uid: user.uid,
-    email: user.email,
-    nombre_completo: user.displayName || cached.nombre_completo || (user.email ? user.email.split('@')[0] : 'Usuario'),
-    avatar_url: user.photoURL || cached.avatar_url || buildAvatarUrl(user.displayName || user.email)
+  window.savePublicProfile = function() {
+    const data = {
+      nombre_completo: getValue('inputProfileName'),
+      handle: getValue('inputProfileHandle'),
+      role: getValue('inputProfileRole'),
+      bio: getValue('inputProfileBio')
+    };
+    saveProfileToFirebase(data);
   };
-  paintProfile(Object.assign({}, cached, immediate));
 
-  // 2. Cargar de Firestore
-  db.collection('users').doc(user.uid).get()
-    .then(function(snap){
-      if (!snap.exists) {
-        // 🚨 USUARIO ELIMINADO DE FIRESTORE
-        console.warn('🚨 Usuario sin documento en Firestore → cerrando sesión');
-        if (window.showToast) {
-          window.showToast('Tu cuenta fue eliminada. Contacta al administrador.');
+  window.executeResearchSearch = function() {
+    const q = getValue('researchQueryInput');
+    const res = document.getElementById('researchResults');
+    if (!q) return;
+    if (res) {
+      res.innerHTML = `<div class="p-3 text-emerald-300 font-semibold"><i class="fa-solid fa-spinner animate-spin"></i> Investigando sobre "${q}"...</div>`;
+      setTimeout(() => {
+        res.innerHTML = `<p class="text-white font-bold mb-1">Resumen de Investigación: ${q}</p><p>Resultados recopilados para tu estudio. Puedes incluir este extracto en tus notas de BOLTON.</p>`;
+      }, 1200);
+    }
+  };
+
+  let isPlayingSound = false;
+  window.toggleAmbientSound = function() {
+    const btn = document.getElementById('soundToggleBtn');
+    isPlayingSound = !isPlayingSound;
+    if (btn) {
+      btn.innerHTML = isPlayingSound ? '<i class="fa-solid fa-pause mr-1"></i> Pausar' : '<i class="fa-solid fa-play mr-1"></i> Reproducir';
+    }
+    if (window.showToast) window.showToast(isPlayingSound ? 'Sonido ambiente activado' : 'Sonido ambiente pausado');
+  };
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      currentUser = user;
+      db.collection('users').doc(user.uid).get().then(doc => {
+        if (doc.exists) {
+          paintProfile(doc.data());
+        } else {
+          const initialData = {
+            displayName: user.displayName || 'Estudiante BOLTON',
+            email: user.email,
+            photoURL: user.photoURL || buildAvatarUrl(user.displayName)
+          };
+          paintProfile(initialData);
         }
-        setTimeout(function(){
-          auth.signOut().finally(function(){
-            try { localStorage.removeItem('bolton_user_profile'); } catch(e){}
-            window.location.href = 'index.html';
-          });
-        }, 2000);
-        return;
-      }
-
-      const data = snap.data();
-      const merged = Object.assign({}, immediate, data, { uid: user.uid, email: user.email || data.email });
-      saveCache(merged);
-      paintProfile(merged);
-      console.log('🎉 Perfil cargado de Firestore:', merged);
-    })
-    .catch(function(err){
-        console.warn('⚠️ Firestore error:', err);
-        paintProfile(cached);
+      }).catch(err => {
+        console.error('Error al cargar perfil de Firebase:', err);
+        paintProfile(loadCache());
       });
-});
+    } else {
+      currentUser = null;
+      paintProfile(loadCache());
+    }
+  });
 
-})();   // ← ✅ ESTA LÍNEA FALTABA. Cierra el (function(){ del inicio
+})();
 </script>
 </body>
 </html>
