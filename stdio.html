@@ -92,6 +92,88 @@
     #page-background {
       transition: background-image 0.5s ease-in-out;
     }
+        /* ============================================
+       SISTEMA DE TEMAS
+       ============================================ */
+    /* Modo Bolton — tonos rojos elegantes */
+    body.theme-bolton #page-background {
+        filter: hue-rotate(-15deg) saturate(1.35) brightness(0.9);
+    }
+    body.theme-bolton .glass-panel {
+        background: linear-gradient(135deg, rgba(220,20,60,0.18), rgba(139,0,0,0.06));
+        border: 1px solid rgba(220,20,60,0.35);
+        border-top: 1px solid rgba(255,120,140,0.55);
+        box-shadow: inset 0 1px rgba(255,120,140,0.25), 0 15px 35px rgba(0,0,0,0.4), 0 0 30px rgba(139,0,0,0.15);
+    }
+    body.theme-bolton .glass-input {
+        background: rgba(40,0,0,0.45);
+        border-color: rgba(220,20,60,0.45);
+    }
+    body.theme-bolton .glass-input:focus {
+        border-color: #ff3b5c;
+        box-shadow: 0 0 16px rgba(220,20,60,0.55);
+    }
+    body.theme-bolton .glass-card-hover:hover {
+        background: linear-gradient(135deg, rgba(220,20,60,0.28), rgba(139,0,0,0.1));
+        border-color: rgba(255,100,120,0.6);
+    }
+    body.theme-bolton .nav-btn:hover {
+        background: rgba(220,20,60,0.2) !important;
+        border-color: rgba(220,20,60,0.45) !important;
+    }
+    body.theme-bolton .nav-btn.bg-white\/20 {
+        background: rgba(220,20,60,0.35) !important;
+        border-color: rgba(220,20,60,0.6) !important;
+    }
+    body.theme-bolton #viewHeaderTitle,
+    body.theme-bolton .text-emerald-300,
+    body.theme-bolton .text-emerald-400 {
+        color: #ffb3c1 !important;
+    }
+    body.theme-bolton .bg-emerald-500,
+    body.theme-bolton .bg-emerald-500\/20 {
+        background-color: rgba(220,20,60,0.35) !important;
+    }
+
+    /* Modo Oscuro — oscuridad total */
+    body.theme-dark {
+        background-color: #000 !important;
+    }
+    body.theme-dark #page-background {
+        filter: brightness(0.3) saturate(0.4) blur(2px);
+    }
+    body.theme-dark .glass-panel {
+        background: linear-gradient(135deg, rgba(15,15,15,0.85), rgba(5,5,5,0.7));
+        border: 1px solid rgba(255,255,255,0.06);
+        border-top: 1px solid rgba(255,255,255,0.12);
+        box-shadow: inset 0 1px rgba(255,255,255,0.04), 0 15px 35px rgba(0,0,0,0.7);
+    }
+    body.theme-dark .glass-input {
+        background: rgba(0,0,0,0.7);
+        border-color: rgba(255,255,255,0.1);
+    }
+    body.theme-dark .glass-input:focus {
+        border-color: rgba(255,255,255,0.4);
+        box-shadow: 0 0 14px rgba(255,255,255,0.15);
+    }
+    body.theme-dark .glass-card-hover:hover {
+        background: linear-gradient(135deg, rgba(35,35,35,0.9), rgba(15,15,15,0.8));
+        border-color: rgba(255,255,255,0.2);
+    }
+    body.theme-dark .nav-btn:hover {
+        background: rgba(255,255,255,0.08) !important;
+    }
+    body.theme-dark .nav-btn.bg-white\/20 {
+        background: rgba(255,255,255,0.14) !important;
+    }
+
+    /* Animación de transición suave al cambiar tema */
+    body {
+        transition: background-color 0.4s ease;
+    }
+    body * {
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
   </style>
 </head>
 
@@ -142,6 +224,20 @@
             </div>
             <span class="truncate">Dashboard</span>
           </button>
+          <!-- BOTÓN APRENDER -->
+<button onclick="switchView('racha')" id="nav-racha" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+  <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+    <i class="fa-solid fa-graduation-cap text-xs"></i>
+  </div>
+  <span class="truncate">Aprender</span>
+</button>
+                    <!-- BOTÓN DE TIENDA -->
+                    <button onclick="switchView('tienda')" id="nav-tienda" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
+                      <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
+                        <i class="fa-solid fa-store text-xs"></i>
+                      </div>
+                      <span class="truncate">Tienda</span>
+                    </button>
 
           <button onclick="switchView('notas')" id="nav-notas" class="nav-btn group w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 border border-transparent hover:border-white/20 text-left transition-all">
             <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/20 flex items-center justify-center text-white/70 group-hover:text-white transition-colors flex-shrink-0">
@@ -313,7 +409,7 @@
           <div class="relative">
             <button onclick="toggleNotificationsMenu()" id="notifBtn" class="w-9 h-9 rounded-xl glass-panel flex items-center justify-center text-white hover:bg-white/20 relative transition-all active:scale-95" title="Notificaciones">
               <i class="fa-regular fa-bell text-xs"></i>
-              <span id="notifBadge" class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8px] font-black flex items-center justify-center border border-emerald-950 shadow-md">2</span>
+              <span id="notifBadge" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8px] font-black flex items-center justify-center border border-emerald-950 shadow-md">0</span>
             </button>
 
             <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 glass-panel rounded-2xl p-3 shadow-2xl z-50 border border-white/30 text-xs">
@@ -324,26 +420,8 @@
                 <button onclick="clearNotifications()" class="text-[10px] text-emerald-200 hover:underline">Limpiar</button>
               </div>
               <div class="space-y-2 max-h-56 overflow-y-auto pr-1" id="notifList">
-                <div class="p-2 rounded-xl bg-white/10 border border-white/10 flex gap-2 items-start">
-                  <div class="w-5 h-5 rounded bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <i class="fa-solid fa-calendar-check text-[9px]"></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-white text-[11px]">Examen de Matemáticas</p>
-                    <p class="text-[10px] text-white/70">Mañana a las 08:00 AM · Aula 4B</p>
-                  </div>
+                  <p class="text-[10px] text-white/50 text-center py-2 empty-notif">Sin notificaciones pendientes</p>
                 </div>
-
-                <div class="p-2 rounded-xl bg-white/10 border border-white/10 flex gap-2 items-start">
-                  <div class="w-5 h-5 rounded bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <i class="fa-solid fa-clock text-[9px]"></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-white text-[11px]">Recordatorio de Proyecto</p>
-                    <p class="text-[10px] text-white/70">Avance de Investigación de Física</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -360,106 +438,166 @@
       <!-- VISTAS DINAMICAS DEL WORKSPACE -->
       <main class="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-5" id="mainContent">
 
-        <!-- ================= DASHBOARD VIEW ================= -->
-        <section id="view-dashboard" class="content-view space-y-5">
-          <div class="glass-panel rounded-3xl p-5 sm:p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-5">
-            <div class="space-y-1.5 max-w-xl z-10 text-center md:text-left">
-              <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-emerald-200 text-[10px] font-bold tracking-wider uppercase border border-white/20">
-                Constancia y Metas
-              </span>
-              <h2 id="heroQuoteText" class="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-white leading-tight">
-                Progreso,<br>no perfección
-              </h2>
-              <p class="text-xs text-white/80 font-light">
-                Bienvenido a tu espacio en <strong class="text-white font-semibold">BOLTON Lugar de Trabajo</strong>. Organiza tus asignaturas y avanza con constancia.
-              </p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2.5 w-full md:w-auto flex-shrink-0 z-10">
-              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
-                <i class="fa-solid fa-fire text-amber-400 text-lg"></i>
-                <div class="text-xl font-extrabold text-white">12</div>
-                <div class="text-[9px] text-white/70 uppercase tracking-wider">Días Racha</div>
-              </div>
-              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
-                <i class="fa-solid fa-graduation-cap text-sky-400 text-lg"></i>
-                <div id="dashMateriasCount" class="text-xl font-extrabold text-white">8</div>
-                <div class="text-[9px] text-white/70 uppercase tracking-wider">Materias</div>
-              </div>
-              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
-                <i class="fa-solid fa-clock text-rose-400 text-lg"></i>
-                <div class="text-xl font-extrabold text-white">24.5h</div>
-                <div class="text-[9px] text-white/70 uppercase tracking-wider">Estudiadas</div>
-              </div>
-              <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
-                <i class="fa-solid fa-check-double text-emerald-400 text-lg"></i>
-                <div class="text-xl font-extrabold text-white">18/20</div>
-                <div class="text-[9px] text-white/70 uppercase tracking-wider">Tareas</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="glass-panel rounded-3xl p-4 space-y-3">
-              <div class="flex items-center justify-between">
-                <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
-                  <i class="fa-solid fa-chalkboard-user text-indigo-300"></i> Clase de Hoy
-                </h3>
-                <button onclick="switchView('horario')" class="text-[10px] text-emerald-300 hover:underline">Ver todo</button>
-              </div>
-              <div class="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
-                <div class="flex justify-between items-start">
-                  <span class="px-2 py-0.5 rounded-md bg-indigo-500/30 text-indigo-200 text-[9px] font-bold">10:00 AM - 11:30 AM</span>
-                  <span class="text-[10px] text-white/60">Aula 202</span>
-                </div>
-                <h4 class="font-extrabold text-white text-sm">Cálculo Diferencial</h4>
-                <p class="text-[11px] text-white/70">Prof. Lic. Ramírez · Derivadas Implícitas</p>
-              </div>
-            </div>
-
-            <div class="glass-panel rounded-3xl p-4 space-y-3">
-              <div class="flex items-center justify-between">
-                <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
-                  <i class="fa-solid fa-list-check text-teal-300"></i> Tareas Pendientes
-                </h3>
-                <button onclick="switchView('tareas')" class="text-[10px] text-emerald-300 hover:underline">Gestionar</button>
-              </div>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/15 cursor-pointer hover:bg-white/15">
-                  <input type="checkbox" checked class="w-3.5 h-3.5 accent-emerald-400 rounded">
-                  <div class="min-w-0 flex-1">
-                    <p class="text-xs font-semibold text-white truncate line-through opacity-70">Resumen Capítulo 4 Historia</p>
+               <!-- ================= DASHBOARD VIEW ================= -->
+               <section id="view-dashboard" class="content-view space-y-5">
+                <!-- HERO + STATS -->
+                <div class="glass-panel rounded-3xl p-5 sm:p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-5">
+                  <div class="space-y-1.5 max-w-xl z-10 text-center md:text-left">
+                    <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-emerald-200 text-[10px] font-bold tracking-wider uppercase border border-white/20">
+                      Constancia y Metas
+                    </span>
+                    <h2 id="heroQuoteText" class="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-white leading-tight">
+                      Progreso,<br>no perfección
+                    </h2>
+                    <p id="heroAiMessage" class="text-xs text-white/80 font-light leading-relaxed">
+                      <i class="fa-solid fa-spinner fa-spin mr-1 opacity-60"></i> Generando mensaje del día…
+                    </p>
                   </div>
-                </label>
-                <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/15 cursor-pointer hover:bg-white/15">
-                  <input type="checkbox" class="w-3.5 h-3.5 accent-emerald-400 rounded">
-                  <div class="min-w-0 flex-1">
-                    <p class="text-xs font-semibold text-white truncate">Ejercicios de Álgebra Lineal</p>
+      
+                  <div class="grid grid-cols-2 gap-2.5 w-full md:w-auto flex-shrink-0 z-10">
+                    <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                      <i class="fa-solid fa-fire text-amber-400 text-lg"></i>
+                      <div id="statStreak" class="text-xl font-extrabold text-white">0</div>
+                      <div class="text-[9px] text-white/70 uppercase tracking-wider">Días Racha</div>
+                    </div>
+                    <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                      <i class="fa-solid fa-graduation-cap text-sky-400 text-lg"></i>
+                      <div id="statMaterias" class="text-xl font-extrabold text-white">0</div>
+                      <div class="text-[9px] text-white/70 uppercase tracking-wider">Materias</div>
+                    </div>
+                    <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                      <i class="fa-solid fa-check-double text-emerald-400 text-lg"></i>
+                      <div id="statTareasDone" class="text-xl font-extrabold text-white">0/0</div>
+                      <div class="text-[9px] text-white/70 uppercase tracking-wider">Tareas</div>
+                    </div>
+                    <div class="glass-panel p-3 rounded-2xl text-center space-y-0.5 min-w-[110px]">
+                      <i class="fa-solid fa-users text-purple-400 text-lg"></i>
+                      <div id="statFollowers" class="text-xl font-extrabold text-white">0</div>
+                      <div class="text-[9px] text-white/70 uppercase tracking-wider">Seguidores</div>
+                    </div>
                   </div>
-                </label>
+                </div>
+      
+                                    <!-- CHECK-IN DIARIO + PROGRESO SEMANAL -->
+                              <!-- CHECK-IN DIARIO + PROGRESO SEMANAL -->
+                              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                                  <!-- RACHA PERSONALIZADA (ocupa 2 columnas) -->
+                                  <div class="glass-panel rounded-3xl md:col-span-2 overflow-hidden cursor-pointer group hover:scale-[1.01] hover:border-amber-400/40 transition-all"
+                                  onclick="switchView('racha')">
+                               <div id="rachaContainer"></div>
+                             </div>
+                
+                                  <!-- COMUNIDAD (ocupa 1 columna) -->
+                                  <div class="glass-panel rounded-3xl p-4 space-y-3 flex flex-col">
+                                    <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                                      <i class="fa-solid fa-user-group text-sky-300"></i> Comunidad
+                                    </h3>
+                                    <div class="grid grid-cols-2 gap-2">
+                                      <div class="p-3 rounded-2xl bg-white/10 border border-white/10 text-center">
+                                        <div id="dashFollowersCount" class="text-lg font-black text-white">—</div>
+                                        <div class="text-[9px] text-white/60 uppercase tracking-wider font-bold">Seguidores</div>
+                                      </div>
+                                      <div class="p-3 rounded-2xl bg-white/10 border border-white/10 text-center">
+                                        <div id="dashFollowingCount" class="text-lg font-black text-white">—</div>
+                                        <div class="text-[9px] text-white/60 uppercase tracking-wider font-bold">Siguiendo</div>
+                                      </div>
+                                    </div>
+                                    <button onclick="switchView('perfil'); switchProfileTab('publico');" class="w-full mt-auto px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold border border-white/20 flex items-center justify-center gap-1.5 transition-all">
+                                      <i class="fa-solid fa-arrow-right"></i> Ver mi perfil
+                                    </button>
+                                  </div>
+                
+                                </div>
+                                <!-- ⬆️ FIN DEL GRID — Aquí va el cierre correcto -->
+                
+                                <!-- NOTICIAS -->
+                    
+                <div class="glass-panel rounded-3xl p-4 space-y-3">
+                  <div class="flex items-center justify-between flex-wrap gap-2">
+                    <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                      <i class="fa-solid fa-newspaper text-rose-300"></i> Noticias en vivo
+                    </h3>
+                    <div class="flex items-center gap-2">
+                      <span id="newsUpdatedAt" class="text-[9px] text-white/40 font-mono"></span>
+                      <button onclick="BOLTON.dashboard.cargarNoticias(true)" class="w-6 h-6 rounded-lg bg-white/10 hover:bg-white/20 text-white/70 flex items-center justify-center text-[10px]" title="Actualizar ahora">
+                        <i class="fa-solid fa-rotate-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div id="newsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="col-span-full text-center py-6">
+                      <i class="fa-solid fa-spinner fa-spin text-white/30 text-2xl"></i>
+                      <p class="text-[11px] text-white/50 mt-2">Cargando noticias…</p>
+                    </div>
+                  </div>
+                </div>
+      
+                <!-- FILA CLÁSICA: CLASE DE HOY / TAREAS / AI -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="glass-panel rounded-3xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                      <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-chalkboard-user text-indigo-300"></i> Clase de Hoy
+                      </h3>
+                      <button onclick="switchView('horario')" class="text-[10px] text-emerald-300 hover:underline">Ver todo</button>
+                    </div>
+                    <div id="dashClaseHoy" class="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
+                      <p class="text-[11px] text-white/60 italic">Sin clases programadas para hoy.</p>
+                    </div>
+                  </div>
+      
+                  <div class="glass-panel rounded-3xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                      <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check text-teal-300"></i> Tareas Pendientes
+                      </h3>
+                      <button onclick="switchView('tareas')" class="text-[10px] text-emerald-300 hover:underline">Gestionar</button>
+                    </div>
+                    <div id="dashTareasPendientes" class="space-y-2 max-h-[200px] overflow-y-auto">
+                      <p class="text-[11px] text-white/60 italic">Sin tareas pendientes 🎉</p>
+                    </div>
+                  </div>
+      
+                  <div class="glass-panel rounded-3xl p-4 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
+                          <i class="fa-solid fa-wand-magic-sparkles text-purple-300"></i> <span id="dashAIName">BOLTON</span>
+                        </h3>
+                        <span class="px-1.5 py-0.5 rounded-full bg-purple-500/30 text-purple-200 text-[8px] font-bold">Activo</span>
+                      </div>
+                      <div class="relative">
+                        <input type="text" id="dashAiQuery" placeholder="Pregúntame algo rápido..." class="glass-input w-full px-3 py-2 rounded-xl text-xs pr-8">
+                        <button onclick="sendQuickAiQuery()" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg bg-purple-500 text-white flex items-center justify-center text-xs hover:bg-purple-400">
+                          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <p class="text-[10px] text-purple-200/80 italic">Acceso instantáneo para síntesis y explicaciones académicas.</p>
+                  </div>
+                </div>
+              </section>
+                  <!-- ================= TIENDA VIEW ================= -->
+        <section id="view-tienda" class="content-view hidden space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h2 class="text-xl font-black text-white uppercase tracking-wider">Tienda BOLTON</h2>
+                <p class="text-xs text-white/70">Personaliza tu espacio de estudio con artículos exclusivos.</p>
               </div>
             </div>
-
-            <div class="glass-panel rounded-3xl p-4 space-y-3 flex flex-col justify-between">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <h3 class="font-bold text-xs text-white flex items-center gap-1.5">
-                    <i class="fa-solid fa-wand-magic-sparkles text-purple-300"></i> BOLTON AI
-                  </h3>
-                  <span class="px-1.5 py-0.5 rounded-full bg-purple-500/30 text-purple-200 text-[8px] font-bold">Gemini 3</span>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="tiendaGrid">
+              <!-- El contenido se renderizará dinámicamente desde tienda.js -->
+              <div class="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 text-center">
+                <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl">
+                  <i class="fa-solid fa-gift"></i>
                 </div>
-                <div class="relative">
-                  <input type="text" id="dashAiQuery" placeholder="Ej: Explícame el Teorema de Pitágoras..." class="glass-input w-full px-3 py-2 rounded-xl text-xs pr-8">
-                  <button onclick="sendQuickAiQuery()" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg bg-purple-500 text-white flex items-center justify-center text-xs hover:bg-purple-400">
-                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                  </button>
-                </div>
+                <h3 class="font-bold text-white">Próximamente</h3>
+                <p class="text-xs text-white/70">Estamos preparando artículos increíbles para ti.</p>
               </div>
-              <p class="text-[10px] text-purple-200/80 italic">Acceso instantáneo para síntesis y explicaciones académicas.</p>
             </div>
-          </div>
-        </section>
-
+          </section>
         <!-- ================= NOTAS VIEW ================= -->
         <section id="view-notas" class="content-view hidden space-y-4">
           <div class="flex justify-between items-center">
@@ -909,20 +1047,34 @@
           <!-- TAB 1: PERFIL PÚBLICO -->
           <div id="profile-tab-publico" class="profile-tab-content space-y-5">
             <div class="glass-panel rounded-3xl overflow-hidden border border-white/30 shadow-2xl relative">
-              <div class="h-32 sm:h-44 w-full bg-gradient-to-r from-emerald-600/60 via-teal-700/60 to-indigo-800/60 relative overflow-hidden">
-                <div class="absolute inset-0 bg-black/20"></div>
-                <div class="absolute right-4 top-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-[10px] text-emerald-300 font-bold border border-emerald-400/30">
-                  <i class="fa-solid fa-circle text-[7px] mr-1 text-emerald-400 animate-pulse"></i> En Línea
+              <div id="profileBanner" class="h-32 sm:h-44 w-full relative overflow-hidden bg-gradient-to-r from-emerald-600/60 via-teal-700/60 to-indigo-800/60 bg-cover bg-center" style="background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-black/20 pointer-events-none"></div>
+            
+                <!-- Botón cambiar banner -->
+                <button onclick="openBannerModal()" class="absolute top-3 right-3 px-3 py-2 rounded-xl bg-black/50 hover:bg-black/70 backdrop-blur-md text-white text-[11px] font-bold border border-white/20 flex items-center gap-1.5 transition-all hover:scale-105" title="Cambiar banner">
+                    <i class="fa-solid fa-image"></i>
+                    <span class="hidden sm:inline">Cambiar banner</span>
+                </button>
+            
+                <!-- Estado en línea -->
+                <div class="absolute right-4 bottom-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-[10px] text-emerald-300 font-bold border border-emerald-400/30">
+                    <i class="fa-solid fa-circle text-[7px] mr-1 text-emerald-400 animate-pulse"></i> En Línea
                 </div>
-              </div>
+            </div>
 
               <div class="p-5 sm:p-6 pt-0 relative flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16">
                 <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
                   <div class="relative group">
-                    <img id="profileMainAvatar" src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200" alt="Avatar Principal" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-slate-900/80 shadow-2xl">
-                    <button onclick="openEditProfileModal()" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110" title="Cambiar foto">
-                      <i class="fa-solid fa-camera"></i>
-                    </button>
+                    <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-slate-900/80 shadow-2xl bg-slate-800">
+                      <img id="profileMainAvatar"
+                           src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200"
+                           alt="Avatar Principal"
+                           class="w-full h-full object-cover"
+                           style="object-position: 50% 50%; transform: scale(1);">
+                  </div>
+                  <button onclick="openAvatarModal()" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-lg transition-transform hover:scale-110" title="Cambiar foto">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
                   </div>
 
                   <div class="space-y-1">
@@ -936,9 +1088,9 @@
                 </div>
 
                 <div class="flex items-center gap-2 flex-wrap justify-center">
-                  <button onclick="switchProfileTab('cuenta')" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs transition-all border border-white/20 flex items-center gap-1.5">
+                  <button onclick="compartirPerfil()" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs transition-all border border-white/20 flex items-center gap-1.5">
                     <i class="fa-solid fa-share-nodes"></i> Compartir
-                  </button>
+                </button>
                   <button onclick="savePublicProfile()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs transition-all shadow-lg flex items-center gap-1.5">
                     <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
                   </button>
@@ -999,7 +1151,21 @@
                     </div>
                   </div>
                 </div>
-
+                <div class="glass-panel p-4 rounded-3xl space-y-3">
+                  <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-users text-sky-300"></i> Comunidad
+                  </h3>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div class="p-3 rounded-2xl bg-white/10 border border-white/10 text-center">
+                      <div id="myFollowersCount" class="text-xl font-black text-white">—</div>
+                      <div class="text-[9px] text-white/60 uppercase tracking-wider font-bold">Seguidores</div>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-white/10 border border-white/10 text-center">
+                      <div id="myFollowingCount" class="text-xl font-black text-white">—</div>
+                      <div class="text-[9px] text-white/60 uppercase tracking-wider font-bold">Siguiendo</div>
+                    </div>
+                  </div>
+                </div>
                 <div class="glass-panel p-4 rounded-3xl space-y-3">
                   <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
                     <i class="fa-solid fa-star text-amber-300"></i> Meta / Sueño
@@ -1087,25 +1253,108 @@
           </div>
 
           <!-- TAB 3: PREFERENCIAS -->
-          <div id="profile-tab-preferencias" class="profile-tab-content hidden space-y-5">
-            <div class="max-w-3xl mx-auto space-y-5">
-              <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4 border-2 border-emerald-400/40 shadow-2xl relative overflow-hidden">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="flex gap-3.5">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-300 text-slate-950 flex items-center justify-center font-black text-lg shadow-lg flex-shrink-0">
-                      <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <div>
-                      <h3 class="text-base font-extrabold text-white">Compartir mi progreso estudiantil</h3>
-                      <p class="text-xs text-white/70">Visibilidad pública de tus metas y estadísticas.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+          <!-- TAB 3: PREFERENCIAS -->
+<div id="profile-tab-preferencias" class="profile-tab-content hidden space-y-5">
+  <div class="max-w-3xl mx-auto space-y-5">
 
+      <!-- Selector de temas -->
+      <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
+          <div class="flex items-center gap-3 pb-3 border-b border-white/15">
+              <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg">
+                  <i class="fa-solid fa-palette text-lg"></i>
+              </div>
+              <div>
+                  <h3 class="text-base font-extrabold text-white">Tema del workspace</h3>
+                  <p class="text-xs text-white/70">Elige cómo se ve BOLTON</p>
+              </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="themeSelector">
+              <!-- Claro -->
+              <button onclick="setTheme('claro')" data-theme-btn="claro"
+                      class="theme-card p-4 rounded-2xl border-2 transition-all text-left group relative overflow-hidden">
+                  <div class="w-full h-20 rounded-xl mb-3 relative overflow-hidden" style="background: linear-gradient(135deg, #64748b, #334155);">
+                      <div class="absolute inset-3 rounded-lg" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25);"></div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-sun text-white/70 text-sm"></i>
+                      <span class="text-sm font-bold text-white">Claro</span>
+                  </div>
+                  <p class="text-[10px] text-white/50 mt-0.5">Como está ahora</p>
+                  <i class="theme-check fa-solid fa-circle-check text-emerald-400 absolute top-3 right-3 text-lg hidden"></i>
+              </button>
+
+              <!-- Bolton -->
+              <button onclick="setTheme('bolton')" data-theme-btn="bolton"
+                      class="theme-card p-4 rounded-2xl border-2 transition-all text-left group relative overflow-hidden">
+                  <div class="w-full h-20 rounded-xl mb-3 relative overflow-hidden" style="background: linear-gradient(135deg, #dc143c, #8b0000);">
+                      <div class="absolute inset-3 rounded-lg" style="background: rgba(220,20,60,0.25); backdrop-filter: blur(8px); border: 1px solid rgba(255,120,140,0.5);"></div>
+                      <i class="fa-solid fa-crow absolute bottom-1 right-2 text-white/40 text-3xl"></i>
+                  </div>
+                  <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-crow text-[#ff3b5c] text-sm"></i>
+                      <span class="text-sm font-bold text-white">Bolton</span>
+                  </div>
+                  <p class="text-[10px] text-white/50 mt-0.5">Tonos rojos · Casa Bolton</p>
+                  <i class="theme-check fa-solid fa-circle-check text-[#ff3b5c] absolute top-3 right-3 text-lg hidden"></i>
+              </button>
+
+              <!-- Oscuro -->
+              <button onclick="setTheme('oscuro')" data-theme-btn="oscuro"
+                      class="theme-card p-4 rounded-2xl border-2 transition-all text-left group relative overflow-hidden">
+                  <div class="w-full h-20 rounded-xl mb-3 relative overflow-hidden" style="background: linear-gradient(135deg, #0a0a0a, #000);">
+                      <div class="absolute inset-3 rounded-lg" style="background: rgba(255,255,255,0.04); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);"></div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-moon text-white/70 text-sm"></i>
+                      <span class="text-sm font-bold text-white">Oscuro</span>
+                  </div>
+                  <p class="text-[10px] text-white/50 mt-0.5">Negro total</p>
+                  <i class="theme-check fa-solid fa-circle-check text-white/60 absolute top-3 right-3 text-lg hidden"></i>
+              </button>
+          </div>
+      </div>
+
+      <!-- Nombre del AI -->
+      <div class="glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
+          <div class="flex items-center gap-3 pb-3 border-b border-white/15">
+              <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg">
+                  <i class="fa-solid fa-robot text-lg"></i>
+              </div>
+              <div>
+                  <h3 class="text-base font-extrabold text-white">Nombre de tu asistente</h3>
+                  <p class="text-xs text-white/70">Personaliza cómo se llama tu AI</p>
+              </div>
+          </div>
+
+          <div class="flex gap-2">
+              <input type="text" id="inputAIName" placeholder="BOLTON" maxlength="24"
+                     class="glass-input flex-1 px-4 py-3 rounded-xl text-sm font-bold">
+              <button onclick="saveAIName()" class="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-floppy-disk"></i> Guardar
+              </button>
+          </div>
+          <p class="text-[10px] text-white/40">
+              <i class="fa-solid fa-info-circle"></i> Este nombre aparecerá en la sección de AI Assistant
+          </p>
+      </div>
+
+  </div>
+</div>
+        </section>
+        <!-- ================= RACHA VIEW ================= -->
+<section id="view-racha" class="content-view hidden space-y-5 max-w-4xl mx-auto">
+    <div id="rachaFullContainer"></div>
+  </section>
+<!-- ================= SECCIONES VIEW (lista de cursos) ================= -->
+<section id="view-secciones" class="content-view hidden">
+    <div id="seccionesContainer"></div>
+  </section>
+  
+  <!-- ================= CURSO VIEW (ruta de aprendizaje) ================= -->
+  <section id="view-curso" class="content-view hidden">
+    <div id="cursoContainer"></div>
+  </section>
       </main>
 
     </div>
@@ -1183,6 +1432,13 @@
             <label class="text-[11px] font-semibold text-white/90">URL Foto de Perfil (Opcional)</label>
             <input type="text" id="editModalAvatar" placeholder="https://..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
           </div>
+          <div class="space-y-1 sm:col-span-2">
+            <label class="text-[11px] font-semibold text-white/90">URL Banner de Perfil (Opcional)</label>
+            <input type="text" id="editModalBanner" placeholder="https://... o 'Moon Knight.jpg'" class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+            <p class="text-[10px] text-white/40 mt-1">
+                <i class="fa-solid fa-info-circle"></i> Acepta URLs o el nombre de un fondo de tu galería
+            </p>
+        </div>
         </div>
       </div>
 
@@ -1239,14 +1495,196 @@
 
     </div>
   </div>
+<!-- ================= MODAL: GALERÍA DE BANNERS ================= -->
+<div id="bannerModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md hidden">
+  <div class="glass-panel w-full max-w-4xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative">
 
+      <div class="p-4 sm:p-5 border-b border-white/20 flex items-center justify-between flex-shrink-0 bg-black/20">
+          <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-300 border border-emerald-400/30">
+                  <i class="fa-solid fa-image text-sm"></i>
+              </div>
+              <div>
+                  <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-white">Banner de Perfil</h2>
+                  <p class="text-[11px] text-white/70">Elige una imagen, sube la tuya o pega una URL</p>
+              </div>
+          </div>
+          <button onclick="closeBannerModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white/80">
+              <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+      </div>
+
+      <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
+
+          <!-- Subir archivo o URL -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="cursor-pointer flex items-center justify-center gap-2 p-4 rounded-2xl border-2 border-dashed border-white/30 hover:border-emerald-300 bg-white/5 hover:bg-white/10 transition-all">
+                  <i class="fa-solid fa-cloud-arrow-up text-emerald-300 text-lg"></i>
+                  <span class="text-xs font-bold text-white">Subir desde mi PC</span>
+                  <input type="file" id="bannerFileInput" accept="image/*" class="hidden" onchange="handleBannerUpload(event)">
+              </label>
+
+              <div class="flex gap-2">
+                  <input type="text" id="bannerUrlInput" placeholder="https://... o nombre de archivo" class="glass-input flex-1 px-3 py-3 rounded-2xl text-xs">
+                  <button onclick="applyBannerFromInput()" class="px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs">
+                      Aplicar
+                  </button>
+              </div>
+          </div>
+
+          <!-- Galería de fondos existentes -->
+          <div>
+              <h3 class="text-xs font-bold text-white/80 uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <i class="fa-solid fa-images text-emerald-300"></i> Tus fondos disponibles
+              </h3>
+              <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2" id="bannerGalleryGrid">
+                  <!-- Se rellena con JS -->
+              </div>
+          </div>
+      </div>
+
+      <div class="p-3.5 border-t border-white/15 flex items-center justify-between bg-black/20 flex-shrink-0">
+          <button onclick="resetBanner()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-rotate-left"></i> Restablecer
+          </button>
+          <button onclick="closeBannerModal()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs">
+              Listo
+          </button>
+      </div>
+
+  </div>
+</div>
+<!-- ================= MODAL: CAMBIAR FOTO DE PERFIL ================= -->
+<div id="avatarModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md hidden">
+  <div class="glass-panel w-full max-w-4xl rounded-3xl border border-white/30 flex flex-col max-h-[90vh] overflow-hidden shadow-2xl relative">
+
+    <div class="p-4 sm:p-5 border-b border-white/20 flex items-center justify-between flex-shrink-0 bg-black/20">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-300 border border-emerald-400/30">
+          <i class="fa-solid fa-camera text-sm"></i>
+        </div>
+        <div>
+          <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-white">Foto de Perfil</h2>
+          <p class="text-[11px] text-white/70">Elige, sube o ajusta tu foto</p>
+        </div>
+      </div>
+      <button onclick="closeAvatarModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white/80">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <div class="p-4 sm:p-6 overflow-y-auto flex-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <!-- Preview -->
+        <div class="space-y-4">
+          <label class="text-[10px] font-bold text-white/70 uppercase tracking-wider">Vista previa</label>
+          <div class="flex items-center justify-center p-6 rounded-2xl bg-black/40 border border-white/10">
+            <div class="relative w-40 h-40 rounded-full overflow-hidden border-4 border-emerald-500/40 shadow-2xl bg-slate-800">
+              <img id="avatarPreviewImg"
+                   src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200"
+                   class="w-full h-full object-cover"
+                   style="object-position: 50% 50%; transform: scale(1);">
+            </div>
+          </div>
+
+          <!-- Controles de ajuste -->
+          <div class="space-y-3 p-4 rounded-2xl bg-white/5 border border-white/10">
+            <h3 class="text-[11px] font-bold text-white/80 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-emerald-300"></i> Ajustar encuadre
+            </h3>
+
+            <div>
+              <div class="flex items-center justify-between text-[10px] text-white/60 mb-1">
+                <span><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</span>
+                <span id="avatarZoomLabel" class="font-mono">100%</span>
+              </div>
+              <input type="range" id="avatarZoom" min="100" max="300" value="100" class="w-full accent-emerald-400" oninput="updateAvatarPreview()">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-[10px] text-white/60 mb-1">
+                <span><i class="fa-solid fa-arrows-left-right"></i> Posición X</span>
+                <span id="avatarXLabel" class="font-mono">50%</span>
+              </div>
+              <input type="range" id="avatarX" min="0" max="100" value="50" class="w-full accent-emerald-400" oninput="updateAvatarPreview()">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-[10px] text-white/60 mb-1">
+                <span><i class="fa-solid fa-arrows-up-down"></i> Posición Y</span>
+                <span id="avatarYLabel" class="font-mono">50%</span>
+              </div>
+              <input type="range" id="avatarY" min="0" max="100" value="50" class="w-full accent-emerald-400" oninput="updateAvatarPreview()">
+            </div>
+
+            <button onclick="resetAvatarAdjustments()" class="w-full mt-2 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 text-[11px] font-bold flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-rotate-left"></i> Resetear ajustes
+            </button>
+          </div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="space-y-4">
+          <!-- Subir archivo -->
+          <label class="cursor-pointer flex items-center justify-center gap-2 p-4 rounded-2xl border-2 border-dashed border-white/30 hover:border-emerald-300 bg-white/5 hover:bg-white/10 transition-all">
+            <i class="fa-solid fa-cloud-arrow-up text-emerald-300 text-lg"></i>
+            <span class="text-xs font-bold text-white">Subir desde mi PC</span>
+            <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+          </label>
+
+          <!-- URL -->
+          <div>
+            <label class="text-[10px] font-bold text-white/70 uppercase tracking-wider block mb-1.5">O pega una URL</label>
+            <div class="flex gap-2">
+              <input type="text" id="avatarUrlInput" placeholder="https://... o nombre de archivo" class="glass-input flex-1 px-3 py-2.5 rounded-xl text-xs">
+              <button onclick="applyAvatarFromInput()" class="px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs">
+                Aplicar
+              </button>
+            </div>
+          </div>
+
+          <!-- Galería -->
+          <div>
+            <h3 class="text-[11px] font-bold text-white/80 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-images text-emerald-300"></i> Tus fondos disponibles
+            </h3>
+            <div class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-64 overflow-y-auto pr-1" id="avatarGalleryGrid">
+              <!-- Se rellena con JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="p-3.5 border-t border-white/15 flex items-center justify-between bg-black/20 flex-shrink-0">
+      <button onclick="resetAvatar()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs flex items-center gap-1.5">
+        <i class="fa-solid fa-rotate-left"></i> Restablecer
+      </button>
+      <div class="flex gap-2">
+        <button onclick="closeAvatarModal()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs">
+          Cancelar
+        </button>
+        <button onclick="saveAvatarChanges()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- JAVASCRIPT LOGIC DE LA INTERFAZ UI -->
   <script>
     const viewIcons = {
-      dashboard: 'fa-chart-pie text-emerald-300',
+  dashboard: 'fa-chart-pie text-emerald-300',
+  racha: 'fa-fire text-amber-400',
+  secciones: 'fa-graduation-cap text-amber-300',   
+  curso: 'fa-book-open text-amber-300',  
+      tienda: 'fa-store text-amber-300',
       notas: 'fa-note-sticky text-amber-300',
       calendario: 'fa-calendar-days text-sky-300',
       tiempo: 'fa-clock text-rose-300',
@@ -1263,7 +1701,20 @@
       ajustes: 'fa-sliders text-slate-300',
       perfil: 'fa-user text-emerald-300'
     };
-
+    // Helpers de escape (globales)
+    function escapeHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = String(s || '');
+        return d.innerHTML;
+    }
+    function escapeAttr(s) {
+        return String(s || '')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
     const baseImages = [
       '1044272232359838310.jpg',
       '1092685928366698116.jpg',
@@ -1327,6 +1778,7 @@
       '18225573488787021.gif',
       'android LED.gif'
     ];
+    window.__BOLTON_BASE_IMAGES__ = baseImages;
 
     const DEFAULT_BG = '2040762329295531.jpg';
     let currentBg = localStorage.getItem('bolton_bg') || DEFAULT_BG;
@@ -1375,42 +1827,55 @@
     }
 
     function switchView(viewId) {
-      const views = document.querySelectorAll('.content-view');
-      views.forEach(v => v.classList.add('hidden'));
+  const views = document.querySelectorAll('.content-view');
+  views.forEach(v => v.classList.add('hidden'));
 
-      const target = document.getElementById('view-' + viewId);
-      if (target) target.classList.remove('hidden');
+  const target = document.getElementById('view-' + viewId);
+  if (target) target.classList.remove('hidden');
 
-      const navBtns = document.querySelectorAll('.nav-btn');
-      navBtns.forEach(btn => {
-        btn.classList.remove('bg-white/20', 'text-white', 'font-bold', 'border-white/30');
+  // Marcar botón activo
+  const navBtns = document.querySelectorAll('.nav-btn');
+  navBtns.forEach(btn => {
+    btn.classList.remove('bg-white/20', 'text-white', 'font-bold', 'border-white/30');
+  });
 
-      if (window.BOLTON && window.BOLTON.views && window.BOLTON.views[viewId]) {
-         try { window.BOLTON.views[viewId](); } catch(e){ console.warn('init ' + viewId, e); }
-}
-      });
+  const activeBtn = document.getElementById('nav-' + viewId);
+  if (activeBtn) {
+    activeBtn.classList.add('bg-white/20', 'text-white', 'font-bold', 'border-white/30');
+  }
 
-      const activeBtn = document.getElementById('nav-' + viewId);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-white/20', 'text-white', 'font-bold', 'border-white/30');
-      }
+  // Header icon + title
+  const iconElem = document.getElementById('viewHeaderIcon');
+  const titleElem = document.getElementById('viewHeaderTitle');
+  if (iconElem && viewIcons[viewId]) {
+    iconElem.className = 'fa-solid ' + viewIcons[viewId];
+  }
+  if (titleElem) {
+    titleElem.textContent = viewId.charAt(0).toUpperCase() + viewId.slice(1);
+  }
 
-      const iconElem = document.getElementById('viewHeaderIcon');
-      const titleElem = document.getElementById('viewHeaderTitle');
-      if (iconElem && viewIcons[viewId]) {
-        iconElem.className = 'fa-solid ' + viewIcons[viewId];
-      }
-      if (titleElem) {
-        titleElem.textContent = viewId.charAt(0).toUpperCase() + viewId.slice(1);
-      }
-
-      if (window.innerWidth < 768) {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('mobileOverlay');
-        if (sidebar) sidebar.classList.add('-translate-x-full');
-        if (overlay) overlay.classList.add('hidden');
-      }
+    // 🔥 DEBUG: Ver qué está pasando con las vistas
+    console.log('🔍 switchView:', viewId, '| BOLTON existe:', !!window.BOLTON, '| views:', window.BOLTON?.views ? Object.keys(window.BOLTON.views) : 'NO HAY');
+  
+  if (window.BOLTON && window.BOLTON.views && window.BOLTON.views[viewId]) {
+    try { 
+      window.BOLTON.views[viewId](); 
+      console.log('✅ Vista', viewId, 'cargada');
+    } catch(e) { 
+      console.error('❌ Error en vista', viewId, ':', e); 
     }
+  } else {
+    console.warn('⚠️ No existe BOLTON.views.' + viewId);
+  }
+
+  // Cerrar sidebar móvil
+  if (window.innerWidth < 768) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileOverlay');
+    if (sidebar) sidebar.classList.add('-translate-x-full');
+    if (overlay) overlay.classList.add('hidden');
+  }
+}
 
     function toggleMobileSidebar() {
       const sidebar = document.getElementById('sidebar');
@@ -1421,17 +1886,80 @@
 
     function toggleNotificationsMenu() {
       const dropdown = document.getElementById('notifDropdown');
-      if (dropdown) dropdown.classList.toggle('hidden');
+      const badge = document.getElementById('notifBadge');
+      if (dropdown) {
+        dropdown.classList.toggle('hidden');
+        // Si se abre el menú, limpiamos el contador rojo
+        if (!dropdown.classList.contains('hidden')) {
+          if (badge) {
+            badge.textContent = '0';
+            badge.classList.add('hidden');
+          }
+        }
+      }
     }
 
     function clearNotifications() {
       const list = document.getElementById('notifList');
       const badge = document.getElementById('notifBadge');
-      if (list) list.innerHTML = '<p class="text-[10px] text-white/50 text-center py-2">Sin notificaciones pendientes</p>';
-      if (badge) badge.classList.add('hidden');
+      if (list) list.innerHTML = '<p class="text-[10px] text-white/50 text-center py-2 empty-notif">Sin notificaciones pendientes</p>';
+      if (badge) {
+        badge.textContent = '0';
+        badge.classList.add('hidden');
+      }
       showToast('Notificaciones limpiadas');
     }
 
+    // 🔥 NUEVA FUNCIÓN: Permite agregar notificaciones dinámicas desde cualquier módulo (como calendario.js)
+    window.addWorkspaceNotification = function(title, message, type = 'info') {
+      const list = document.getElementById('notifList');
+      const badge = document.getElementById('notifBadge');
+      if (!list || !badge) return;
+
+      // Eliminar el mensaje de "Sin notificaciones" si existe
+      const emptyNotif = list.querySelector('.empty-notif');
+      if (emptyNotif) emptyNotif.remove();
+
+      let iconHtml = '';
+      let actionHtml = '';
+      
+      if (type === 'alarm') {
+        iconHtml = '<div class="w-5 h-5 rounded bg-rose-500/20 text-rose-300 flex items-center justify-center flex-shrink-0 mt-0.5 animate-pulse"><i class="fa-solid fa-bell text-[9px]"></i></div>';
+        // Botón para detener la alarma que llama a la función global window.stopAlarm definida en calendario.js
+        actionHtml = `<button onclick="if(window.stopAlarm) window.stopAlarm(); this.closest('.notif-item').remove();" class="mt-2 w-full py-1 rounded bg-rose-500/80 hover:bg-rose-500 text-white text-[9px] font-bold uppercase tracking-wider transition-colors">Detener Alarma</button>`;
+      } else if (type === 'success') {
+        iconHtml = '<div class="w-5 h-5 rounded bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fa-solid fa-check text-[9px]"></i></div>';
+      } else {
+        iconHtml = '<div class="w-5 h-5 rounded bg-sky-500/20 text-sky-300 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fa-solid fa-info text-[9px]"></i></div>';
+      }
+
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const item = document.createElement('div');
+      item.className = 'notif-item p-2 rounded-xl bg-white/10 border border-white/10 flex gap-2 items-start relative group transition-all duration-300';
+      item.innerHTML = `
+        ${iconHtml}
+        <div class="flex-1 min-w-0 flex flex-col">
+          <p class="font-semibold text-white text-[11px] leading-tight mb-0.5">${title}</p>
+          <p class="text-[10px] text-white/70 leading-tight">${message}</p>
+          ${actionHtml}
+          <p class="text-[8px] text-white/40 mt-1">${time}</p>
+        </div>
+        <button onclick="this.closest('.notif-item').remove()" class="text-white/30 hover:text-white transition-opacity absolute right-2 top-2">
+          <i class="fa-solid fa-xmark text-[10px]"></i>
+        </button>
+      `;
+      
+      // Insertar al principio de la lista
+      list.insertBefore(item, list.firstChild);
+      list.scrollTop = 0; // Desplazar hacia arriba para ver la nueva
+
+      // Actualizar el contador rojo (Badge)
+      let count = parseInt(badge.textContent) || 0;
+      count++;
+      badge.textContent = count > 9 ? '9+' : count;
+      badge.classList.remove('hidden');
+    };
     function switchProfileTab(tabName) {
       const tabs = document.querySelectorAll('.profile-tab-content');
       tabs.forEach(t => t.classList.add('hidden'));
@@ -1526,10 +2054,513 @@
     function copyShareLink() {
       showToast('Enlace copiado al portapapeles');
     }
+    /* ============================================================
+       BANNER DE PERFIL
+    ============================================================ */
+    const DEFAULT_BANNER = ''; // vacío = usa el degradado por defecto
 
+    function getBannerUrl() {
+        try {
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            return c.banner_url || DEFAULT_BANNER;
+        } catch(e) { return DEFAULT_BANNER; }
+    }
+
+    function applyBanner(url) {
+        const bannerEl = document.getElementById('profileBanner');
+        if (!bannerEl) return;
+
+        if (!url) {
+            // Volver al degradado por defecto
+            bannerEl.style.backgroundImage = '';
+            bannerEl.className = 'h-32 sm:h-44 w-full relative overflow-hidden bg-gradient-to-r from-emerald-600/60 via-teal-700/60 to-indigo-800/60';
+            bannerEl.style.backgroundSize = '';
+            bannerEl.style.backgroundPosition = '';
+        } else {
+            bannerEl.style.backgroundImage = `url('${url}')`;
+            bannerEl.style.backgroundSize = 'cover';
+            bannerEl.style.backgroundPosition = 'center';
+            bannerEl.className = 'h-32 sm:h-44 w-full relative overflow-hidden';
+        }
+    }
+
+    function openBannerModal() {
+        const modal = document.getElementById('bannerModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            renderBannerGallery();
+        }
+    }
+
+    function closeBannerModal() {
+        const modal = document.getElementById('bannerModal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    function renderBannerGallery() {
+        const grid = document.getElementById('bannerGalleryGrid');
+        if (!grid) return;
+
+        // Usamos las imágenes baseImages ya definidas
+        grid.innerHTML = baseImages.slice(0, 30).map(img => `
+            <div onclick="selectBanner('${img.replace(/'/g, "\\'")}')"
+                 class="cursor-pointer aspect-[4/3] rounded-xl border-2 border-transparent hover:border-emerald-300 bg-cover bg-center transition-all shadow-md hover:scale-105"
+                 style="background-image: url('${img}')">
+            </div>
+        `).join('');
+    }
+
+    async function saveBannerToFirebase(url) {
+        try {
+            const firebaseCtx = window.__BOLTON_FIREBASE__;
+            if (firebaseCtx && firebaseCtx.auth && firebaseCtx.auth.currentUser) {
+                await firebaseCtx.db.collection('users').doc(firebaseCtx.auth.currentUser.uid)
+                    .set({ banner_url: url || '' }, { merge: true });
+            }
+            // Actualizar cache local
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            c.banner_url = url || '';
+            localStorage.setItem('bolton_user_profile', JSON.stringify(c));
+        } catch(e) {
+            console.warn('No se pudo guardar en Firebase:', e);
+        }
+    }
+
+    function selectBanner(url) {
+        applyBanner(url);
+        saveBannerToFirebase(url);
+        if (window.showToast) window.showToast('🎨 Banner actualizado');
+    }
+
+    function applyBannerFromInput() {
+        const input = document.getElementById('bannerUrlInput');
+        if (!input || !input.value.trim()) return;
+        selectBanner(input.value.trim());
+        input.value = '';
+    }
+
+    function handleBannerUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            // NOTA: DataURLs grandes se guardan en localStorage pero podrían fallar en Firestore
+            // Para producción se recomienda subir a Cloudinary o Imgur y pegar la URL
+            applyBanner(e.target.result);
+            saveBannerToFirebase(''); // No guardar DataURL en Firestore
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            c.banner_url = e.target.result;
+            localStorage.setItem('bolton_user_profile', JSON.stringify(c));
+            if (window.showToast) window.showToast('🎨 Banner subido localmente');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function resetBanner() {
+        applyBanner('');
+        saveBannerToFirebase('');
+        if (window.showToast) window.showToast('↩️ Banner restablecido');
+    }
+
+    // Exponer funciones
+    window.openBannerModal = openBannerModal;
+    window.closeBannerModal = closeBannerModal;
+    window.selectBanner = selectBanner;
+    window.applyBannerFromInput = applyBannerFromInput;
+    window.handleBannerUpload = handleBannerUpload;
+    window.resetBanner = resetBanner;
+        /* ============================================================
+       FOTO DE PERFIL (avatar con ajustes)
+    ============================================================ */
+    let avatarState = {
+        url: '',
+        zoom: 100,
+        x: 50,
+        y: 50
+    };
+
+    function applyAvatar(url, zoom, x, y) {
+        if (url !== undefined) avatarState.url = url || '';
+        if (zoom !== undefined) avatarState.zoom = zoom;
+        if (x !== undefined) avatarState.x = x;
+        if (y !== undefined) avatarState.y = y;
+
+        const fallback = 'https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200';
+        const finalUrl = avatarState.url || fallback;
+
+        // Aplicar al avatar principal del perfil
+        const mainImg = document.getElementById('profileMainAvatar');
+        if (mainImg) {
+            mainImg.src = finalUrl;
+            mainImg.style.objectPosition = `${avatarState.x}% ${avatarState.y}%`;
+            mainImg.style.transform = `scale(${avatarState.zoom / 100})`;
+        }
+
+        // Aplicar al avatar de la sidebar y topbar
+        const sidebarImg = document.getElementById('sidebarAvatarImg');
+        const topImg = document.getElementById('topAvatarImg');
+        [sidebarImg, topImg].forEach(el => {
+            if (el) {
+                el.src = finalUrl;
+                el.style.objectPosition = `${avatarState.x}% ${avatarState.y}%`;
+            }
+        });
+    }
+
+    function openAvatarModal() {
+        const modal = document.getElementById('avatarModal');
+        if (!modal) return;
+
+        // Cargar estado actual del avatar
+        try {
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            avatarState.url = c.avatar_url || '';
+            const adj = c.avatar_adjustments || {};
+            avatarState.zoom = adj.zoom || 100;
+            avatarState.x = adj.x !== undefined ? adj.x : 50;
+            avatarState.y = adj.y !== undefined ? adj.y : 50;
+        } catch(e) {}
+
+        // Pintar inputs
+        document.getElementById('avatarZoom').value = avatarState.zoom;
+        document.getElementById('avatarX').value = avatarState.x;
+        document.getElementById('avatarY').value = avatarState.y;
+        document.getElementById('avatarUrlInput').value = '';
+
+        const fallback = 'https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200';
+        const previewImg = document.getElementById('avatarPreviewImg');
+        if (previewImg) previewImg.src = avatarState.url || fallback;
+
+        updateAvatarPreview();
+        renderAvatarGallery();
+        modal.classList.remove('hidden');
+    }
+
+    function closeAvatarModal() {
+        const modal = document.getElementById('avatarModal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    function updateAvatarPreview() {
+        const zoom = parseInt(document.getElementById('avatarZoom').value) || 100;
+        const x = parseInt(document.getElementById('avatarX').value) || 50;
+        const y = parseInt(document.getElementById('avatarY').value) || 50;
+
+        document.getElementById('avatarZoomLabel').textContent = zoom + '%';
+        document.getElementById('avatarXLabel').textContent = x + '%';
+        document.getElementById('avatarYLabel').textContent = y + '%';
+
+        const previewImg = document.getElementById('avatarPreviewImg');
+        if (previewImg) {
+            previewImg.style.objectPosition = `${x}% ${y}%`;
+            previewImg.style.transform = `scale(${zoom / 100})`;
+        }
+
+        avatarState.zoom = zoom;
+        avatarState.x = x;
+        avatarState.y = y;
+    }
+
+    function renderAvatarGallery() {
+        const grid = document.getElementById('avatarGalleryGrid');
+        if (!grid) return;
+        grid.innerHTML = baseImages.slice(0, 30).map(img => `
+            <div onclick="selectAvatar('${img.replace(/'/g, "\\'")}')"
+                 class="cursor-pointer aspect-square rounded-xl border-2 border-transparent hover:border-emerald-300 bg-cover bg-center transition-all shadow-md hover:scale-105"
+                 style="background-image: url('${img}')">
+            </div>
+        `).join('');
+    }
+
+    function selectAvatar(url) {
+        avatarState.url = url;
+        const previewImg = document.getElementById('avatarPreviewImg');
+        if (previewImg) previewImg.src = url;
+        updateAvatarPreview();
+    }
+
+    function applyAvatarFromInput() {
+        const input = document.getElementById('avatarUrlInput');
+        if (!input || !input.value.trim()) return;
+        selectAvatar(input.value.trim());
+        input.value = '';
+    }
+
+    function handleAvatarUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            avatarState.url = e.target.result;
+            const previewImg = document.getElementById('avatarPreviewImg');
+            if (previewImg) previewImg.src = e.target.result;
+            updateAvatarPreview();
+            if (window.showToast) window.showToast('🖼️ Imagen cargada, ajusta y guarda');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function resetAvatarAdjustments() {
+        document.getElementById('avatarZoom').value = 100;
+        document.getElementById('avatarX').value = 50;
+        document.getElementById('avatarY').value = 50;
+        updateAvatarPreview();
+    }
+
+    function resetAvatar() {
+        avatarState.url = '';
+        avatarState.zoom = 100;
+        avatarState.x = 50;
+        avatarState.y = 50;
+        const fallback = 'https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&bold=true&size=200';
+        const previewImg = document.getElementById('avatarPreviewImg');
+        if (previewImg) previewImg.src = fallback;
+        document.getElementById('avatarZoom').value = 100;
+        document.getElementById('avatarX').value = 50;
+        document.getElementById('avatarY').value = 50;
+        updateAvatarPreview();
+    }
+
+    async function saveAvatarChanges() {
+        const adjustments = {
+            zoom: avatarState.zoom,
+            x: avatarState.x,
+            y: avatarState.y
+        };
+
+        // 1. Aplicar visualmente
+        applyAvatar(avatarState.url, adjustments.zoom, adjustments.x, adjustments.y);
+
+        // 2. Guardar en localStorage
+        try {
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            c.avatar_url = avatarState.url;
+            c.avatar_adjustments = adjustments;
+            localStorage.setItem('bolton_user_profile', JSON.stringify(c));
+        } catch(e) {}
+
+        // 3. Guardar en Firebase
+        try {
+            const firebaseCtx = window.__BOLTON_FIREBASE__;
+            if (firebaseCtx && firebaseCtx.auth && firebaseCtx.auth.currentUser) {
+                // No guardamos DataURLs en Firestore (son muy grandes)
+                const urlToSave = avatarState.url.startsWith('data:') ? '' : avatarState.url;
+                await firebaseCtx.db.collection('users').doc(firebaseCtx.auth.currentUser.uid).set({
+                    avatar_url: urlToSave,
+                    avatar_adjustments: adjustments
+                }, { merge: true });
+            }
+        } catch(e) {
+            console.warn('No se pudo guardar en Firebase:', e);
+        }
+
+        closeAvatarModal();
+        if (window.showToast) window.showToast('✅ Foto de perfil actualizada');
+    }
+
+    // Exponer funciones al scope global
+    window.openAvatarModal = openAvatarModal;
+    window.closeAvatarModal = closeAvatarModal;
+    window.updateAvatarPreview = updateAvatarPreview;
+    window.selectAvatar = selectAvatar;
+    window.applyAvatarFromInput = applyAvatarFromInput;
+    window.handleAvatarUpload = handleAvatarUpload;
+    window.resetAvatarAdjustments = resetAvatarAdjustments;
+    window.resetAvatar = resetAvatar;
+    window.saveAvatarChanges = saveAvatarChanges;
+        /* ============================================================
+       SISTEMA DE TEMAS
+    ============================================================ */
+    const TEMAS_VALIDOS = ['claro', 'bolton', 'oscuro'];
+
+    function aplicarTema(tema) {
+        // Quitar todas las clases de tema
+        document.body.classList.remove('theme-claro', 'theme-bolton', 'theme-dark');
+
+        // Aplicar la nueva
+        if (tema === 'bolton') document.body.classList.add('theme-bolton');
+        else if (tema === 'oscuro') document.body.classList.add('theme-dark');
+        // 'claro' no tiene clase = es el default
+
+        // Actualizar los checkmarks
+        document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+            const activo = btn.dataset.themeBtn === tema;
+            const check = btn.querySelector('.theme-check');
+            if (check) check.classList.toggle('hidden', !activo);
+            btn.classList.toggle('border-white/60', activo);
+            btn.classList.toggle('border-white/10', !activo);
+            btn.classList.toggle('bg-white/10', activo);
+        });
+    }
+
+    function setTheme(tema) {
+        if (!TEMAS_VALIDOS.includes(tema)) return;
+        localStorage.setItem('bolton_tema', tema);
+        aplicarTema(tema);
+        if (window.showToast) window.showToast('🎨 Tema aplicado: ' + tema);
+
+        // Guardar en Firebase
+        try {
+            const ctx = window.__BOLTON_FIREBASE__;
+            if (ctx && ctx.auth && ctx.auth.currentUser) {
+                ctx.db.collection('users').doc(ctx.auth.currentUser.uid)
+                    .set({ tema: tema }, { merge: true });
+            }
+        } catch(e) {}
+    }
+
+    function cargarTemaGuardado() {
+        try {
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            const t = c.tema || localStorage.getItem('bolton_tema') || 'claro';
+            aplicarTema(t);
+        } catch(e) {
+            aplicarTema('claro');
+        }
+    }
+
+    /* ============================================================
+       COMPARTIR PERFIL
+    ============================================================ */
+    async function compartirPerfil() {
+        try {
+            const ctx = window.__BOLTON_FIREBASE__;
+            const user = ctx?.auth?.currentUser;
+            if (!user) {
+                if (window.showToast) window.showToast('⚠️ Sin sesión activa');
+                return;
+            }
+
+            // Generar enlace al perfil público
+            const base = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
+            const enlace = base + 'perfil.html?u=' + user.uid;
+
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            const nombre = c.nombre_completo || 'Estudiante';
+
+            // Intentar copiar el enlace
+            try {
+                await navigator.clipboard.writeText(enlace);
+                if (window.showToast) window.showToast('🔗 Enlace copiado: ' + nombre);
+                return;
+            } catch (err) {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = enlace;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                if (window.showToast) window.showToast('🔗 Enlace copiado');
+            }
+        } catch (e) {
+            console.error('Error al compartir:', e);
+            if (window.showToast) window.showToast('❌ Error al compartir');
+        }
+    }
+
+    /* ============================================================
+       NOMBRE DEL AI
+    ============================================================ */
+    function cargarNombreAI() {
+        try {
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            const nombre = (c.ai_nombre || '').trim();
+
+            // El input del modal muestra solo el nombre (sin apellido)
+            const input = document.getElementById('inputAIName');
+            if (input) {
+                input.value = (!nombre || nombre.toUpperCase() === 'BOLTON') ? '' : nombre;
+                input.placeholder = 'BOLTON';
+            }
+
+            // Calcular nombre completo con BOLTON como apellido
+            const completo = (!nombre || nombre.toUpperCase() === 'BOLTON')
+                ? 'BOLTON'
+                : (nombre.toUpperCase().endsWith(' BOLTON') ? nombre : nombre + ' BOLTON');
+
+            // Actualizar el nombre en el dashboard
+            const dashName = document.getElementById('dashAIName');
+            if (dashName) dashName.textContent = completo;
+
+            // Actualizar cualquier [data-ai-name] (título del asistente, etc.)
+            document.querySelectorAll('[data-ai-name]').forEach(el => {
+                el.textContent = completo;
+            });
+        } catch(e) {}
+    }
+
+    function saveAIName() {
+        const input = document.getElementById('inputAIName');
+        if (!input) return;
+        const nuevoNombre = (input.value || '').trim() || 'BOLTON';
+
+        try {
+            const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+            c.ai_nombre = nuevoNombre;
+            localStorage.setItem('bolton_user_profile', JSON.stringify(c));
+        } catch(e) {}
+
+        // Guardar en Firebase
+        try {
+            const ctx = window.__BOLTON_FIREBASE__;
+            if (ctx && ctx.auth && ctx.auth.currentUser) {
+                ctx.db.collection('users').doc(ctx.auth.currentUser.uid)
+                    .set({ ai_nombre: nuevoNombre }, { merge: true });
+            }
+        } catch(e) {}
+        // Refrescar los elementos visuales (dashboard + asistente)
+        if (typeof cargarNombreAI === 'function') cargarNombreAI();
+        if (window.BOLTON?.ai?.actualizarNombreEnUI) window.BOLTON.ai.actualizarNombreEnUI();
+        if (window.showToast) window.showToast('✅ Nombre del AI actualizado');
+    }
+
+    // Exponer al scope global
+    window.setTheme = setTheme;
+    window.aplicarTema = aplicarTema;
+    window.cargarTemaGuardado = cargarTemaGuardado;
+    window.compartirPerfil = compartirPerfil;
+    window.saveAIName = saveAIName;
+    window.cargarNombreAI = cargarNombreAI;
+    async function cargarMisEstadisticas() {
+        try {
+            const ctx = window.__BOLTON_FIREBASE__;
+            const user = ctx?.auth?.currentUser;
+            if (!user) return;
+
+            const [segSnap, sigSnap] = await Promise.all([
+                ctx.db.collection('follows').where('following', '==', user.uid).get(),
+                ctx.db.collection('follows').where('follower', '==', user.uid).get()
+            ]);
+
+            const segEl = document.getElementById('myFollowersCount');
+            const sigEl = document.getElementById('myFollowingCount');
+            if (segEl) segEl.textContent = String(segSnap.size);
+            if (sigEl) sigEl.textContent = String(sigSnap.size);
+        } catch(e) {
+            console.warn('No se pudieron cargar las estadísticas:', e);
+        }
+    }
+    window.cargarMisEstadisticas = cargarMisEstadisticas;
+        /* ============================================================
+       INIT GLOBAL: fondo, tema, AI, dashboard y galería de fondos
+    ============================================================ */
     document.addEventListener('DOMContentLoaded', () => {
       applyBackground(currentBg, false);
-      
+      cargarTemaGuardado();
+      cargarNombreAI();
+
+      // Inicializar dashboard vía el módulo externo
+      if (window.BOLTON?.dashboard) {
+        setTimeout(() => {
+          if (window.BOLTON.dashboard.render) window.BOLTON.dashboard.render();
+          if (window.BOLTON.dashboard.cargarNoticias) window.BOLTON.dashboard.cargarNoticias();
+        }, 300);
+      }
+
+      // Construir la galería del modal "Nuevo fondo"
       const grid = document.getElementById('bgGrid');
       const countText = document.getElementById('bgCountText');
       if (grid) {
@@ -1552,8 +2583,24 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <!-- Módulos de BOLTON -->
-<script src="core.js"></script>
-<script src="notas.js"></script>
+<script src="js/core.js"></script>
+<script src="js/notas.js"></script>
+<script src="js/calendario.js"></script> 
+<script src="js/tiempo.js"></script>
+<script src="js/tienda.js"></script>
+<script src="js/cuadernos.js"></script> 
+<script src="js/tareas.js"></script> 
+<script src="js/horario.js"></script> 
+<script src="js/proyectos.js"></script> 
+<script src="js/biblioteca.js"></script>
+<script src="js/finanzas.js"></script>
+<script src="js/ai-assistant.js"></script>
+<script src="js/investigacion.js"></script>
+<script src="js/cursos.js"></script>
+<script src="js/entretenimiento.js"></script>
+<script src="js/racha.js"></script>
+<script src="js/secciones.js"></script>   
+<script src="js/dashboard.js"></script>
 <script>
 (function(){
   'use strict';
@@ -1671,7 +2718,59 @@ window.__BOLTON_FIREBASE__ = { firebase, auth, db };
     setInput('editModalPhone', m.telefono || '');
     setInput('editModalDream', meta);
     setInput('editModalAvatar', avatar);
+    setInput('editModalBanner', m.banner_url || '');
+        if (typeof applyBanner === 'function') applyBanner(m.banner_url || '');
+            // Aplicar foto de perfil con ajustes
+    if (typeof applyAvatar === 'function') {
+        const adj = m.avatar_adjustments || {};
+        applyAvatar(m.avatar_url || '', adj.zoom || 100, adj.x !== undefined ? adj.x : 50, adj.y !== undefined ? adj.y : 50);
+    }
+    // Aplicar tema del usuario
+    if (typeof aplicarTema === 'function') {
+        const temaGuardado = m.tema || localStorage.getItem('bolton_tema') || 'claro';
+        aplicarTema(temaGuardado);
+    }
 
+    // Cargar nombre del AI
+    if (typeof cargarNombreAI === 'function') cargarNombreAI();
+        // Cargar racha y stats del dashboard
+        setTimeout(() => {
+        if (window.BOLTON?.dashboard?.render) window.BOLTON.dashboard.render();
+        if (window.BOLTON?.dashboard?.cargarNoticias) window.BOLTON.dashboard.cargarNoticias();
+    }, 600);
+        // Sincronizar racha desde Firestore si existe
+        if (m.streak_dias && Array.isArray(m.streak_dias)) {
+                  // Sincronizar racha personalizada desde Firestore
+        if (m.racha_custom && m.racha_custom.nombre) {
+            try {
+                const c = JSON.parse(localStorage.getItem('bolton_user_profile') || '{}');
+                const uid = c.uid || 'guest';
+                const local = JSON.parse(localStorage.getItem('bolton_racha_custom_' + uid) || 'null');
+                
+                // Combinar días
+                const diasLocal = local?.dias || [];
+                const diasRemoto = m.racha_custom.dias || [];
+                const combined = Array.from(new Set([...diasLocal, ...diasRemoto])).sort();
+                
+                const final = {
+                    ...m.racha_custom,
+                    dias: combined.slice(-365),
+                    longest: Math.max(m.racha_custom.longest || 0, local?.longest || 0)
+                };
+                localStorage.setItem('bolton_racha_custom_' + uid, JSON.stringify(final));
+            } catch(e) { console.warn('Error sync racha:', e); }
+        }
+        try {
+            const localStreak = JSON.parse(localStorage.getItem('bolton_streak') || '{}');
+            // Combinar días únicos
+            const combined = Array.from(new Set([...(localStreak.dias || []), ...m.streak_dias])).sort();
+            localStreak.dias = combined.slice(-365);
+            if (m.streak_longest && m.streak_longest > (localStreak.longest || 0)) {
+                localStreak.longest = m.streak_longest;
+            }
+            localStorage.setItem('bolton_streak', JSON.stringify(localStreak));
+        } catch(e) {}
+    }
     saveCache(m);
   }
 
@@ -1709,7 +2808,7 @@ window.__BOLTON_FIREBASE__ = { firebase, auth, db };
       localStorage.removeItem('bolton_user_profile');
       localStorage.removeItem('bolton_bg');
     } catch(e){}
-    window.location.href = 'index.html';
+    window.location.href = 'info.html';
   }
 
   /* ============================================================
@@ -1857,7 +2956,8 @@ window.__BOLTON_FIREBASE__ = { firebase, auth, db };
       materias: parseInt(getValue('editModalSubjects'), 10) || null,
       telefono: getValue('editModalPhone'),
       sueno_estudio: getValue('editModalDream'),
-      avatar_url: getValue('editModalAvatar')
+      avatar_url: getValue('editModalAvatar'),
+      banner_url: getValue('editModalBanner')
     };
 
     try {
